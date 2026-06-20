@@ -1,5 +1,7 @@
+import LandingPageRenderer from './LandingPageRenderer';
+
 function App() {
-  return <h1>Hello World</h1>
+  return <LandingPageRenderer />
 }
 
 export default App

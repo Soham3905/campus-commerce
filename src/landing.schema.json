@@ -1,0 +1,359 @@
+{
+  "schemaVersion": "1.0.0",
+
+  "themeRegistry": {
+    "flipkart": {
+      "colors": {
+        "primary": "#2874F0",
+        "primaryText": "#FFFFFF",
+        "secondary": "#FFC400",
+        "background": "#F1F3F6",
+        "surface": "#FFFFFF",
+        "textPrimary": "#212121",
+        "textSecondary": "#878787",
+        "border": "#E0E0E0",
+        "headerBg": "#2874F0",
+        "headerText": "#FFFFFF",
+        "footerBg": "#172337",
+        "footerText": "#FFFFFF",
+        "accent": "#FB641B"
+      },
+      "typography": {
+        "fontFamily": "'Roboto', sans-serif",
+        "heroTitleSize": "2.5rem",
+        "sectionTitleSize": "1.25rem",
+        "bodySize": "0.875rem",
+        "captionSize": "0.75rem"
+      },
+      "radius": {
+        "card": "4px",
+        "button": "2px",
+        "pill": "999px"
+      },
+      "shadow": {
+        "card": "0 1px 6px rgba(0,0,0,0.12)",
+        "header": "0 2px 4px rgba(0,0,0,0.15)"
+      },
+      "spacing": {
+        "sectionGap": "12px",
+        "cardGap": "12px",
+        "containerPadding": "16px"
+      }
+    },
+
+    "amazon": {
+      "colors": {
+        "primary": "#FF9900",
+        "primaryText": "#111111",
+        "secondary": "#146EB4",
+        "background": "#EAEDED",
+        "surface": "#FFFFFF",
+        "textPrimary": "#0F1111",
+        "textSecondary": "#565959",
+        "border": "#D5D9D9",
+        "headerBg": "#131921",
+        "headerText": "#FFFFFF",
+        "footerBg": "#232F3E",
+        "footerText": "#DDDDDD",
+        "accent": "#CC0C39"
+      },
+      "typography": {
+        "fontFamily": "'Amazon Ember', 'Arial', sans-serif",
+        "heroTitleSize": "2rem",
+        "sectionTitleSize": "1.125rem",
+        "bodySize": "0.875rem",
+        "captionSize": "0.75rem"
+      },
+      "radius": {
+        "card": "8px",
+        "button": "8px",
+        "pill": "999px"
+      },
+      "shadow": {
+        "card": "0 2px 5px rgba(0,0,0,0.1)",
+        "header": "none"
+      },
+      "spacing": {
+        "sectionGap": "16px",
+        "cardGap": "16px",
+        "containerPadding": "20px"
+      }
+    },
+
+    "myntra": {
+      "colors": {
+        "primary": "#FF3F6C",
+        "primaryText": "#FFFFFF",
+        "secondary": "#535766",
+        "background": "#F4F4F5",
+        "surface": "#FFFFFF",
+        "textPrimary": "#282C3F",
+        "textSecondary": "#535766",
+        "border": "#EAEAEC",
+        "headerBg": "#FFFFFF",
+        "headerText": "#282C3F",
+        "footerBg": "#FFFFFF",
+        "footerText": "#696B79",
+        "accent": "#FF905A"
+      },
+      "typography": {
+        "fontFamily": "'Whitney', 'Helvetica Neue', sans-serif",
+        "heroTitleSize": "2.75rem",
+        "sectionTitleSize": "1.375rem",
+        "bodySize": "0.875rem",
+        "captionSize": "0.75rem"
+      },
+      "radius": {
+        "card": "8px",
+        "button": "4px",
+        "pill": "999px"
+      },
+      "shadow": {
+        "card": "0 2px 8px rgba(0,0,0,0.08)",
+        "header": "0 1px 4px rgba(0,0,0,0.1)"
+      },
+      "spacing": {
+        "sectionGap": "24px",
+        "cardGap": "16px",
+        "containerPadding": "24px"
+      }
+    },
+
+    "meesho": {
+      "colors": {
+        "primary": "#9C27B0",
+        "primaryText": "#FFFFFF",
+        "secondary": "#FF9800",
+        "background": "#FAF5FF",
+        "surface": "#FFFFFF",
+        "textPrimary": "#1D1D1F",
+        "textSecondary": "#6E6E73",
+        "border": "#E8D5F0",
+        "headerBg": "#FFFFFF",
+        "headerText": "#1D1D1F",
+        "footerBg": "#F5F0FF",
+        "footerText": "#4A4A4A",
+        "accent": "#E91E63"
+      },
+      "typography": {
+        "fontFamily": "'Inter', sans-serif",
+        "heroTitleSize": "2.25rem",
+        "sectionTitleSize": "1.25rem",
+        "bodySize": "0.875rem",
+        "captionSize": "0.75rem"
+      },
+      "radius": {
+        "card": "12px",
+        "button": "8px",
+        "pill": "999px"
+      },
+      "shadow": {
+        "card": "0 2px 12px rgba(156,39,176,0.1)",
+        "header": "0 2px 8px rgba(0,0,0,0.06)"
+      },
+      "spacing": {
+        "sectionGap": "20px",
+        "cardGap": "12px",
+        "containerPadding": "16px"
+      }
+    }
+  },
+
+  "layoutRegistry": {
+    "desktop": {
+      "sections": [
+        "header",
+        "heroBanner",
+        "categoryGrid",
+        "couponStrip",
+        "productRail",
+        "promoGrid",
+        "brandCarousel",
+        "footer"
+      ],
+      "categoryGrid": { "columns": 8 },
+      "promoGrid": { "columns": 2 },
+      "productRail": { "itemWidth": 200, "gap": 16 },
+      "brandCarousel": { "itemWidth": 140, "gap": 20 }
+    },
+    "tablet": {
+      "sections": [
+        "header",
+        "heroBanner",
+        "categoryGrid",
+        "couponStrip",
+        "productRail",
+        "promoGrid",
+        "brandCarousel",
+        "footer"
+      ],
+      "categoryGrid": { "columns": 4 },
+      "promoGrid": { "columns": 2 },
+      "productRail": { "itemWidth": 170, "gap": 12 },
+      "brandCarousel": { "itemWidth": 120, "gap": 14 }
+    },
+    "mobile": {
+      "sections": [
+        "header",
+        "heroBanner",
+        "categoryGrid",
+        "couponStrip",
+        "productRail",
+        "promoGrid",
+        "brandCarousel",
+        "footer"
+      ],
+      "categoryGrid": { "columns": 4 },
+      "promoGrid": { "columns": 1 },
+      "productRail": { "itemWidth": 148, "gap": 10 },
+      "brandCarousel": { "itemWidth": 100, "gap": 10 }
+    }
+  },
+
+  "contentRegistry": {
+    "header": {
+      "logoText": "ShopKart",
+      "logoIcon": "🛒",
+      "searchPlaceholder": "Search products, brands and more",
+      "navLinks": [
+        { "label": "Login", "icon": "👤" },
+        { "label": "Wishlist", "icon": "♡" },
+        { "label": "Cart", "icon": "🛒", "badge": 0 }
+      ]
+    },
+
+    "heroBanner": {
+      "slides": [
+        {
+          "id": "slide1",
+          "eyebrow": "Big Billion Sale",
+          "title": "Up to 80% Off",
+          "subtitle": "On Electronics, Fashion & More",
+          "ctaLabel": "Shop Now",
+          "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=450&fit=crop",
+          "imageAlt": "Sale banner - electronics and fashion",
+          "bgColor": "#2874F0"
+        },
+        {
+          "id": "slide2",
+          "eyebrow": "New Arrivals",
+          "title": "Summer Collection 2025",
+          "subtitle": "Fresh styles for every occasion",
+          "ctaLabel": "Explore Now",
+          "imageUrl": "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1200&h=450&fit=crop",
+          "imageAlt": "Summer fashion collection",
+          "bgColor": "#FF3F6C"
+        }
+      ]
+    },
+
+    "categoryGrid": {
+      "title": "Shop by Category",
+      "items": [
+        { "id": "cat1", "label": "Mobiles", "iconUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=80&h=80&fit=crop", "slug": "mobiles" },
+        { "id": "cat2", "label": "Fashion", "iconUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=80&h=80&fit=crop", "slug": "fashion" },
+        { "id": "cat3", "label": "Electronics", "iconUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=80&h=80&fit=crop", "slug": "electronics" },
+        { "id": "cat4", "label": "Home", "iconUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&h=80&fit=crop", "slug": "home" },
+        { "id": "cat5", "label": "Beauty", "iconUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=80&h=80&fit=crop", "slug": "beauty" },
+        { "id": "cat6", "label": "Toys", "iconUrl": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=80&h=80&fit=crop", "slug": "toys" },
+        { "id": "cat7", "label": "Appliances", "iconUrl": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=80&h=80&fit=crop", "slug": "appliances" },
+        { "id": "cat8", "label": "Sports", "iconUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=80&h=80&fit=crop", "slug": "sports" }
+      ]
+    },
+
+    "couponStrip": {
+      "items": [
+        { "id": "c1", "code": "SAVE10", "title": "10% Off on First Order", "subtitle": "Use code at checkout", "ctaLabel": "Copy Code" },
+        { "id": "c2", "code": "FLAT200", "title": "Flat ₹200 Off", "subtitle": "On orders above ₹999", "ctaLabel": "Copy Code" },
+        { "id": "c3", "code": "FREESHIP", "title": "Free Shipping", "subtitle": "On all orders this week", "ctaLabel": "Copy Code" }
+      ]
+    },
+
+    "productRail": {
+      "title": "Deals of the Day",
+      "ctaLabel": "See All Deals",
+      "items": [
+        { "id": "p1", "title": "Wireless Earbuds Pro", "brand": "BoAt", "price": 1499, "originalPrice": 3999, "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&h=200&fit=crop", "rating": 4.3, "reviews": 12400 },
+        { "id": "p2", "title": "Running Shoes Lite", "brand": "Nike", "price": 2799, "originalPrice": 5499, "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop", "rating": 4.5, "reviews": 8900 },
+        { "id": "p3", "title": "Kurta Set Ethnic", "brand": "W", "price": 899, "originalPrice": 1999, "imageUrl": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200&h=200&fit=crop", "rating": 4.1, "reviews": 3200 },
+        { "id": "p4", "title": "Smart Watch Series 5", "brand": "Noise", "price": 3299, "originalPrice": 7999, "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop", "rating": 4.4, "reviews": 5600 },
+        { "id": "p5", "title": "Laptop Backpack 30L", "brand": "Wildcraft", "price": 999, "originalPrice": 2499, "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop", "rating": 4.2, "reviews": 7800 },
+        { "id": "p6", "title": "Bluetooth Speaker", "brand": "JBL", "price": 2199, "originalPrice": 4999, "imageUrl": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop", "rating": 4.6, "reviews": 9300 }
+      ]
+    },
+
+    "promoGrid": {
+      "title": "Top Offers",
+      "items": [
+        { "id": "promo1", "title": "Fashion Week Sale", "subtitle": "Up to 70% off on top brands", "imageUrl": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=300&fit=crop", "ctaLabel": "Shop Fashion", "bgColor": "#FF3F6C" },
+        { "id": "promo2", "title": "Electronics Fest", "subtitle": "Best prices on gadgets", "imageUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=300&fit=crop", "ctaLabel": "Explore Tech", "bgColor": "#2874F0" },
+        { "id": "promo3", "title": "Home Makeover", "subtitle": "Refresh your space for less", "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=300&fit=crop", "ctaLabel": "Shop Home", "bgColor": "#16A34A" },
+        { "id": "promo4", "title": "Beauty Deals", "subtitle": "Skincare & makeup up to 60% off", "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=300&fit=crop", "ctaLabel": "Shop Beauty", "bgColor": "#9C27B0" }
+      ]
+    },
+
+    "brandCarousel": {
+      "title": "Top Brands",
+      "items": [
+        { "id": "b1", "label": "Nike", "logoUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&h=80&fit=crop", "slug": "nike" },
+        { "id": "b2", "label": "Apple", "logoUrl": "https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=120&h=80&fit=crop", "slug": "apple" },
+        { "id": "b3", "label": "Samsung", "logoUrl": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=120&h=80&fit=crop", "slug": "samsung" },
+        { "id": "b4", "label": "Levi's", "logoUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=120&h=80&fit=crop", "slug": "levis" },
+        { "id": "b5", "label": "Sony", "logoUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120&h=80&fit=crop", "slug": "sony" },
+        { "id": "b6", "label": "Puma", "logoUrl": "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=120&h=80&fit=crop", "slug": "puma" },
+        { "id": "b7", "label": "H&M", "logoUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=80&fit=crop", "slug": "hm" }
+      ]
+    },
+
+    "footer": {
+      "logoText": "ShopKart",
+      "tagline": "India's Favourite Online Shopping Destination",
+      "columns": [
+        {
+          "heading": "About",
+          "links": ["About Us", "Careers", "Press", "Sustainability"]
+        },
+        {
+          "heading": "Help",
+          "links": ["FAQ", "Track Order", "Returns", "Contact Us"]
+        },
+        {
+          "heading": "Policy",
+          "links": ["Privacy Policy", "Terms of Use", "Cookie Policy", "Accessibility"]
+        },
+        {
+          "heading": "Social",
+          "links": ["Facebook", "Instagram", "Twitter", "YouTube"]
+        }
+      ],
+      "copyright": "© 2025 ShopKart. All rights reserved."
+    }
+  },
+
+  "sectionRegistry": {
+    "header":        { "visible": true, "sticky": true },
+    "heroBanner":    { "visible": true, "autoplay": true, "autoplayInterval": 4000 },
+    "categoryGrid":  { "visible": true },
+    "couponStrip":   { "visible": true },
+    "productRail":   { "visible": true },
+    "promoGrid":     { "visible": true },
+    "brandCarousel": { "visible": true },
+    "footer":        { "visible": true }
+  },
+
+  "pageRegistry": {
+    "home": {
+      "themeId": "flipkart",
+      "sections": [
+        "header",
+        "heroBanner",
+        "categoryGrid",
+        "couponStrip",
+        "productRail",
+        "promoGrid",
+        "brandCarousel",
+        "footer"
+      ]
+    }
+  }
+}
