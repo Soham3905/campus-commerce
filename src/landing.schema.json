@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
 
   "themeRegistry": {
     "flipkart": {
@@ -25,20 +25,12 @@
         "bodySize": "0.875rem",
         "captionSize": "0.75rem"
       },
-      "radius": {
-        "card": "4px",
-        "button": "2px",
-        "pill": "999px"
-      },
+      "radius": { "card": "4px", "button": "2px", "pill": "999px" },
       "shadow": {
         "card": "0 1px 6px rgba(0,0,0,0.12)",
         "header": "0 2px 4px rgba(0,0,0,0.15)"
       },
-      "spacing": {
-        "sectionGap": "12px",
-        "cardGap": "12px",
-        "containerPadding": "16px"
-      }
+      "spacing": { "sectionGap": "12px", "cardGap": "12px", "containerPadding": "16px" }
     },
 
     "amazon": {
@@ -58,26 +50,18 @@
         "accent": "#CC0C39"
       },
       "typography": {
-        "fontFamily": "'Amazon Ember', 'Arial', sans-serif",
+        "fontFamily": "'Amazon Ember', Arial, sans-serif",
         "heroTitleSize": "2rem",
         "sectionTitleSize": "1.125rem",
         "bodySize": "0.875rem",
         "captionSize": "0.75rem"
       },
-      "radius": {
-        "card": "8px",
-        "button": "8px",
-        "pill": "999px"
-      },
+      "radius": { "card": "8px", "button": "8px", "pill": "999px" },
       "shadow": {
         "card": "0 2px 5px rgba(0,0,0,0.1)",
         "header": "none"
       },
-      "spacing": {
-        "sectionGap": "16px",
-        "cardGap": "16px",
-        "containerPadding": "20px"
-      }
+      "spacing": { "sectionGap": "16px", "cardGap": "16px", "containerPadding": "20px" }
     },
 
     "myntra": {
@@ -97,26 +81,18 @@
         "accent": "#FF905A"
       },
       "typography": {
-        "fontFamily": "'Whitney', 'Helvetica Neue', sans-serif",
+        "fontFamily": "'Helvetica Neue', Helvetica, sans-serif",
         "heroTitleSize": "2.75rem",
         "sectionTitleSize": "1.375rem",
         "bodySize": "0.875rem",
         "captionSize": "0.75rem"
       },
-      "radius": {
-        "card": "8px",
-        "button": "4px",
-        "pill": "999px"
-      },
+      "radius": { "card": "8px", "button": "4px", "pill": "999px" },
       "shadow": {
         "card": "0 2px 8px rgba(0,0,0,0.08)",
         "header": "0 1px 4px rgba(0,0,0,0.1)"
       },
-      "spacing": {
-        "sectionGap": "24px",
-        "cardGap": "16px",
-        "containerPadding": "24px"
-      }
+      "spacing": { "sectionGap": "24px", "cardGap": "16px", "containerPadding": "24px" }
     },
 
     "meesho": {
@@ -142,87 +118,52 @@
         "bodySize": "0.875rem",
         "captionSize": "0.75rem"
       },
-      "radius": {
-        "card": "12px",
-        "button": "8px",
-        "pill": "999px"
-      },
+      "radius": { "card": "12px", "button": "8px", "pill": "999px" },
       "shadow": {
         "card": "0 2px 12px rgba(156,39,176,0.1)",
         "header": "0 2px 8px rgba(0,0,0,0.06)"
       },
-      "spacing": {
-        "sectionGap": "20px",
-        "cardGap": "12px",
-        "containerPadding": "16px"
-      }
+      "spacing": { "sectionGap": "20px", "cardGap": "12px", "containerPadding": "16px" }
     }
   },
 
   "layoutRegistry": {
-    "desktop": {
-      "sections": [
-        "header",
-        "heroBanner",
-        "categoryGrid",
-        "couponStrip",
-        "productRail",
-        "promoGrid",
-        "brandCarousel",
-        "footer"
-      ],
-      "categoryGrid": { "columns": 8 },
-      "promoGrid": { "columns": 2 },
-      "productRail": { "itemWidth": 200, "gap": 16 },
-      "brandCarousel": { "itemWidth": 140, "gap": 20 }
-    },
-    "tablet": {
-      "sections": [
-        "header",
-        "heroBanner",
-        "categoryGrid",
-        "couponStrip",
-        "productRail",
-        "promoGrid",
-        "brandCarousel",
-        "footer"
-      ],
-      "categoryGrid": { "columns": 4 },
-      "promoGrid": { "columns": 2 },
-      "productRail": { "itemWidth": 170, "gap": 12 },
-      "brandCarousel": { "itemWidth": 120, "gap": 14 }
-    },
-    "mobile": {
-      "sections": [
-        "header",
-        "heroBanner",
-        "categoryGrid",
-        "couponStrip",
-        "productRail",
-        "promoGrid",
-        "brandCarousel",
-        "footer"
-      ],
-      "categoryGrid": { "columns": 4 },
-      "promoGrid": { "columns": 1 },
-      "productRail": { "itemWidth": 148, "gap": 10 },
-      "brandCarousel": { "itemWidth": 100, "gap": 10 }
-    }
+    "desktop": { "maxWidth": 1280, "gutter": 16, "breakpointPx": 1024 },
+    "tablet":  { "maxWidth": 1024, "gutter": 12, "breakpointPx": 768 },
+    "mobile":  { "maxWidth": "100%", "gutter": 8,  "breakpointPx": 0 }
+  },
+
+  "componentRegistry": {
+    "header":        { "label": "Navigation Header",    "hasContent": true,  "variants": ["default"] },
+    "heroBanner":    { "label": "Hero Banner",           "hasContent": true,  "variants": ["full", "slim", "split"] },
+    "categoryGrid":  { "label": "Category Grid",         "hasContent": true,  "variants": ["default"] },
+    "couponStrip":   { "label": "Coupon Strip",           "hasContent": true,  "variants": ["default"] },
+    "productRail":   { "label": "Product Rail",           "hasContent": true,  "variants": ["scroll", "peek"] },
+    "productGrid":   { "label": "Product Grid",           "hasContent": true,  "variants": ["grid", "masonry", "list"] },
+    "promoGrid":     { "label": "Promo Grid",             "hasContent": true,  "variants": ["2col", "3col", "fullrow"] },
+    "promoBanner":   { "label": "Promo Banner",           "hasContent": true,  "variants": ["default", "overlay"] },
+    "brandCarousel": { "label": "Brand Carousel",         "hasContent": true,  "variants": ["carousel", "grid"] },
+    "brandList":     { "label": "Brand List",             "hasContent": true,  "variants": ["default"] },
+    "filterSidebar": { "label": "Filter Sidebar",         "hasContent": true,  "variants": ["default", "compact"] },
+    "videoBanner":   { "label": "Video Banner",            "hasContent": true,  "variants": ["default"] },
+    "advertisement": { "label": "Advertisement Slot",     "hasContent": true,  "variants": ["default", "inline"] },
+    "footer":        { "label": "Footer",                 "hasContent": true,  "variants": ["default"] },
+    "container":     { "label": "Layout Container",       "hasContent": false, "variants": ["row", "column", "stack"] }
   },
 
   "contentRegistry": {
-    "header": {
+    "header_main": {
       "logoText": "ShopKart",
       "logoIcon": "🛒",
       "searchPlaceholder": "Search products, brands and more",
       "navLinks": [
-        { "label": "Login", "icon": "👤" },
+        { "label": "Login",    "icon": "👤" },
         { "label": "Wishlist", "icon": "♡" },
-        { "label": "Cart", "icon": "🛒", "badge": 0 }
+        { "label": "Cart",     "icon": "🛒", "badge": 0 }
       ]
     },
 
-    "heroBanner": {
+    "heroBanner_main": {
       "slides": [
         {
           "id": "slide1",
@@ -231,7 +172,7 @@
           "subtitle": "On Electronics, Fashion & More",
           "ctaLabel": "Shop Now",
           "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=450&fit=crop",
-          "imageAlt": "Sale banner - electronics and fashion",
+          "imageAlt": "Sale banner",
           "bgColor": "#2874F0"
         },
         {
@@ -247,112 +188,510 @@
       ]
     },
 
-    "categoryGrid": {
+    "heroBanner_amazon": {
+      "slides": [
+        {
+          "id": "amz1",
+          "eyebrow": "Great Indian Festival",
+          "title": "Biggest Deals of the Year",
+          "subtitle": "Millions of offers across all categories",
+          "ctaLabel": "Shop Now",
+          "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=350&fit=crop",
+          "imageAlt": "Amazon festival sale",
+          "bgColor": "#131921"
+        }
+      ]
+    },
+
+    "categoryGrid_main": {
       "title": "Shop by Category",
       "items": [
-        { "id": "cat1", "label": "Mobiles", "iconUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=80&h=80&fit=crop", "slug": "mobiles" },
-        { "id": "cat2", "label": "Fashion", "iconUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=80&h=80&fit=crop", "slug": "fashion" },
-        { "id": "cat3", "label": "Electronics", "iconUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=80&h=80&fit=crop", "slug": "electronics" },
-        { "id": "cat4", "label": "Home", "iconUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&h=80&fit=crop", "slug": "home" },
-        { "id": "cat5", "label": "Beauty", "iconUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=80&h=80&fit=crop", "slug": "beauty" },
-        { "id": "cat6", "label": "Toys", "iconUrl": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=80&h=80&fit=crop", "slug": "toys" },
-        { "id": "cat7", "label": "Appliances", "iconUrl": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=80&h=80&fit=crop", "slug": "appliances" },
-        { "id": "cat8", "label": "Sports", "iconUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=80&h=80&fit=crop", "slug": "sports" }
+        { "id": "cat1", "label": "Mobiles",     "iconUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=80&h=80&fit=crop",  "slug": "mobiles" },
+        { "id": "cat2", "label": "Fashion",     "iconUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=80&h=80&fit=crop",  "slug": "fashion" },
+        { "id": "cat3", "label": "Electronics", "iconUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=80&h=80&fit=crop",  "slug": "electronics" },
+        { "id": "cat4", "label": "Home",        "iconUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&h=80&fit=crop",  "slug": "home" },
+        { "id": "cat5", "label": "Beauty",      "iconUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=80&h=80&fit=crop",  "slug": "beauty" },
+        { "id": "cat6", "label": "Toys",        "iconUrl": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=80&h=80&fit=crop",  "slug": "toys" },
+        { "id": "cat7", "label": "Appliances",  "iconUrl": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=80&h=80&fit=crop",  "slug": "appliances" },
+        { "id": "cat8", "label": "Sports",      "iconUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=80&h=80&fit=crop",  "slug": "sports" }
       ]
     },
 
-    "couponStrip": {
+    "couponStrip_main": {
       "items": [
-        { "id": "c1", "code": "SAVE10", "title": "10% Off on First Order", "subtitle": "Use code at checkout", "ctaLabel": "Copy Code" },
-        { "id": "c2", "code": "FLAT200", "title": "Flat ₹200 Off", "subtitle": "On orders above ₹999", "ctaLabel": "Copy Code" },
-        { "id": "c3", "code": "FREESHIP", "title": "Free Shipping", "subtitle": "On all orders this week", "ctaLabel": "Copy Code" }
+        { "id": "c1", "code": "SAVE10",   "title": "10% Off on First Order", "subtitle": "Use code at checkout",    "ctaLabel": "Copy Code" },
+        { "id": "c2", "code": "FLAT200",  "title": "Flat ₹200 Off",          "subtitle": "On orders above ₹999",   "ctaLabel": "Copy Code" },
+        { "id": "c3", "code": "FREESHIP", "title": "Free Shipping",           "subtitle": "On all orders this week","ctaLabel": "Copy Code" }
       ]
     },
 
-    "productRail": {
+    "productRail_main": {
       "title": "Deals of the Day",
       "ctaLabel": "See All Deals",
       "items": [
-        { "id": "p1", "title": "Wireless Earbuds Pro", "brand": "BoAt", "price": 1499, "originalPrice": 3999, "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&h=200&fit=crop", "rating": 4.3, "reviews": 12400 },
-        { "id": "p2", "title": "Running Shoes Lite", "brand": "Nike", "price": 2799, "originalPrice": 5499, "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop", "rating": 4.5, "reviews": 8900 },
-        { "id": "p3", "title": "Kurta Set Ethnic", "brand": "W", "price": 899, "originalPrice": 1999, "imageUrl": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200&h=200&fit=crop", "rating": 4.1, "reviews": 3200 },
-        { "id": "p4", "title": "Smart Watch Series 5", "brand": "Noise", "price": 3299, "originalPrice": 7999, "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop", "rating": 4.4, "reviews": 5600 },
-        { "id": "p5", "title": "Laptop Backpack 30L", "brand": "Wildcraft", "price": 999, "originalPrice": 2499, "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop", "rating": 4.2, "reviews": 7800 },
-        { "id": "p6", "title": "Bluetooth Speaker", "brand": "JBL", "price": 2199, "originalPrice": 4999, "imageUrl": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop", "rating": 4.6, "reviews": 9300 }
+        { "id": "p1", "title": "Wireless Earbuds Pro",  "brand": "BoAt",     "price": 1499, "originalPrice": 3999, "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&h=200&fit=crop", "rating": 4.3, "reviews": 12400 },
+        { "id": "p2", "title": "Running Shoes Lite",    "brand": "Nike",     "price": 2799, "originalPrice": 5499, "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop", "rating": 4.5, "reviews": 8900 },
+        { "id": "p3", "title": "Kurta Set Ethnic",      "brand": "W",        "price": 899,  "originalPrice": 1999, "imageUrl": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200&h=200&fit=crop", "rating": 4.1, "reviews": 3200 },
+        { "id": "p4", "title": "Smart Watch Series 5",  "brand": "Noise",    "price": 3299, "originalPrice": 7999, "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop", "rating": 4.4, "reviews": 5600 },
+        { "id": "p5", "title": "Laptop Backpack 30L",   "brand": "Wildcraft","price": 999,  "originalPrice": 2499, "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop", "rating": 4.2, "reviews": 7800 },
+        { "id": "p6", "title": "Bluetooth Speaker JBL", "brand": "JBL",      "price": 2199, "originalPrice": 4999, "imageUrl": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop", "rating": 4.6, "reviews": 9300 }
       ]
     },
 
-    "promoGrid": {
+    "productRail_deals": {
+      "title": "Lightning Deals",
+      "ctaLabel": "View All Deals",
+      "items": [
+        { "id": "d1", "title": "Smart Watch Series 5",  "brand": "Noise",    "price": 3299, "originalPrice": 7999, "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop", "rating": 4.4, "reviews": 5600 },
+        { "id": "d2", "title": "Laptop Backpack 30L",   "brand": "Wildcraft","price": 999,  "originalPrice": 2499, "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop", "rating": 4.2, "reviews": 7800 },
+        { "id": "d3", "title": "Bluetooth Speaker JBL", "brand": "JBL",      "price": 2199, "originalPrice": 4999, "imageUrl": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop", "rating": 4.6, "reviews": 9300 },
+        { "id": "d4", "title": "Wireless Earbuds Pro",  "brand": "BoAt",     "price": 1499, "originalPrice": 3999, "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&h=200&fit=crop", "rating": 4.3, "reviews": 12400 }
+      ]
+    },
+
+    "productGrid_main": {
+      "title": "Products For You",
+      "totalCount": 676,
+      "sortOptions": [
+        { "value": "relevance",  "label": "Relevance" },
+        { "value": "price_asc",  "label": "Price: Low to High" },
+        { "value": "price_desc", "label": "Price: High to Low" },
+        { "value": "rating",     "label": "Rating" }
+      ],
+      "items": [
+        { "id": "g1", "title": "Boys Trackpants & Joggers",    "brand": "H&M Kids",  "price": 227,  "originalPrice": 250,  "imageUrl": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=200&h=200&fit=crop", "rating": 4.0, "reviews": 44868 },
+        { "id": "g2", "title": "Fancy Boys Top & Bottom Set",  "brand": "FirstCry",  "price": 183,  "originalPrice": null, "imageUrl": "https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?w=200&h=200&fit=crop", "rating": 3.9, "reviews": 71215 },
+        { "id": "g3", "title": "Elegant Boys Top & Bottom",    "brand": "Hopscotch", "price": 250,  "originalPrice": null, "imageUrl": "https://images.unsplash.com/photo-1503341338985-95a6f1b27de9?w=200&h=200&fit=crop", "rating": 3.9, "reviews": 12156 },
+        { "id": "g4", "title": "Modern Comfy Boys Top",        "brand": "Yk",        "price": 181,  "originalPrice": 200,  "imageUrl": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200&h=200&fit=crop", "rating": 4.0, "reviews": 55699 },
+        { "id": "g5", "title": "Funky Boys Tshirt Pack of 5",  "brand": "Cutiepie",  "price": 275,  "originalPrice": null, "imageUrl": "https://images.unsplash.com/photo-1529720317453-c8da503f2051?w=200&h=200&fit=crop", "rating": 4.1, "reviews": 71609 },
+        { "id": "g6", "title": "Agile Classy Boys Tshirts",    "brand": "Allen Solly","price": 119, "originalPrice": 130,  "imageUrl": "https://images.unsplash.com/photo-1583354645390-8f8d92f4c62a?w=200&h=200&fit=crop", "rating": 3.8, "reviews": 3369 },
+        { "id": "g7", "title": "Trendy Kids Boys Shorts",      "brand": "Wingsfield","price": 273,  "originalPrice": null, "imageUrl": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=200&h=200&fit=crop", "rating": 3.7, "reviews": 12156 },
+        { "id": "g8", "title": "Princess Stylus Boys Top Set", "brand": "Princess",  "price": 216,  "originalPrice": null, "imageUrl": "https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?w=200&h=200&fit=crop", "rating": 4.0, "reviews": 9009 }
+      ]
+    },
+
+    "promoGrid_main": {
       "title": "Top Offers",
       "items": [
-        { "id": "promo1", "title": "Fashion Week Sale", "subtitle": "Up to 70% off on top brands", "imageUrl": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=300&fit=crop", "ctaLabel": "Shop Fashion", "bgColor": "#FF3F6C" },
-        { "id": "promo2", "title": "Electronics Fest", "subtitle": "Best prices on gadgets", "imageUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=300&fit=crop", "ctaLabel": "Explore Tech", "bgColor": "#2874F0" },
-        { "id": "promo3", "title": "Home Makeover", "subtitle": "Refresh your space for less", "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=300&fit=crop", "ctaLabel": "Shop Home", "bgColor": "#16A34A" },
-        { "id": "promo4", "title": "Beauty Deals", "subtitle": "Skincare & makeup up to 60% off", "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=300&fit=crop", "ctaLabel": "Shop Beauty", "bgColor": "#9C27B0" }
+        { "id": "pg1", "title": "Fashion Week Sale",  "subtitle": "Up to 70% off on top brands",  "imageUrl": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=300&fit=crop", "ctaLabel": "Shop Fashion", "bgColor": "#FF3F6C" },
+        { "id": "pg2", "title": "Electronics Fest",   "subtitle": "Best prices on gadgets",        "imageUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=300&fit=crop", "ctaLabel": "Explore Tech", "bgColor": "#2874F0" },
+        { "id": "pg3", "title": "Home Makeover",      "subtitle": "Refresh your space for less",   "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=300&fit=crop", "ctaLabel": "Shop Home",    "bgColor": "#16A34A" },
+        { "id": "pg4", "title": "Beauty Deals",       "subtitle": "Skincare & makeup up to 60% off","imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=300&fit=crop", "ctaLabel": "Shop Beauty",  "bgColor": "#9C27B0" }
       ]
     },
 
-    "brandCarousel": {
+    "promoBanner_a": {
+      "title": "Fashion Week Sale",
+      "subtitle": "Up to 70% off — top brands, all sizes",
+      "imageUrl": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&h=420&fit=crop",
+      "ctaLabel": "Shop Fashion",
+      "bgColor": "#c0392b"
+    },
+
+    "promoBanner_b": {
+      "title": "Electronics Fest",
+      "subtitle": "Unbeatable prices on gadgets & tech",
+      "imageUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=700&h=420&fit=crop",
+      "ctaLabel": "Explore Tech",
+      "bgColor": "#131921"
+    },
+
+    "brandCarousel_main": {
       "title": "Top Brands",
       "items": [
-        { "id": "b1", "label": "Nike", "logoUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&h=80&fit=crop", "slug": "nike" },
-        { "id": "b2", "label": "Apple", "logoUrl": "https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=120&h=80&fit=crop", "slug": "apple" },
+        { "id": "b1", "label": "Nike",    "logoUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&h=80&fit=crop",  "slug": "nike" },
+        { "id": "b2", "label": "Apple",   "logoUrl": "https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=120&h=80&fit=crop", "slug": "apple" },
         { "id": "b3", "label": "Samsung", "logoUrl": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=120&h=80&fit=crop", "slug": "samsung" },
-        { "id": "b4", "label": "Levi's", "logoUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=120&h=80&fit=crop", "slug": "levis" },
-        { "id": "b5", "label": "Sony", "logoUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120&h=80&fit=crop", "slug": "sony" },
-        { "id": "b6", "label": "Puma", "logoUrl": "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=120&h=80&fit=crop", "slug": "puma" },
-        { "id": "b7", "label": "H&M", "logoUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=80&fit=crop", "slug": "hm" }
+        { "id": "b4", "label": "Levi's",  "logoUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=120&h=80&fit=crop", "slug": "levis" },
+        { "id": "b5", "label": "Sony",    "logoUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120&h=80&fit=crop", "slug": "sony" },
+        { "id": "b6", "label": "Puma",    "logoUrl": "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=120&h=80&fit=crop", "slug": "puma" },
+        { "id": "b7", "label": "H&M",     "logoUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=80&fit=crop", "slug": "hm" }
       ]
     },
 
-    "footer": {
+    "filterSidebar_main": {
+      "title": "FILTERS",
+      "groups": [
+        {
+          "id": "category", "label": "Category",
+          "options": [
+            { "value": "trackpants", "label": "Kids - Boys Trackpants & Joggers" },
+            { "value": "tshirts",    "label": "Kids - Boys Tshirts & Polos" },
+            { "value": "kurta",      "label": "Kurta Sets" },
+            { "value": "tops",       "label": "Tops And Bottom Sets" },
+            { "value": "tracksuit",  "label": "Track Suit And Pants" }
+          ]
+        },
+        {
+          "id": "gender", "label": "Gender",
+          "options": [
+            { "value": "boys",  "label": "Boys" },
+            { "value": "girls", "label": "Girls" }
+          ]
+        },
+        {
+          "id": "color", "label": "Color",
+          "options": [
+            { "value": "red",   "label": "Red" },
+            { "value": "blue",  "label": "Blue" },
+            { "value": "green", "label": "Green" },
+            { "value": "black", "label": "Black" },
+            { "value": "white", "label": "White" }
+          ]
+        },
+        {
+          "id": "price", "label": "Price",
+          "options": [
+            { "value": "0-200",    "label": "Under ₹200" },
+            { "value": "200-500",  "label": "₹200 – ₹500" },
+            { "value": "500-1000", "label": "₹500 – ₹1000" },
+            { "value": "1000plus", "label": "Above ₹1000" }
+          ]
+        },
+        {
+          "id": "rating", "label": "Rating",
+          "options": [
+            { "value": "4plus", "label": "4★ & above" },
+            { "value": "3plus", "label": "3★ & above" }
+          ]
+        },
+        {
+          "id": "discount", "label": "Discount",
+          "options": [
+            { "value": "10plus", "label": "10% and above" },
+            { "value": "20plus", "label": "20% and above" },
+            { "value": "30plus", "label": "30% and above" }
+          ]
+        }
+      ]
+    },
+
+    "videoBanner_main": {
+      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+      "posterUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=400&fit=crop",
+      "title": "Experience Shopping Like Never Before",
+      "subtitle": "Premium brands. Unbeatable prices. Delivered to your door.",
+      "ctaLabel": "Explore Now"
+    },
+
+    "advertisement_main": {
+      "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=120&fit=crop",
+      "alt": "Summer Sale Advertisement",
+      "targetUrl": "#"
+    },
+
+    "footer_main": {
       "logoText": "ShopKart",
       "tagline": "India's Favourite Online Shopping Destination",
       "columns": [
-        {
-          "heading": "About",
-          "links": ["About Us", "Careers", "Press", "Sustainability"]
-        },
-        {
-          "heading": "Help",
-          "links": ["FAQ", "Track Order", "Returns", "Contact Us"]
-        },
-        {
-          "heading": "Policy",
-          "links": ["Privacy Policy", "Terms of Use", "Cookie Policy", "Accessibility"]
-        },
-        {
-          "heading": "Social",
-          "links": ["Facebook", "Instagram", "Twitter", "YouTube"]
-        }
+        { "heading": "About",  "links": ["About Us", "Careers", "Press", "Sustainability"] },
+        { "heading": "Help",   "links": ["FAQ", "Track Order", "Returns", "Contact Us"] },
+        { "heading": "Policy", "links": ["Privacy Policy", "Terms of Use", "Cookie Policy", "Accessibility"] },
+        { "heading": "Social", "links": ["Facebook", "Instagram", "Twitter", "YouTube"] }
       ],
       "copyright": "© 2025 ShopKart. All rights reserved."
     }
   },
 
-  "sectionRegistry": {
-    "header":        { "visible": true, "sticky": true },
-    "heroBanner":    { "visible": true, "autoplay": true, "autoplayInterval": 4000 },
-    "categoryGrid":  { "visible": true },
-    "couponStrip":   { "visible": true },
-    "productRail":   { "visible": true },
-    "promoGrid":     { "visible": true },
-    "brandCarousel": { "visible": true },
-    "footer":        { "visible": true }
+  "regionRegistry": {
+    "header_full": {
+      "component": "header",
+      "variant": "default",
+      "contentId": "header_main",
+      "config": { "sticky": true },
+      "placement": {
+        "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 1, "rowEnd": 6 },
+        "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 1, "rowEnd": 6 },
+        "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 1, "rowEnd": 6 }
+      }
+    },
+
+    "footer_full": {
+      "component": "footer",
+      "variant": "default",
+      "contentId": "footer_main",
+      "config": {},
+      "placement": {
+        "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 90, "rowEnd": 101 },
+        "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 90, "rowEnd": 101 },
+        "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 90, "rowEnd": 101 }
+      }
+    },
+
+    "promo_pair": {
+      "component": "container",
+      "variant": "row",
+      "contentId": null,
+      "config": {},
+      "placement": {
+        "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 24, "rowEnd": 44 },
+        "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 24, "rowEnd": 44 },
+        "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 24, "rowEnd": 56 }
+      },
+      "children": [
+        {
+          "id": "promo-a",
+          "component": "promoBanner",
+          "variant": "overlay",
+          "contentId": "promoBanner_a",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1,  "colEnd": 51,  "rowStart": 1, "rowEnd": 101 },
+            "tablet":  { "colStart": 1,  "colEnd": 101, "rowStart": 1, "rowEnd": 51 },
+            "mobile":  { "colStart": 1,  "colEnd": 101, "rowStart": 1, "rowEnd": 51 }
+          }
+        },
+        {
+          "id": "promo-b",
+          "component": "promoBanner",
+          "variant": "overlay",
+          "contentId": "promoBanner_b",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 51, "colEnd": 101, "rowStart": 1,  "rowEnd": 101 },
+            "tablet":  { "colStart": 1,  "colEnd": 101, "rowStart": 51, "rowEnd": 101 },
+            "mobile":  { "colStart": 1,  "colEnd": 101, "rowStart": 51, "rowEnd": 101 }
+          }
+        }
+      ]
+    }
   },
 
   "pageRegistry": {
     "home": {
       "themeId": "flipkart",
-      "sections": [
-        "header",
-        "heroBanner",
-        "categoryGrid",
-        "couponStrip",
-        "productRail",
-        "promoGrid",
-        "brandCarousel",
-        "footer"
+      "regions": [
+        { "regionId": "header_full" },
+        {
+          "id": "hero",
+          "component": "heroBanner",
+          "variant": "full",
+          "contentId": "heroBanner_main",
+          "config": { "autoplay": true, "autoplayInterval": 4000 },
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 28 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 26 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 22 }
+          }
+        },
+        {
+          "id": "categories",
+          "component": "categoryGrid",
+          "variant": "default",
+          "contentId": "categoryGrid_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 28, "rowEnd": 42 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 26, "rowEnd": 40 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 22, "rowEnd": 36 }
+          }
+        },
+        {
+          "id": "coupons",
+          "component": "couponStrip",
+          "variant": "default",
+          "contentId": "couponStrip_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 42, "rowEnd": 50 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 40, "rowEnd": 48 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 36, "rowEnd": 44 }
+          }
+        },
+        {
+          "id": "deals-rail",
+          "component": "productRail",
+          "variant": "scroll",
+          "contentId": "productRail_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 50, "rowEnd": 66 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 48, "rowEnd": 64 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 44, "rowEnd": 60 }
+          }
+        },
+        {
+          "id": "top-offers",
+          "component": "promoGrid",
+          "variant": "2col",
+          "contentId": "promoGrid_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 66, "rowEnd": 82 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 64, "rowEnd": 80 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 60, "rowEnd": 78 }
+          }
+        },
+        {
+          "id": "brands",
+          "component": "brandCarousel",
+          "variant": "carousel",
+          "contentId": "brandCarousel_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 82, "rowEnd": 90 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 80, "rowEnd": 90 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 78, "rowEnd": 90 }
+          }
+        },
+        { "regionId": "footer_full" }
+      ]
+    },
+
+    "amazon": {
+      "themeId": "amazon",
+      "regions": [
+        { "regionId": "header_full" },
+        {
+          "id": "hero",
+          "component": "heroBanner",
+          "variant": "slim",
+          "contentId": "heroBanner_amazon",
+          "config": { "autoplay": false },
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 24 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 22 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 20 }
+          }
+        },
+        { "regionId": "promo_pair" },
+        {
+          "id": "top-picks",
+          "component": "productRail",
+          "variant": "scroll",
+          "contentId": "productRail_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 44, "rowEnd": 62 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 44, "rowEnd": 62 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 56, "rowEnd": 74 }
+          }
+        },
+        {
+          "id": "lightning-deals",
+          "component": "productRail",
+          "variant": "scroll",
+          "contentId": "productRail_deals",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 62, "rowEnd": 80 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 62, "rowEnd": 80 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 74, "rowEnd": 90 }
+          }
+        },
+        { "regionId": "footer_full" }
+      ]
+    },
+
+    "meesho": {
+      "themeId": "meesho",
+      "regions": [
+        { "regionId": "header_full" },
+        {
+          "id": "hero",
+          "component": "heroBanner",
+          "variant": "slim",
+          "contentId": "heroBanner_main",
+          "config": { "autoplay": true, "autoplayInterval": 5000 },
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 20 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 20 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 18 }
+          }
+        },
+        {
+          "id": "sidebar",
+          "component": "filterSidebar",
+          "variant": "compact",
+          "contentId": "filterSidebar_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1,  "colEnd": 26,  "rowStart": 20, "rowEnd": 90 },
+            "tablet":  { "colStart": 1,  "colEnd": 31,  "rowStart": 20, "rowEnd": 90 },
+            "mobile":  { "colStart": 1,  "colEnd": 101, "rowStart": 18, "rowEnd": 30 }
+          }
+        },
+        {
+          "id": "products",
+          "component": "productGrid",
+          "variant": "grid",
+          "contentId": "productGrid_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 26, "colEnd": 101, "rowStart": 20, "rowEnd": 90 },
+            "tablet":  { "colStart": 31, "colEnd": 101, "rowStart": 20, "rowEnd": 90 },
+            "mobile":  { "colStart": 1,  "colEnd": 101, "rowStart": 30, "rowEnd": 90 }
+          }
+        },
+        { "regionId": "footer_full" }
+      ]
+    },
+
+    "myntra": {
+      "themeId": "myntra",
+      "regions": [
+        { "regionId": "header_full" },
+        {
+          "id": "hero",
+          "component": "heroBanner",
+          "variant": "split",
+          "contentId": "heroBanner_main",
+          "config": { "autoplay": false },
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 34 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 30 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 6,  "rowEnd": 26 }
+          }
+        },
+        {
+          "id": "categories",
+          "component": "categoryGrid",
+          "variant": "default",
+          "contentId": "categoryGrid_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 34, "rowEnd": 48 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 30, "rowEnd": 44 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 26, "rowEnd": 40 }
+          }
+        },
+        {
+          "id": "ad-slot",
+          "component": "advertisement",
+          "variant": "default",
+          "contentId": "advertisement_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 48, "rowEnd": 56 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 44, "rowEnd": 52 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 40, "rowEnd": 48 }
+          }
+        },
+        {
+          "id": "trending",
+          "component": "productRail",
+          "variant": "peek",
+          "contentId": "productRail_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 56, "rowEnd": 72 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 52, "rowEnd": 68 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 48, "rowEnd": 64 }
+          }
+        },
+        {
+          "id": "brands",
+          "component": "brandCarousel",
+          "variant": "grid",
+          "contentId": "brandCarousel_main",
+          "config": {},
+          "placement": {
+            "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 72, "rowEnd": 82 },
+            "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 68, "rowEnd": 82 },
+            "mobile":  { "colStart": 1, "colEnd": 101, "rowStart": 64, "rowEnd": 82 }
+          }
+        },
+        { "regionId": "footer_full" }
       ]
     }
   }

@@ -1,7 +1,8 @@
 import LandingPageRenderer from './LandingPageRenderer';
 
 function App() {
-  return <LandingPageRenderer />
+  // To test other layouts, change pageId to "amazon", "meesho", or "myntra"
+  return <LandingPageRenderer pageId="home" />;
 }
 
-export default App
+export default App;
