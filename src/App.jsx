@@ -1,8 +1,7 @@
-import LandingPageRenderer from './LandingPageRenderer';
+import SDUIRenderer from './SDUIRenderer';
 
 function App() {
-  // To test other layouts, change pageId to "amazon", "meesho", or "myntra"
-  return <LandingPageRenderer pageId="home" />;
+  return <SDUIRenderer />;
 }
 
 export default App;
