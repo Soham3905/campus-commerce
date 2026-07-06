@@ -1,13 +1,44 @@
 {
-  "schemaVersion": "3.0.0",
-  "appId": "ecom-sdui",
-  "pageId": "home",
-  "route": "/",
+  "schema": {
+    "schemaVersion": "4.0.0",
+    "minimumRendererVersion": "3.8.0",
+    "rendererCompatibility": ["4.x", "5.x"],
+    "migration": "v3_to_v4",
+    "deprecated": ["oldProductCard"]
+  },
+
+  "application": {
+    "id": "ecom-sdui",
+    "name": "CampusCommerce",
+    "brand": "CampusCommerce",
+    "tenant": "india",
+    "environment": "production",
+    "channel": "desktop",
+    "locale": "en-IN"
+  },
+
+  "pageMeta": {
+    "id": "home",
+    "title": "Homepage",
+    "type": "landing",
+    "layout": "homepage-grid",
+    "permission": "public",
+    "cacheable": true
+  },
+
+  "route": {
+    "path": "/",
+    "dynamic": false,
+    "parameters": [],
+    "redirects": [],
+    "canonical": "/"
+  },
+
   "project": {
     "name": "SDUI Ecommerce Component Showcase",
-    "goal": "Demonstrate every SDUI component, layout, and composition pattern in a single page, proving the renderer can power any future ecommerce homepage without code changes.",
+    "goal": "Demonstrate every SDUI component, layout, composition, action, navigation, and gesture pattern in a single page, proving the renderer can power any future ecommerce homepage without code changes.",
     "scope": "landing_page_only",
-    "version": "3.0.0"
+    "version": "4.0.0"
   },
 
   "breakpoints": {
@@ -123,13 +154,25 @@
       "lineHeight", "border", "borderColor", "borderWidth",
       "objectFit", "aspectRatio", "sticky", "clipPath", "cursor"
     ],
+    "allowedActionTypes": [
+      "navigate", "navigate_category", "navigate_product", "navigate_brand",
+      "navigate_search", "navigate_back", "navigate_page", "open_url",
+      "add_to_cart", "remove_from_cart", "add_to_wishlist", "remove_from_wishlist",
+      "open_modal", "close_modal", "open_drawer", "close_drawer",
+      "toggle_filter", "apply_sort", "clear_filters",
+      "copy_text", "scroll_to", "scroll_top",
+      "swipe_next", "swipe_prev", "go_to_slide",
+      "open_search", "submit_search",
+      "download_app", "share", "noop"
+    ],
+    "allowedGestures": ["swipeLeft", "swipeRight", "tap", "doubleTap", "longPress"],
     "maxNestedDepth": 8
   },
 
   "fallbacks": {
     "missingImage":  "https://placehold.co/300x300/F1F3F6/878787?text=Image",
     "missingText":   "",
-    "missingAction": "noop",
+    "missingAction": { "type": "noop" },
     "missingStyle": {
       "background": "#FFFFFF",
       "radius":     0,
@@ -152,6 +195,10 @@
         "shadow": "sm",
         "cursor": "pointer"
       },
+      "defaultAction": {
+        "type": "navigate_product",
+        "payload": {}
+      },
       "states": {
         "hover": { "shadow": "md", "transform": "translateY(-2px)" }
       },
@@ -169,6 +216,10 @@
         "padding": 12,
         "border": "1px solid",
         "borderColor": "border"
+      },
+      "defaultAction": {
+        "type": "navigate_brand",
+        "payload": {}
       },
       "states": {
         "hover": { "shadow": "sm", "borderColor": "primary" }
@@ -211,7 +262,94 @@
     }
   },
 
-  "page": {
+  "overlays": {
+    "login": {
+      "id": "overlay-login",
+      "type": "overlay",
+      "overlayStyle": { "background": "rgba(0,0,0,0.55)" },
+      "containerStyle": {
+        "background": "surface",
+        "radius":     "lg",
+        "padding":    32,
+        "shadow":     "xl",
+        "maxWidth":   420
+      },
+      "behavior": {
+        "closeOnOverlayClick": true,
+        "closeOnEsc":         true,
+        "showCloseButton":    true
+      },
+      "animation": "sdui-slide-up",
+      "children": [
+        {
+          "id": "overlay-login-title",
+          "type": "text",
+          "version": "1.0.0",
+          "allowedChildren": [],
+          "supportedStyles": ["textColor", "fontSize", "fontWeight"],
+          "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" },
+          "content": {
+            "text": "Login / Sign Up",
+            "fontSize": "1.25rem",
+            "fontWeight": 700,
+            "textColor": "textPrimary"
+          },
+          "children": []
+        },
+        {
+          "id": "overlay-login-body",
+          "type": "text",
+          "version": "1.0.0",
+          "allowedChildren": [],
+          "supportedStyles": ["textColor", "fontSize"],
+          "containerStyle": { "background": "transparent", "padding": "12px 0 0", "radius": 0, "shadow": "none" },
+          "content": {
+            "text": "Login functionality connects to your auth service. This overlay is fully schema-driven.",
+            "textColor": "textSecondary",
+            "fontSize": "0.875rem",
+            "lineHeight": 1.6
+          },
+          "children": []
+        },
+        {
+          "id": "overlay-login-cta",
+          "type": "button",
+          "version": "1.0.0",
+          "variant": "primary",
+          "allowedChildren": [],
+          "supportedStyles": ["background", "radius", "padding"],
+          "containerStyle": {
+            "background": "primary",
+            "padding":    "12px 0",
+            "radius":     "xs",
+            "shadow":     "none",
+            "width":      "100%",
+            "marginTop":  24
+          },
+          "content": { "label": "Continue with Google", "textColor": "#FFFFFF" },
+          "action": { "type": "close_modal" },
+          "children": []
+        }
+      ]
+    }
+  },
+
+  "navigation": {
+    "type": "bottomNav",
+    "items": [
+      { "pageId": "home",     "label": "Home",     "icon": "\uD83C\uDFE0" },
+      { "pageId": "wishlist", "label": "Wishlist", "icon": "\u2661" },
+      { "pageId": "cart",     "label": "Cart",     "icon": "\uD83D\uDED2" },
+      { "pageId": "orders",   "label": "Orders",   "icon": "\uD83D\uDCE6" },
+      { "pageId": "profile",  "label": "Profile",  "icon": "\uD83D\uDC64" }
+    ]
+  },
+
+  "pages": [
+    {
+      "gestures": {
+        "swipeLeft": { "type": "navigate_page", "payload": { "pageId": "wishlist" } }
+      },
     "id": "home",
     "type": "page",
     "version": "1.0.0",
@@ -244,6 +382,7 @@
           "shadow":     "header",
           "zIndex":     100
         },
+        "layout": { "maxWidth": 1280 },
         "behavior": {
           "sticky":    true,
           "zIndex":    100
@@ -266,6 +405,7 @@
               "icon": "🛍️",
               "tagline": "Shop Everything"
             },
+            "action": { "type": "navigate", "payload": { "route": "/", "title": "Home" } },
             "children": []
           },
           {
@@ -285,6 +425,8 @@
               "showVoiceIcon": true,
               "showCameraIcon": false
             },
+            "action": { "type": "open_search" },
+            "submitAction": { "type": "submit_search" },
             "children": []
           },
           {
@@ -303,7 +445,12 @@
                 "allowedChildren": ["text", "icon"],
                 "supportedStyles": ["background", "radius", "padding"],
                 "containerStyle": { "background": "transparent", "padding": "6px 12px", "radius": "xs", "shadow": "none" },
-                "content": { "label": "Login", "icon": "👤" },
+                "content": { "label": "Login", "icon": "👤", "mobileHideLabel": true },
+                "action": {
+                  "type": "open_modal",
+                  "payload": { "modalId": "login", "title": "Login / Sign Up" },
+                  "analytics": { "event": "header_login_click", "label": "Login" }
+                },
                 "states": { "hover": { "background": "rgba(255,255,255,0.15)" } },
                 "children": []
               },
@@ -315,7 +462,12 @@
                 "allowedChildren": ["text", "icon"],
                 "supportedStyles": ["background", "radius", "padding"],
                 "containerStyle": { "background": "transparent", "padding": "6px 12px", "radius": "xs", "shadow": "none" },
-                "content": { "label": "Wishlist", "icon": "♡" },
+                "content": { "label": "Wishlist", "icon": "♡", "mobileHideLabel": true },
+                "action": {
+                  "type": "navigate",
+                  "payload": { "route": "/wishlist", "title": "My Wishlist" },
+                  "analytics": { "event": "header_wishlist_click" }
+                },
                 "children": []
               },
               {
@@ -326,7 +478,12 @@
                 "allowedChildren": ["text", "icon", "badge"],
                 "supportedStyles": ["background", "radius", "padding"],
                 "containerStyle": { "background": "transparent", "padding": "6px 12px", "radius": "xs", "shadow": "none" },
-                "content": { "label": "Cart", "icon": "🛒", "badgeCount": 0 },
+                "content": { "label": "Cart", "icon": "🛒", "badgeCount": 0, "mobileHideLabel": true },
+                "action": {
+                  "type": "navigate",
+                  "payload": { "route": "/cart", "title": "My Cart" },
+                  "analytics": { "event": "header_cart_click" }
+                },
                 "children": []
               }
             ]
@@ -354,6 +511,10 @@
           "autoplayInterval":  4000,
           "loop":              true,
           "snap":              true
+        },
+        "gestures": {
+          "swipeLeft":  { "type": "swipe_next" },
+          "swipeRight": { "type": "swipe_prev" }
         },
         "layout": {
           "showDots":   true,
@@ -383,10 +544,14 @@
               "title":     "Up to 80% Off",
               "subtitle":  "On Electronics, Fashion & More",
               "ctaLabel":  "Shop Now",
-              "ctaAction": "noop",
               "imageUrl":  "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=500&fit=crop&q=80",
               "imageAlt":  "Big sale banner",
               "bgGradient":"linear-gradient(135deg, #1A237E 0%, #2874F0 100%)"
+            },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "sale", "title": "Big Billion Days Sale" },
+              "analytics": { "event": "hero_slide_click", "label": "slide-1-big-billion" }
             },
             "children": [
               {
@@ -446,6 +611,11 @@
                     "supportedStyles": ["background", "radius", "padding", "textColor"],
                     "containerStyle": { "background": "secondary", "padding": "12px 32px", "radius": "xs", "shadow": "none" },
                     "content": { "label": "Shop Now", "textColor": "#111111" },
+                    "action": {
+                      "type": "navigate_category",
+                      "payload": { "slug": "sale", "title": "Big Billion Sale" },
+                      "analytics": { "event": "slide_cta_click", "label": "shop-now-slide-1" }
+                    },
                     "states": { "hover": { "background": "#FFD740" } },
                     "children": []
                   }
@@ -487,6 +657,11 @@
               "imageUrl":  "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&h=500&fit=crop&q=80",
               "imageAlt":  "Fashion collection",
               "bgGradient":"linear-gradient(135deg, #FF3F6C 0%, #FF6B9D 100%)"
+            },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "fashion", "title": "Fashion" },
+              "analytics": { "event": "hero_slide_click", "label": "slide-2-fashion" }
             },
             "children": [
               {
@@ -536,6 +711,11 @@
                     "supportedStyles": ["background", "radius", "padding", "border"],
                     "containerStyle": { "background": "transparent", "padding": "10px 28px", "radius": "xs", "shadow": "none", "border": "2px solid #FFFFFF" },
                     "content": { "label": "Explore Now", "textColor": "#FFFFFF" },
+                    "action": {
+                      "type": "navigate_category",
+                      "payload": { "slug": "fashion", "title": "Fashion" },
+                      "analytics": { "event": "slide_cta_click", "label": "explore-now-slide-2" }
+                    },
                     "states": { "hover": { "background": "rgba(255,255,255,0.15)" } },
                     "children": []
                   }
@@ -573,7 +753,12 @@
               "imageUrl":     "https://images.unsplash.com/photo-1593640408182-31c228e68dfc?w=1200&h=500&fit=crop&q=80",
               "imageAlt":     "Tech deals",
               "bgGradient":   "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)",
-              "countdownTo":  "2026-07-01T00:00:00Z"
+              "countdownTo":  "2026-12-31T00:00:00Z"
+            },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "electronics", "title": "Tech Deals" },
+              "analytics": { "event": "hero_slide_click", "label": "slide-3-tech" }
             },
             "children": [
               {
@@ -603,7 +788,7 @@
                 "allowedChildren": [],
                 "supportedStyles": ["background", "radius", "padding"],
                 "containerStyle": { "background": "rgba(255,255,255,0.1)", "radius": "sm", "padding": 8, "shadow": "none" },
-                "content": { "targetDate": "2026-07-01T00:00:00Z", "label": "Ends in" },
+                "content": { "targetDate": "2026-12-31T00:00:00Z", "label": "Ends in" },
                 "children": []
               },
               {
@@ -615,6 +800,11 @@
                 "supportedStyles": ["background", "radius", "padding"],
                 "containerStyle": { "background": "accent", "padding": "12px 32px", "radius": "xs", "shadow": "none" },
                 "content": { "label": "Grab Now", "textColor": "#FFFFFF" },
+                "action": {
+                  "type": "navigate_category",
+                  "payload": { "slug": "electronics", "title": "Tech Deals" },
+                  "analytics": { "event": "slide_cta_click", "label": "grab-now-slide-3" }
+                },
                 "children": []
               },
               {
@@ -653,6 +843,7 @@
           "desktopColumns": 10,
           "tabletColumns":  6,
           "mobileColumns":  5,
+          "scrollableOnMobile": true,
           "gap": 8
         },
         "placement": {
@@ -669,6 +860,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Mobiles", "iconUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=80&h=80&fit=crop", "slug": "mobiles" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "mobiles", "title": "Mobiles" },
+              "analytics": { "event": "category_click", "label": "mobiles" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -680,6 +876,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Fashion", "iconUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=80&h=80&fit=crop", "slug": "fashion" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "fashion", "title": "Fashion" },
+              "analytics": { "event": "category_click", "label": "fashion" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -691,6 +892,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Electronics", "iconUrl": "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=80&h=80&fit=crop", "slug": "electronics" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "electronics", "title": "Electronics" },
+              "analytics": { "event": "category_click", "label": "electronics" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -702,6 +908,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Home & Kitchen", "iconUrl": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=80&h=80&fit=crop", "slug": "home" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "home", "title": "Home & Kitchen" },
+              "analytics": { "event": "category_click", "label": "home" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -713,6 +924,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Beauty", "iconUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=80&h=80&fit=crop", "slug": "beauty" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "beauty", "title": "Beauty" },
+              "analytics": { "event": "category_click", "label": "beauty" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -724,6 +940,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Sports", "iconUrl": "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=80&h=80&fit=crop", "slug": "sports" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "sports", "title": "Sports" },
+              "analytics": { "event": "category_click", "label": "sports" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -735,6 +956,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Toys", "iconUrl": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=80&h=80&fit=crop", "slug": "toys" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "toys", "title": "Toys" },
+              "analytics": { "event": "category_click", "label": "toys" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -746,6 +972,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Grocery", "iconUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=80&h=80&fit=crop", "slug": "grocery" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "grocery", "title": "Grocery" },
+              "analytics": { "event": "category_click", "label": "grocery" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -757,6 +988,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Books", "iconUrl": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=80&h=80&fit=crop", "slug": "books" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "books", "title": "Books" },
+              "analytics": { "event": "category_click", "label": "books" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           },
@@ -768,6 +1004,11 @@
             "supportedStyles": ["background", "radius", "padding"],
             "containerStyle": { "background": "transparent", "padding": 8, "radius": "xs", "shadow": "none" },
             "content": { "label": "Travel", "iconUrl": "https://images.unsplash.com/photo-1483450388369-9ed95738483c?w=80&h=80&fit=crop", "slug": "travel" },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "travel", "title": "Travel" },
+              "analytics": { "event": "category_click", "label": "travel" }
+            },
             "states": { "hover": { "background": "background" } },
             "children": []
           }
@@ -790,6 +1031,10 @@
           "gap":        12
         },
         "behavior": { "scrollable": true, "snap": false },
+        "gestures": {
+          "swipeLeft":  { "type": "swipe_next" },
+          "swipeRight": { "type": "swipe_prev" }
+        },
         "placement": {
           "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 40, "rowEnd": 50 },
           "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 38, "rowEnd": 48 },
@@ -812,6 +1057,11 @@
               "expiry":   "Expires 30 Jun",
               "icon":     "🎟️"
             },
+            "action": {
+              "type": "copy_text",
+              "payload": { "text": "SAVE200", "code": "SAVE200" },
+              "analytics": { "event": "coupon_copy", "label": "SAVE200" }
+            },
             "children": []
           },
           {
@@ -829,6 +1079,11 @@
               "ctaLabel": "Copy Code",
               "expiry":   "Expires 5 Jul",
               "icon":     "👗"
+            },
+            "action": {
+              "type": "copy_text",
+              "payload": { "text": "FASHION15", "code": "FASHION15" },
+              "analytics": { "event": "coupon_copy", "label": "FASHION15" }
             },
             "children": []
           },
@@ -848,6 +1103,11 @@
               "expiry":   "Expires 15 Jul",
               "icon":     "💳"
             },
+            "action": {
+              "type": "copy_text",
+              "payload": { "text": "HDFC10", "code": "HDFC10" },
+              "analytics": { "event": "coupon_copy", "label": "HDFC10" }
+            },
             "children": []
           },
           {
@@ -865,6 +1125,11 @@
               "ctaLabel": "Copy Code",
               "expiry":   "New users only",
               "icon":     "🚚"
+            },
+            "action": {
+              "type": "copy_text",
+              "payload": { "text": "FIRSTFREE", "code": "FIRSTFREE" },
+              "analytics": { "event": "coupon_copy", "label": "FIRSTFREE" }
             },
             "children": []
           }
@@ -888,9 +1153,17 @@
         "content": {
           "title":    "Trending Now",
           "ctaLabel": "View All",
-          "ctaAction": "noop"
+          "ctaAction": {
+            "type": "navigate_category",
+            "payload": { "slug": "trending", "title": "Trending Now" },
+            "analytics": { "event": "rail_view_all", "label": "trending" }
+          }
         },
         "behavior": { "scrollable": true, "snap": true },
+        "gestures": {
+          "swipeLeft":  { "type": "swipe_next" },
+          "swipeRight": { "type": "swipe_prev" }
+        },
         "layout": { "direction": "horizontal", "gap": 12 },
         "placement": {
           "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 50, "rowEnd": 68 },
@@ -906,7 +1179,12 @@
               "price": 1299, "originalPrice": 4499, "discount": 71,
               "rating": 4.2, "ratingCount": 48291,
               "badge": "Best Seller", "badgeColor": "#FB641B",
-              "brand": "boAt"
+              "brand": "boAt",
+              "action": {
+                "type": "navigate_product",
+                "payload": { "productId": "prod-1", "name": "boAt Airdopes 141" },
+                "analytics": { "event": "product_click", "label": "boat-airdopes-141" }
+              }
             },
             {
               "id": "prod-2", "name": "Nike Air Max 270",
@@ -914,7 +1192,12 @@
               "price": 7495, "originalPrice": 12995, "discount": 42,
               "rating": 4.5, "ratingCount": 12840,
               "badge": "Top Rated", "badgeColor": "#16A34A",
-              "brand": "Nike"
+              "brand": "Nike",
+              "action": {
+                "type": "navigate_product",
+                "payload": { "productId": "prod-2", "name": "Nike Air Max 270" },
+                "analytics": { "event": "product_click", "label": "nike-air-max-270" }
+              }
             },
             {
               "id": "prod-3", "name": "Samsung 65\" 4K TV",
@@ -922,7 +1205,12 @@
               "price": 54990, "originalPrice": 89990, "discount": 39,
               "rating": 4.6, "ratingCount": 8241,
               "badge": "Limited", "badgeColor": "#DC2626",
-              "brand": "Samsung"
+              "brand": "Samsung",
+              "action": {
+                "type": "navigate_product",
+                "payload": { "productId": "prod-3", "name": "Samsung 65\" 4K TV" },
+                "analytics": { "event": "product_click", "label": "samsung-65-4k-tv" }
+              }
             },
             {
               "id": "prod-4", "name": "Prestige Iron Box",
@@ -930,7 +1218,12 @@
               "price": 799, "originalPrice": 1299, "discount": 38,
               "rating": 4.1, "ratingCount": 3204,
               "badge": null, "badgeColor": null,
-              "brand": "Prestige"
+              "brand": "Prestige",
+              "action": {
+                "type": "navigate_product",
+                "payload": { "productId": "prod-4", "name": "Prestige Iron Box" },
+                "analytics": { "event": "product_click", "label": "prestige-iron-box" }
+              }
             },
             {
               "id": "prod-5", "name": "Levi's 511 Slim Jeans",
@@ -938,7 +1231,12 @@
               "price": 2099, "originalPrice": 3999, "discount": 48,
               "rating": 4.3, "ratingCount": 9875,
               "badge": "Trending", "badgeColor": "#9333EA",
-              "brand": "Levi's"
+              "brand": "Levi's",
+              "action": {
+                "type": "navigate_product",
+                "payload": { "productId": "prod-5", "name": "Levi's 511 Slim Jeans" },
+                "analytics": { "event": "product_click", "label": "levis-511-slim" }
+              }
             },
             {
               "id": "prod-6", "name": "Lakme Eyeconic Kajal",
@@ -946,7 +1244,12 @@
               "price": 199, "originalPrice": 299, "discount": 33,
               "rating": 4.4, "ratingCount": 62100,
               "badge": "Bestseller", "badgeColor": "#FB641B",
-              "brand": "Lakme"
+              "brand": "Lakme",
+              "action": {
+                "type": "navigate_product",
+                "payload": { "productId": "prod-6", "name": "Lakme Eyeconic Kajal" },
+                "analytics": { "event": "product_click", "label": "lakme-eyeconic-kajal" }
+              }
             }
           ]
         },
@@ -995,6 +1298,11 @@
               "imageUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&h=300&fit=crop",
               "bgColor":  "#1E3A5F"
             },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "laptops", "title": "Laptops" },
+              "analytics": { "event": "promo_card_click", "label": "laptops" }
+            },
             "states": { "hover": { "transform": "scale(1.01)" } },
             "children": []
           },
@@ -1013,6 +1321,11 @@
               "imageUrl": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=300&fit=crop",
               "bgColor":  "#4A1942"
             },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "womens-fashion", "title": "Women's Fashion" },
+              "analytics": { "event": "promo_card_click", "label": "womens-fashion" }
+            },
             "states": { "hover": { "transform": "scale(1.01)" } },
             "children": []
           },
@@ -1030,6 +1343,11 @@
               "ctaLabel": "Shop Grocery",
               "imageUrl": "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=600&h=300&fit=crop",
               "bgColor":  "#1B4332"
+            },
+            "action": {
+              "type": "navigate_category",
+              "payload": { "slug": "grocery", "title": "Grocery" },
+              "analytics": { "event": "promo_card_click", "label": "grocery" }
             },
             "states": { "hover": { "transform": "scale(1.01)" } },
             "children": []
@@ -1086,6 +1404,9 @@
               "sticky":      true
             },
             "content": { "title": "FILTERS", "clearLabel": "Clear All" },
+            "action": {
+              "clearAction": { "type": "clear_filters", "payload": {} }
+            },
             "children": [
               {
                 "id": "filter-group-category",
@@ -1097,10 +1418,10 @@
                 "content": { "label": "Category", "expanded": true, "searchable": true },
                 "behavior": { "collapsible": true, "expanded": true },
                 "children": [
-                  { "id": "fcat-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Women T-Shirts", "inputType": "checkbox", "checked": false, "count": 1243 }, "children": [] },
-                  { "id": "fcat-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Kurti & Dresses", "inputType": "checkbox", "checked": false, "count": 987 }, "children": [] },
-                  { "id": "fcat-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Footwear", "inputType": "checkbox", "checked": false, "count": 654 }, "children": [] },
-                  { "id": "fcat-4", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Accessories", "inputType": "checkbox", "checked": false, "count": 432 }, "children": [] }
+                  { "id": "fcat-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Women T-Shirts", "inputType": "checkbox", "checked": false, "count": 1243 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fcat-1", "group": "category", "value": "women-tshirts" } }, "children": [] },
+                  { "id": "fcat-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Kurti & Dresses", "inputType": "checkbox", "checked": false, "count": 987 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fcat-2", "group": "category", "value": "kurti-dresses" } }, "children": [] },
+                  { "id": "fcat-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Footwear", "inputType": "checkbox", "checked": false, "count": 654 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fcat-3", "group": "category", "value": "footwear" } }, "children": [] },
+                  { "id": "fcat-4", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Accessories", "inputType": "checkbox", "checked": false, "count": 432 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fcat-4", "group": "category", "value": "accessories" } }, "children": [] }
                 ]
               },
               {
@@ -1113,9 +1434,9 @@
                 "content": { "label": "Gender", "expanded": false },
                 "behavior": { "collapsible": true, "expanded": false },
                 "children": [
-                  { "id": "fgnd-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Women", "inputType": "checkbox", "checked": true, "count": 2451 }, "children": [] },
-                  { "id": "fgnd-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Men", "inputType": "checkbox", "checked": false, "count": 1829 }, "children": [] },
-                  { "id": "fgnd-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Kids", "inputType": "checkbox", "checked": false, "count": 983 }, "children": [] }
+                  { "id": "fgnd-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Women", "inputType": "checkbox", "checked": true, "count": 2451 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fgnd-1", "group": "gender", "value": "women" } }, "children": [] },
+                  { "id": "fgnd-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Men", "inputType": "checkbox", "checked": false, "count": 1829 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fgnd-2", "group": "gender", "value": "men" } }, "children": [] },
+                  { "id": "fgnd-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Kids", "inputType": "checkbox", "checked": false, "count": 983 }, "action": { "type": "toggle_filter", "payload": { "filterId": "fgnd-3", "group": "gender", "value": "kids" } }, "children": [] }
                 ]
               },
               {
@@ -1128,10 +1449,10 @@
                 "content": { "label": "Price", "expanded": false },
                 "behavior": { "collapsible": true, "expanded": false },
                 "children": [
-                  { "id": "fpri-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Under ₹299", "inputType": "checkbox", "checked": false }, "children": [] },
-                  { "id": "fpri-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "₹299 – ₹599", "inputType": "checkbox", "checked": false }, "children": [] },
-                  { "id": "fpri-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "₹599 – ₹999", "inputType": "checkbox", "checked": false }, "children": [] },
-                  { "id": "fpri-4", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Above ₹999", "inputType": "checkbox", "checked": false }, "children": [] }
+                  { "id": "fpri-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Under ₹299", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fpri-1", "group": "price", "value": "under-299" } }, "children": [] },
+                  { "id": "fpri-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "₹299 – ₹599", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fpri-2", "group": "price", "value": "299-599" } }, "children": [] },
+                  { "id": "fpri-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "₹599 – ₹999", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fpri-3", "group": "price", "value": "599-999" } }, "children": [] },
+                  { "id": "fpri-4", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "Above ₹999", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fpri-4", "group": "price", "value": "above-999" } }, "children": [] }
                 ]
               },
               {
@@ -1144,8 +1465,8 @@
                 "content": { "label": "Rating", "expanded": false },
                 "behavior": { "collapsible": true, "expanded": false },
                 "children": [
-                  { "id": "frat-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "4★ & above", "inputType": "checkbox", "checked": false }, "children": [] },
-                  { "id": "frat-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "3★ & above", "inputType": "checkbox", "checked": false }, "children": [] }
+                  { "id": "frat-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "4★ & above", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "frat-1", "group": "rating", "value": "4-above" } }, "children": [] },
+                  { "id": "frat-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "3★ & above", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "frat-2", "group": "rating", "value": "3-above" } }, "children": [] }
                 ]
               },
               {
@@ -1158,9 +1479,9 @@
                 "content": { "label": "Discount", "expanded": false },
                 "behavior": { "collapsible": true, "expanded": false },
                 "children": [
-                  { "id": "fdsc-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "10% and above", "inputType": "checkbox", "checked": false }, "children": [] },
-                  { "id": "fdsc-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "30% and above", "inputType": "checkbox", "checked": false }, "children": [] },
-                  { "id": "fdsc-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "50% and above", "inputType": "checkbox", "checked": false }, "children": [] }
+                  { "id": "fdsc-1", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "10% and above", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fdsc-1", "group": "discount", "value": "10-above" } }, "children": [] },
+                  { "id": "fdsc-2", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "30% and above", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fdsc-2", "group": "discount", "value": "30-above" } }, "children": [] },
+                  { "id": "fdsc-3", "type": "filterOption", "version": "1.0.0", "allowedChildren": [], "supportedStyles": ["padding"], "containerStyle": { "background": "transparent", "padding": "6px 0", "radius": 0, "shadow": "none" }, "content": { "label": "50% and above", "inputType": "checkbox", "checked": false }, "action": { "type": "toggle_filter", "payload": { "filterId": "fdsc-3", "group": "discount", "value": "50-above" } }, "children": [] }
                 ]
               }
             ]
@@ -1203,12 +1524,12 @@
                 "content": {
                   "label": "Sort by",
                   "sortOptions": [
-                    { "id": "relevance",    "label": "Relevance",          "selected": true  },
-                    { "id": "new",          "label": "New Arrivals",        "selected": false },
-                    { "id": "price-high",   "label": "Price (High to Low)", "selected": false },
-                    { "id": "price-low",    "label": "Price (Low to High)", "selected": false },
-                    { "id": "rating",       "label": "Ratings",             "selected": false },
-                    { "id": "discount",     "label": "Discount",            "selected": false }
+                    { "id": "relevance",    "label": "Relevance",          "selected": true,  "action": { "type": "apply_sort", "payload": { "sortId": "relevance", "label": "Relevance" } } },
+                    { "id": "new",          "label": "New Arrivals",        "selected": false, "action": { "type": "apply_sort", "payload": { "sortId": "new", "label": "New Arrivals" } } },
+                    { "id": "price-high",   "label": "Price (High to Low)", "selected": false, "action": { "type": "apply_sort", "payload": { "sortId": "price-high", "label": "Price High to Low" } } },
+                    { "id": "price-low",    "label": "Price (Low to High)", "selected": false, "action": { "type": "apply_sort", "payload": { "sortId": "price-low", "label": "Price Low to High" } } },
+                    { "id": "rating",       "label": "Ratings",             "selected": false, "action": { "type": "apply_sort", "payload": { "sortId": "rating", "label": "Ratings" } } },
+                    { "id": "discount",     "label": "Discount",            "selected": false, "action": { "type": "apply_sort", "payload": { "sortId": "discount", "label": "Discount" } } }
                   ]
                 },
                 "children": []
@@ -1232,6 +1553,15 @@
                   "ratingCount":   40,
                   "badge":         null,
                   "specialOffer":  "₹341 with 1 Special Offer"
+                },
+                "action": {
+                  "type": "navigate_product",
+                  "payload": { "productId": "grid-1", "name": "Rayon Slub Women Kurti With Dupatta" },
+                  "analytics": { "event": "product_click", "label": "grid-kurti" }
+                },
+                "secondaryAction": {
+                  "type": "add_to_wishlist",
+                  "payload": { "productId": "grid-1", "name": "Rayon Slub Women Kurti With Dupatta", "price": 376 }
                 },
                 "states": { "hover": { "shadow": "md" } },
                 "children": []
@@ -1257,6 +1587,15 @@
                   "badgeColor":    "#FFB300",
                   "specialOffer":  "₹433 with 1 Special Offer"
                 },
+                "action": {
+                  "type": "navigate_product",
+                  "payload": { "productId": "grid-2", "name": "EVA Platform Sandals" },
+                  "analytics": { "event": "product_click", "label": "grid-sandals" }
+                },
+                "secondaryAction": {
+                  "type": "add_to_wishlist",
+                  "payload": { "productId": "grid-2", "name": "EVA Platform Sandals", "price": 478 }
+                },
                 "states": { "hover": { "shadow": "md" } },
                 "children": []
               },
@@ -1279,6 +1618,15 @@
                   "ratingCount":   78,
                   "badge":         null,
                   "specialOffer":  null
+                },
+                "action": {
+                  "type": "navigate_product",
+                  "payload": { "productId": "grid-3", "name": "Floral Printed Georgette Saree" },
+                  "analytics": { "event": "product_click", "label": "grid-saree" }
+                },
+                "secondaryAction": {
+                  "type": "add_to_wishlist",
+                  "payload": { "productId": "grid-3", "name": "Floral Printed Georgette Saree", "price": 649 }
                 },
                 "states": { "hover": { "shadow": "md" } },
                 "children": []
@@ -1304,6 +1652,15 @@
                   "badgeColor":    "#0EA5E9",
                   "specialOffer":  null
                 },
+                "action": {
+                  "type": "navigate_product",
+                  "payload": { "productId": "grid-4", "name": "Men Slim Fit Casual Shirt" },
+                  "analytics": { "event": "product_click", "label": "grid-shirt" }
+                },
+                "secondaryAction": {
+                  "type": "add_to_wishlist",
+                  "payload": { "productId": "grid-4", "name": "Men Slim Fit Casual Shirt", "price": 349 }
+                },
                 "states": { "hover": { "shadow": "md" } },
                 "children": []
               }
@@ -1327,8 +1684,20 @@
           "radius":     0,
           "shadow":     "sm"
         },
-        "content": { "title": "Top Brands", "ctaLabel": "See All Brands" },
+        "content": {
+          "title": "Top Brands",
+          "ctaLabel": "See All Brands",
+          "ctaAction": {
+            "type": "navigate",
+            "payload": { "route": "/brands", "title": "All Brands" },
+            "analytics": { "event": "brand_rail_view_all" }
+          }
+        },
         "behavior": { "scrollable": true, "snap": false },
+        "gestures": {
+          "swipeLeft":  { "type": "swipe_next" },
+          "swipeRight": { "type": "swipe_prev" }
+        },
         "placement": {
           "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 120, "rowEnd": 135 },
           "tablet":  { "colStart": 1, "colEnd": 101, "rowStart": 125, "rowEnd": 140 },
@@ -1337,14 +1706,14 @@
         "repeat": {
           "templateRef": "brandCardTemplate",
           "items": [
-            { "id": "brand-samsung", "name": "Samsung",  "logoUrl": "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=100&h=100&fit=crop", "offer": "Up to 40% Off" },
-            { "id": "brand-nike",    "name": "Nike",     "logoUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100&h=100&fit=crop", "offer": "Flat 30% Off" },
-            { "id": "brand-apple",   "name": "Apple",    "logoUrl": "https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=100&h=100&fit=crop", "offer": "Exchange Offers" },
-            { "id": "brand-levi",    "name": "Levi's",   "logoUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=100&h=100&fit=crop", "offer": "Min 40% Off" },
-            { "id": "brand-boat",    "name": "boAt",     "logoUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=100&h=100&fit=crop", "offer": "Up to 60% Off" },
-            { "id": "brand-puma",    "name": "Puma",     "logoUrl": "https://images.unsplash.com/photo-1608231387042-66d1773d3028?w=100&h=100&fit=crop", "offer": "Min 50% Off" },
-            { "id": "brand-lakme",   "name": "Lakme",    "logoUrl": "https://images.unsplash.com/photo-1631214524020-3c69d51e2b62?w=100&h=100&fit=crop", "offer": "Up to 35% Off" },
-            { "id": "brand-hp",      "name": "HP",       "logoUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=100&h=100&fit=crop", "offer": "Best Prices" }
+            { "id": "brand-samsung", "name": "Samsung",  "logoUrl": "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=100&h=100&fit=crop", "offer": "Up to 40% Off", "action": { "type": "navigate_brand", "payload": { "brand": "Samsung" }, "analytics": { "event": "brand_click", "label": "samsung" } } },
+            { "id": "brand-nike",    "name": "Nike",     "logoUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100&h=100&fit=crop", "offer": "Flat 30% Off",  "action": { "type": "navigate_brand", "payload": { "brand": "Nike" }, "analytics": { "event": "brand_click", "label": "nike" } } },
+            { "id": "brand-apple",   "name": "Apple",    "logoUrl": "https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=100&h=100&fit=crop", "offer": "Exchange Offers", "action": { "type": "navigate_brand", "payload": { "brand": "Apple" }, "analytics": { "event": "brand_click", "label": "apple" } } },
+            { "id": "brand-levi",    "name": "Levi's",   "logoUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=100&h=100&fit=crop", "offer": "Min 40% Off",  "action": { "type": "navigate_brand", "payload": { "brand": "Levi's" }, "analytics": { "event": "brand_click", "label": "levis" } } },
+            { "id": "brand-boat",    "name": "boAt",     "logoUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=100&h=100&fit=crop", "offer": "Up to 60% Off", "action": { "type": "navigate_brand", "payload": { "brand": "boAt" }, "analytics": { "event": "brand_click", "label": "boat" } } },
+            { "id": "brand-puma",    "name": "Puma",     "logoUrl": "https://images.unsplash.com/photo-1608231387042-66d1773d3028?w=100&h=100&fit=crop", "offer": "Min 50% Off",  "action": { "type": "navigate_brand", "payload": { "brand": "Puma" }, "analytics": { "event": "brand_click", "label": "puma" } } },
+            { "id": "brand-lakme",   "name": "Lakme",    "logoUrl": "https://images.unsplash.com/photo-1631214524020-3c69d51e2b62?w=100&h=100&fit=crop", "offer": "Up to 35% Off", "action": { "type": "navigate_brand", "payload": { "brand": "Lakme" }, "analytics": { "event": "brand_click", "label": "lakme" } } },
+            { "id": "brand-hp",      "name": "HP",       "logoUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=100&h=100&fit=crop", "offer": "Best Prices",  "action": { "type": "navigate_brand", "payload": { "brand": "HP" }, "analytics": { "event": "brand_click", "label": "hp" } } }
           ]
         },
         "children": []
@@ -1377,6 +1746,11 @@
           "ctaLabel":   "Download Now",
           "imageUrl":   "https://images.unsplash.com/photo-1512941937938-a5a3aef5fc25?w=1200&h=300&fit=crop",
           "bgColor":    "#7C3AED"
+        },
+        "action": {
+          "type": "download_app",
+          "payload": { "platform": "Play Store", "url": "https://play.google.com" },
+          "analytics": { "event": "promo_banner_click", "label": "app-download" }
         },
         "placement": {
           "desktop": { "colStart": 1, "colEnd": 101, "rowStart": 135, "rowEnd": 150 },
@@ -1436,6 +1810,11 @@
                 "supportedStyles": ["background", "radius", "padding"],
                 "containerStyle": { "background": "secondary", "padding": "12px 32px", "radius": "xs", "shadow": "none" },
                 "content": { "label": "Download Now", "textColor": "#111111" },
+                "action": {
+                  "type": "download_app",
+                  "payload": { "platform": "Play Store", "url": "https://play.google.com" },
+                  "analytics": { "event": "app_download_cta_click" }
+                },
                 "children": []
               }
             ]
@@ -1466,7 +1845,8 @@
               "brand":     "Nike",
               "headline":  "Just Do It — New Collection",
               "badge":     "AD",
-              "discount":  "Up to 75% Off"
+              "discount":  "Up to 75% Off",
+              "action": { "type": "navigate_brand", "payload": { "brand": "Nike" }, "analytics": { "event": "ad_click", "label": "nike-ad" } }
             },
             {
               "id":        "ad-2",
@@ -1474,7 +1854,8 @@
               "brand":     "Dove",
               "headline":  "Nourish Your Skin",
               "badge":     "AD",
-              "discount":  "Buy 2 Get 1 Free"
+              "discount":  "Buy 2 Get 1 Free",
+              "action": { "type": "navigate_brand", "payload": { "brand": "Dove" }, "analytics": { "event": "ad_click", "label": "dove-ad" } }
             },
             {
               "id":        "ad-3",
@@ -1482,7 +1863,8 @@
               "brand":     "HP",
               "headline":  "Laptops from ₹34,990",
               "badge":     "AD",
-              "discount":  "EMI from ₹1,499/mo"
+              "discount":  "EMI from ₹1,499/mo",
+              "action": { "type": "navigate_brand", "payload": { "brand": "HP" }, "analytics": { "event": "ad_click", "label": "hp-ad" } }
             }
           ]
         },
@@ -1511,9 +1893,9 @@
         "content": {
           "copyright":     "© 2025 ShopEngine. All rights reserved.",
           "bottomLinks": [
-            { "label": "Privacy Policy", "action": "noop" },
-            { "label": "Terms of Use",   "action": "noop" },
-            { "label": "Grievance",      "action": "noop" }
+            { "label": "Privacy Policy", "action": { "type": "navigate", "payload": { "route": "/privacy", "title": "Privacy Policy" } } },
+            { "label": "Terms of Use",   "action": { "type": "navigate", "payload": { "route": "/terms", "title": "Terms of Use" } } },
+            { "label": "Grievance",      "action": { "type": "navigate", "payload": { "route": "/grievance", "title": "Grievance" } } }
           ]
         },
         "placement": {
@@ -1532,10 +1914,10 @@
             "content": {
               "title": "About",
               "links": [
-                { "label": "About Us",    "action": "noop" },
-                { "label": "Careers",     "action": "noop" },
-                { "label": "Press",       "action": "noop" },
-                { "label": "Corporate",   "action": "noop" }
+                { "label": "About Us",  "action": { "type": "navigate", "payload": { "route": "/about", "title": "About Us" } } },
+                { "label": "Careers",   "action": { "type": "navigate", "payload": { "route": "/careers", "title": "Careers" } } },
+                { "label": "Press",     "action": { "type": "navigate", "payload": { "route": "/press", "title": "Press" } } },
+                { "label": "Corporate", "action": { "type": "navigate", "payload": { "route": "/corporate", "title": "Corporate" } } }
               ]
             },
             "children": []
@@ -1550,10 +1932,10 @@
             "content": {
               "title": "Help",
               "links": [
-                { "label": "Payments",        "action": "noop" },
-                { "label": "Shipping",        "action": "noop" },
-                { "label": "Returns Policy",  "action": "noop" },
-                { "label": "FAQ",             "action": "noop" }
+                { "label": "Payments",       "action": { "type": "navigate", "payload": { "route": "/help/payments", "title": "Payments" } } },
+                { "label": "Shipping",       "action": { "type": "navigate", "payload": { "route": "/help/shipping", "title": "Shipping" } } },
+                { "label": "Returns Policy", "action": { "type": "navigate", "payload": { "route": "/help/returns", "title": "Returns Policy" } } },
+                { "label": "FAQ",            "action": { "type": "navigate", "payload": { "route": "/help/faq", "title": "FAQ" } } }
               ]
             },
             "children": []
@@ -1568,10 +1950,10 @@
             "content": {
               "title": "Policy",
               "links": [
-                { "label": "Return Policy",    "action": "noop" },
-                { "label": "Terms of Use",     "action": "noop" },
-                { "label": "Security",         "action": "noop" },
-                { "label": "Sitemap",          "action": "noop" }
+                { "label": "Return Policy", "action": { "type": "navigate", "payload": { "route": "/policy/returns", "title": "Return Policy" } } },
+                { "label": "Terms of Use",  "action": { "type": "navigate", "payload": { "route": "/terms", "title": "Terms of Use" } } },
+                { "label": "Security",      "action": { "type": "navigate", "payload": { "route": "/security", "title": "Security" } } },
+                { "label": "Sitemap",       "action": { "type": "navigate", "payload": { "route": "/sitemap", "title": "Sitemap" } } }
               ]
             },
             "children": []
@@ -1586,10 +1968,10 @@
             "content": {
               "title": "Follow Us",
               "links": [
-                { "label": "Facebook",  "icon": "📘", "action": "noop" },
-                { "label": "Twitter",   "icon": "🐦", "action": "noop" },
-                { "label": "YouTube",   "icon": "▶️", "action": "noop" },
-                { "label": "Instagram", "icon": "📷", "action": "noop" }
+                { "label": "Facebook",  "icon": "📘", "action": { "type": "open_url", "payload": { "url": "https://facebook.com", "target": "_blank" } } },
+                { "label": "Twitter",   "icon": "🐦", "action": { "type": "open_url", "payload": { "url": "https://twitter.com", "target": "_blank" } } },
+                { "label": "YouTube",   "icon": "▶️", "action": { "type": "open_url", "payload": { "url": "https://youtube.com", "target": "_blank" } } },
+                { "label": "Instagram", "icon": "📷", "action": { "type": "open_url", "payload": { "url": "https://instagram.com", "target": "_blank" } } }
               ]
             },
             "children": []
@@ -1598,5 +1980,110 @@
       }
 
     ]
-  }
+    },
+
+    {
+      "id": "wishlist",
+      "type": "page",
+      "version": "1.0.0",
+      "enabled": true,
+      "gestures": {
+        "swipeLeft":  { "type": "navigate_page", "payload": { "pageId": "cart" } },
+        "swipeRight": { "type": "navigate_page", "payload": { "pageId": "home" } }
+      },
+      "containerStyle": { "background": "#FDE8F3", "padding": 0, "radius": 0, "shadow": "none" },
+      "children": [
+        {
+          "id": "wishlist-body",
+          "type": "container",
+          "version": "1.0.0",
+          "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "minHeight": "100vh", "gap": 16 },
+          "children": [
+            { "id": "wishlist-icon",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\u2661", "fontSize": "4rem", "textAlign": "center" }, "children": [] },
+            { "id": "wishlist-title",    "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "Wishlist", "fontSize": "2rem", "fontWeight": 900, "textColor": "#212121", "textAlign": "center" }, "children": [] },
+            { "id": "wishlist-subtitle", "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": "0 24px", "radius": 0, "shadow": "none" }, "content": { "text": "This is the Wishlist page. Your saved items will appear here.", "fontSize": "1rem", "textColor": "#878787", "textAlign": "center", "lineHeight": 1.6 }, "children": [] },
+            { "id": "wishlist-hint",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\u2190 Swipe to navigate \u2192", "fontSize": "0.8rem", "textColor": "#BDBDBD", "textAlign": "center" }, "children": [] }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "cart",
+      "type": "page",
+      "version": "1.0.0",
+      "enabled": true,
+      "gestures": {
+        "swipeLeft":  { "type": "navigate_page", "payload": { "pageId": "orders" } },
+        "swipeRight": { "type": "navigate_page", "payload": { "pageId": "wishlist" } }
+      },
+      "containerStyle": { "background": "#EEF2FF", "padding": 0, "radius": 0, "shadow": "none" },
+      "children": [
+        {
+          "id": "cart-body",
+          "type": "container",
+          "version": "1.0.0",
+          "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "minHeight": "100vh", "gap": 16 },
+          "children": [
+            { "id": "cart-icon",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\uD83D\uDED2", "fontSize": "4rem", "textAlign": "center" }, "children": [] },
+            { "id": "cart-title",    "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "Cart", "fontSize": "2rem", "fontWeight": 900, "textColor": "#212121", "textAlign": "center" }, "children": [] },
+            { "id": "cart-subtitle", "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": "0 24px", "radius": 0, "shadow": "none" }, "content": { "text": "This is the Cart page. Items added to cart will appear here.", "fontSize": "1rem", "textColor": "#878787", "textAlign": "center", "lineHeight": 1.6 }, "children": [] },
+            { "id": "cart-hint",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\u2190 Swipe to navigate \u2192", "fontSize": "0.8rem", "textColor": "#BDBDBD", "textAlign": "center" }, "children": [] }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "orders",
+      "type": "page",
+      "version": "1.0.0",
+      "enabled": true,
+      "gestures": {
+        "swipeLeft":  { "type": "navigate_page", "payload": { "pageId": "profile" } },
+        "swipeRight": { "type": "navigate_page", "payload": { "pageId": "cart" } }
+      },
+      "containerStyle": { "background": "#F0FDF4", "padding": 0, "radius": 0, "shadow": "none" },
+      "children": [
+        {
+          "id": "orders-body",
+          "type": "container",
+          "version": "1.0.0",
+          "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "minHeight": "100vh", "gap": 16 },
+          "children": [
+            { "id": "orders-icon",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\uD83D\uDCE6", "fontSize": "4rem", "textAlign": "center" }, "children": [] },
+            { "id": "orders-title",    "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "Orders", "fontSize": "2rem", "fontWeight": 900, "textColor": "#212121", "textAlign": "center" }, "children": [] },
+            { "id": "orders-subtitle", "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": "0 24px", "radius": 0, "shadow": "none" }, "content": { "text": "This is the Orders page. Your order history will appear here.", "fontSize": "1rem", "textColor": "#878787", "textAlign": "center", "lineHeight": 1.6 }, "children": [] },
+            { "id": "orders-hint",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\u2190 Swipe to navigate \u2192", "fontSize": "0.8rem", "textColor": "#BDBDBD", "textAlign": "center" }, "children": [] }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "profile",
+      "type": "page",
+      "version": "1.0.0",
+      "enabled": true,
+      "gestures": {
+        "swipeRight": { "type": "navigate_page", "payload": { "pageId": "orders" } }
+      },
+      "containerStyle": { "background": "#FFF7ED", "padding": 0, "radius": 0, "shadow": "none" },
+      "children": [
+        {
+          "id": "profile-body",
+          "type": "container",
+          "version": "1.0.0",
+          "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none", "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center", "minHeight": "100vh", "gap": 16 },
+          "children": [
+            { "id": "profile-icon",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\uD83D\uDC64", "fontSize": "4rem", "textAlign": "center" }, "children": [] },
+            { "id": "profile-title",    "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "Profile", "fontSize": "2rem", "fontWeight": 900, "textColor": "#212121", "textAlign": "center" }, "children": [] },
+            { "id": "profile-subtitle", "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": "0 24px", "radius": 0, "shadow": "none" }, "content": { "text": "This is the Profile page. Your account details will appear here.", "fontSize": "1rem", "textColor": "#878787", "textAlign": "center", "lineHeight": 1.6 }, "children": [] },
+            { "id": "profile-hint",     "type": "text", "version": "1.0.0", "containerStyle": { "background": "transparent", "padding": 0, "radius": 0, "shadow": "none" }, "content": { "text": "\u2190 Swipe to navigate", "fontSize": "0.8rem", "textColor": "#BDBDBD", "textAlign": "center" }, "children": [] }
+          ]
+        }
+      ]
+    }
+
+  ]
 }
