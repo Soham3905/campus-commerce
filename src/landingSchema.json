@@ -70,19 +70,19 @@
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 26,
-          "rowEnd": 50
+          "rowEnd": 100
         },
         "tablet": {
           "colStart": 1,
           "colEnd": 50,
           "rowStart": 31,
-          "rowEnd": 60
+          "rowEnd": 100
         },
         "desktop": {
           "colStart": 1,
           "colEnd": 25,
-          "rowStart": 40,
-          "rowEnd": 70
+          "rowStart": 36,
+          "rowEnd": 100
         }
       },
       "children": [

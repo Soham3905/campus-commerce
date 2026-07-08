@@ -211,7 +211,8 @@
 .dt-preview-frame {
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08),
     0 20px 60px rgba(0, 0, 0, 0.6);
@@ -222,7 +223,7 @@
 
 .dt-preview-frame.full {
   width: 100%;
-  height: calc(100vh - 56px);
+  min-height: calc(100vh - 56px);
   border-radius: 0;
   box-shadow: none;
 }

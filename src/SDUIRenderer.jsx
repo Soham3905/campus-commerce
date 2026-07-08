@@ -15,7 +15,7 @@ export default function SDUIRenderer({ schema }) {
 const Page = ({ children }) => (
   <div style={{
       width: "100%",
-      height: "100vh",
+      minHeight: "100vh",
       display: "grid",
       gridTemplateColumns: "repeat(100, 1fr)",
       gridTemplateRows: "repeat(100, 1fr)",
