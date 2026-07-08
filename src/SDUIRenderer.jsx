@@ -3,16 +3,79 @@ import jsonData from "./landingSchema.json";
 
 export default function SDUIRenderer() {
   return (
-    <div style={{ padding: "20px", backgroundColor: "#f3f3f3", minHeight: "100vh" }}>
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(100, 1fr)",
-        gap: "10px"
-      }}>
-        <Renderer schema={jsonData} />
-      </div>
+    <div style={{ backgroundColor: "#f3f3f3" }}>
+      <Renderer schema={jsonData} />
     </div>
   );
+}
+
+const Page = ({ children }) => (
+  <div style={{
+    width: "100%",
+    height: "100vh",
+    display: "grid",
+    gridTemplateColumns: "repeat(100, 1fr)",
+    gridTemplateRows: "repeat(100, 1fr)",
+    gap: "4px",
+    padding: "20px",
+    boxSizing: "border-box",
+  }}>
+    {children}
+  </div>
+);
+
+const Carousel = ({ data, children }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-play logic based on JSON data
+  useEffect(() => {
+    if (!data.autoPlay || !children) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        if (prevIndex === children.length - 1) {
+          return data.infiniteLoop ? 0 : prevIndex;
+        }
+        return prevIndex + 1;
+      });
+    }, data.autoPLayInterval || 3000);
+    return () => clearInterval(interval);
+  }, [data.autoPlay, data.autoPLayInterval, data.infiniteLoop, children]);
+
+  if (!children) return null;
+
+  return (
+    <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "12px" }}>
+      {/* 2A. The Sliding Track */}
+      <div style={{
+        display: "flex",
+        transition: "transform 0.5s ease-in-out",
+        transform: `translateX(-${currentIndex * 100}%)` // Moves the slider left and right
+      }}>
+        {/* We map over the children so each one takes up 100% of the width */}
+        {React.Children.map(children, (child) => (
+          <div style={{ minWidth: "100%", flexShrink: 0 }}>
+            {child}
+          </div>
+        ))}
+      </div>
+      {/* 2B. The Navigation Dots (Bottom) */}
+      {data.showDots && (
+        <div style={{ position: "absolute", bottom: "10px", width: "100%", display: "flex", justifyContent: "center", gap: "8px" }}>
+          {children.map((_, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: "8px", height: "8px", borderRadius: "50%",
+                backgroundColor: currentIndex === idx ? "#ffffff" : "rgba(255,255,255,0.5)",
+                cursor: "pointer"
+              }}
+              onClick={() => setCurrentIndex(idx)} // Allow clicking dots to navigate manually
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 const ProductCard = ({ children, style }) => (
@@ -25,8 +88,22 @@ const ProductImage = ({ data, style }) => (
   <img src={data.imageUrl} alt={data.altText} style={{ width: "100%", height: "200px", objectFit: "contain", ...style }} />
 );
 
-const Label = ({ data, style }) => (
-  <p style={{ color: "#888", fontSize: "12px", margin: "4px 0", ...style }}>{data.text} ⓘ</p>
+const Label = ({ children, style }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: "4px", margin: "4px 0", ...style }}>
+    {children}
+  </div>
+);
+
+const Sponsored = ({ data, style }) => (
+  <span style={{ color: "#888", fontSize: "12px", ...style }}>{data.text}</span>
+);
+
+const Icon = ({ data, style }) => (
+  <img
+    src={data.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Information_icon.svg/24px-Information_icon.svg.png"}
+    alt={data.altText}
+    style={{ width: "14px", height: "14px", objectFit: "contain", opacity: 0.6, cursor: "pointer", ...style }}
+  />
 );
 
 const Title = ({ data, style }) => (
@@ -48,11 +125,21 @@ const Description = ({ data, style }) => (
   </p>
 );
 
-const Rating = ({ data, style }) => (
-  <p style={{ fontSize: "14px", margin: "4px 0", color: "#e77600", ...style }}>
-    ⭐ {data.score}
-    <span style={{ color: "#007185" }}> ({data.reviewCount})</span>
-  </p>
+const Rating = ({ children, style }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "4px 0", ...style }}>
+    {children}
+  </div>
+);
+
+const Score = ({ data, style }) => (
+  <span style={{ fontSize: "14px", color: "#e77600", fontWeight: "bold", ...style }}>
+    ⭐ {data.text}
+    {data["out of"] && <span style={{ color: "#888", fontWeight: "normal", fontSize: "12px" }}> / {data["out of"]}</span>}
+  </span>
+);
+
+const ReviewCount = ({ data, style }) => (
+  <span style={{ fontSize: "14px", color: "#007185", ...style }}>({data.text})</span>
 );
 
 const Badge = ({ data, style }) => (
@@ -108,12 +195,18 @@ const Button = ({ data, style }) => (
 );
 
 const ComponentMap = {
+  "Page": Page,
+  "Carousel": Carousel,
   "ProductCard": ProductCard,
   "Image": ProductImage,
   "Label": Label,
+  "Sponsored": Sponsored,
+  "Icon": Icon,
   "Title": Title,
   "Description": Description,
   "Rating": Rating,
+  "Score": Score,
+  "ReviewCount": ReviewCount,
   "Badge": Badge,
   "PriceBlock": PriceBlock,
   "OfferText": OfferText,

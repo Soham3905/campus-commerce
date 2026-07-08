@@ -1,99 +1,183 @@
 {
-  "type": "ProductCard",
-  "containerStyle": {
-    "backgroundColor": "#f0f8ff",
-    "border": "2px solid #007185",
-    "borderRadius": "12px"
-  },
-  "placement": {
-    "mobile": {
-      "colStart": 1,
-      "colEnd": 100,
-      "rowStart": 1,
-      "rowEnd": 20
-    },
-    "tablet": {
-      "colStart": 1,
-      "colEnd": 50,
-      "rowStart": 1,
-      "rowEnd": 25
-    },
-    "desktop": {
-      "colStart": 1,
-      "colEnd": 25,
-      "rowStart": 1,
-      "rowEnd": 30
-    }
-  },
+  "type": "Page",
   "children": [
     {
-      "type": "Image",
-      "data": {
-        "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
-        "altText": "Image of SereneLife"
-      }
-    },
-    {
-      "type": "Label",
-      "data": {
-        "text": "Sponsored",
-        "icon": {
-          "type": "InfoIcon"
+      "type": "Carousel",
+      "placement": {
+        "mobile": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 1,
+          "rowEnd": 25
+        },
+        "tablet": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 1,
+          "rowEnd": 30
+        },
+        "desktop": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 1,
+          "rowEnd": 35
         }
-      }
+      },
+      "data": {
+        "showDots": true,
+        "autoPlay": true,
+        "autoPLayInterval": 3000,
+        "infiniteLoop": true
+      },
+      "children": [
+        {
+          "type": "Image",
+          "containerStyle": {
+            "borderRadius": "12px",
+            "width": "100%",
+            "height": "300px",
+            "objectFit": "cover"
+          },
+          "data": {
+            "imageUrl": "https://m.media-amazon.com/images/I/71cFljdB3kL._SX3000_.jpg",
+            "altText": "Ad 1"
+          }
+        },
+        {
+          "type": "Image",
+          "style": {
+            "borderRadius": "12px",
+            "width": "100%",
+            "height": "300px",
+            "objectFit": "cover"
+          },
+          "data": {
+            "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg",
+            "altText": "Ad 2"
+          }
+        }
+      ]
     },
     {
-      "type": "Title",
-      "data": {
-        "text": "SereneLife"
-      }
-    },
-    {
-      "type": "Description",
-      "data": {
-        "text": "SereneLife Small Compact Folding Shopping Cart with Removable Waterproof Liner – 360° Swivel Wheels, Rust‑Proof Steel Frame, 70 lb Capacity – Portable Grocery, Laundry & Travel Cart (Blue)"
-      }
-    },
-    {
-      "type": "Rating",
-      "data": {
-        "score": "4.4",
-        "reviewCount": "376"
-      }
-    },
-    {
-      "type": "Badge",
-      "containerStyle": { "backgroundColor": "#2d6a4f" },
-      "data": {
-        "text": "Limited Time Offer"
-      }
-    },
-    {
-      "type": "PriceBlock",
-      "data": {
-        "sellingPrice": "₹7,089",
-        "mrp": "₹12,250",
-        "discount": "42%"
-      }
-    },
-    {
-      "type": "OfferText",
-      "data": {
-        "text": "Up to 5% back with Amazon Pay ICICI card"
-      }
-    },
-    {
-      "type": "DeliveryInfo",
-      "data": {
-        "prefix": "FREE delivery",
-        "daysOffset": 7
-      }
-    },
-    {
-      "type": "Button",
-      "data": {
-        "label": "Add to Cart"
-      }
+      "type": "ProductCard",
+      "containerStyle": {
+        "backgroundColor": "#f0f8ff",
+        "border": "2px solid #007185",
+        "borderRadius": "12px"
+      },
+      "placement": {
+        "mobile": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 26,
+          "rowEnd": 50
+        },
+        "tablet": {
+          "colStart": 1,
+          "colEnd": 50,
+          "rowStart": 31,
+          "rowEnd": 60
+        },
+        "desktop": {
+          "colStart": 1,
+          "colEnd": 25,
+          "rowStart": 36,
+          "rowEnd": 70
+        }
+      },
+      "children": [
+        {
+          "type": "Image",
+          "data": {
+            "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
+            "altText": "Image of SereneLife"
+          }
+        },
+        {
+          "type": "Label",
+          "children": [
+            {
+              "type": "Sponsored",
+              "data": {
+                "text": "Sponsored"
+              }
+            },
+            {
+              "type": "Icon",
+              "data": {
+                "imageUrl": "",
+                "altText": "Info Icon"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Title",
+          "data": {
+            "text": "SereneLife"
+          }
+        },
+        {
+          "type": "Description",
+          "data": {
+            "text": "SereneLife Small Compact Folding Shopping Cart with Removable Waterproof Liner – 360° Swivel Wheels, Rust‑Proof Steel Frame, 70 lb Capacity – Portable Grocery, Laundry & Travel Cart (Blue)"
+          }
+        },
+        {
+          "type": "Rating",
+          "children": [
+            {
+              "type": "Score",
+              "data": {
+                "text": "4.4",
+                "out of": "5"
+              }
+            },
+            {
+              "type": "ReviewCount",
+              "data": {
+                "text": "376"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Badge",
+          "containerStyle": {
+            "backgroundColor": "#2d6a4f"
+          },
+          "data": {
+            "text": "Limited Time Offer"
+          }
+        },
+        {
+          "type": "PriceBlock",
+          "data": {
+            "sellingPrice": "₹7,089",
+            "mrp": "₹12,250",
+            "discount": "42%"
+          }
+        },
+        {
+          "type": "OfferText",
+          "data": {
+            "text": "Up to 5% back with Amazon Pay ICICI card"
+          }
+        },
+        {
+          "type": "DeliveryInfo",
+          "data": {
+            "prefix": "FREE delivery",
+            "daysOffset": 7
+          }
+        },
+        {
+          "type": "Button",
+          "data": {
+            "label": "Add to Cart"
+          }
+        }
+      ]
     }
   ]
 }
