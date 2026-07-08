@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import jsonData from "./landingSchema.json";
 
-export default function SDUIRenderer() {
+export default function SDUIRenderer({ schema }) {
+  // only jsonData
+  const resolvedSchema = schema ?? jsonData;
   return (
     <div style={{ backgroundColor: "#f3f3f3" }}>
-      <Renderer schema={jsonData} />
+      {/* only jsonData */}
+      <Renderer schema={resolvedSchema} />
     </div>
   );
 }
 
 const Page = ({ children }) => (
   <div style={{
-    width: "100%",
-    height: "100vh",
-    display: "grid",
-    gridTemplateColumns: "repeat(100, 1fr)",
-    gridTemplateRows: "repeat(100, 1fr)",
-    gap: "4px",
-    padding: "20px",
-    boxSizing: "border-box",
+      width: "100%",
+      height: "100vh",
+      display: "grid",
+      gridTemplateColumns: "repeat(100, 1fr)",
+      gridTemplateRows: "repeat(100, 1fr)",
+      gap: "4px",
+      padding: "20px",
+      boxSizing: "border-box",
   }}>
     {children}
   </div>
@@ -47,7 +50,7 @@ const Carousel = ({ data, children }) => {
     <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "12px" }}>
       {/* 2A. The Sliding Track */}
       <div style={{
-        display: "flex",
+          display: "flex",
         transition: "transform 0.5s ease-in-out",
         transform: `translateX(-${currentIndex * 100}%)` // Moves the slider left and right
       }}>
@@ -114,12 +117,12 @@ const Description = ({ data, style }) => (
   <p style={{
     fontSize: "14px",
     margin: "4px 0",
-    display: "-webkit-box",
-    WebkitLineClamp: data.maxLines ?? 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    ...style,
+      display: "-webkit-box",
+      WebkitLineClamp: data.maxLines ?? 2,
+      WebkitBoxOrient: "vertical",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      ...style,
   }}>
     {data.text}
   </p>
@@ -180,15 +183,15 @@ const DeliveryInfo = ({ data, style }) => {
 const Button = ({ data, style }) => (
   <button style={{
     marginTop: "10px",
-    width: "100%",
+      width: "100%",
     padding: "10px",
     backgroundColor: "#ffa41c",
     border: "1px solid #ff8f00",
     borderRadius: "20px",
-    fontSize: "14px",
+      fontSize: "14px",
     fontWeight: "bold",
-    cursor: "pointer",
-    ...style,
+      cursor: "pointer",
+      ...style,
   }}>
     {data.label}
   </button>
@@ -247,8 +250,8 @@ const Renderer = ({ schema }) => {
     <div style={placementStyle}>
       <TargetComponent data={schema.data} style={schema.containerStyle}>
         {schema.children && schema.children.map((child, idx) => (
-          <Renderer key={idx} schema={child} />
-        ))}
+            <Renderer key={idx} schema={child} />
+          ))}
       </TargetComponent>
     </div>
   );
