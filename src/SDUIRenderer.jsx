@@ -1,27 +1,111 @@
 import React, { useEffect, useState } from "react";
 import jsonData from "./landingSchema.json";
 
-export default function SDUIRenderer({ schema }) {
-  // only jsonData
-  const resolvedSchema = schema ?? jsonData;
+export default function SDUIRenderer() {
+  const [jsonText, setJsonText] = useState(JSON.stringify(jsonData, null, 2));
+  const [schema, setSchema] = useState(jsonData);
+  const [deviceView, setDeviceView] = useState("desktop");
+  const [error, setError] = useState("");
+
+  const handleApplyJson = () => {
+    try {
+      const parsed = JSON.parse(jsonText);
+      setSchema(parsed);
+      setError("");
+    } catch (err) {
+      setError("Sorry, We cannot handle it..");
+    }
+  }
+
+  const getPreviewWidth = () => {
+    if (deviceView === "mobile") return "375px";
+    if (deviceView === "tablet") return "768px";
+    return "100%";
+  }
+
   return (
-    <div style={{ backgroundColor: "#f3f3f3" }}>
-      {/* only jsonData */}
-      <Renderer schema={resolvedSchema} />
+    <div style={{ display: "flex", height: "100vh", backgroundColor: "#1e1e1e", color: "#fff", fontFamily: "sans-serif" }}>
+
+      {/* LEFT PANEL: JSON EDITOR */}
+      <div style={{ width: "25%", display: "flex", flexDirection: "column", borderRight: "1px solid #444" }}>
+        <div style={{ padding: "16px", backgroundColor: "#252526", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ margin: 0, fontSize: "16px" }}>📝 SDUI JSON Editor</h3>
+          <button
+            onClick={handleApplyJson}
+            style={{ padding: "8px 16px", backgroundColor: "#007acc", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
+          >
+            Apply / Refresh UI
+          </button>
+        </div>
+
+        {error && <div style={{ backgroundColor: "#cc0c39", color: "white", padding: "10px", fontSize: "14px" }}>{error}</div>}
+
+        <textarea
+          value={jsonText}
+          onChange={(e) => setJsonText(e.target.value)}
+          style={{ flex: 1, padding: "16px", backgroundColor: "#1e1e1e", color: "#9cdcfe", fontSize: "14px", fontFamily: "monospace", border: "none", outline: "none", resize: "none" }}
+        />
+      </div>
+
+      {/* RIGHT PANEL: DEVICE PREVIEWER */}
+      <div style={{ width: "75%", display: "flex", flexDirection: "column", backgroundColor: "#f3f3f3", color: "#000" }}>
+
+        {/* Navigation Bar */}
+        <div style={{ padding: "16px", backgroundColor: "#fff", borderBottom: "1px solid #ddd", display: "flex", justifyContent: "center", gap: "12px" }}>
+          <DeviceButton label="📱 Mobile" active={deviceView === "mobile"} onClick={() => setDeviceView("mobile")} />
+          <DeviceButton label="📟 Tablet" active={deviceView === "tablet"} onClick={() => setDeviceView("tablet")} />
+          <DeviceButton label="💻 Desktop" active={deviceView === "desktop"} onClick={() => setDeviceView("desktop")} />
+        </div>
+
+        {/* Simulated Iframe Area */}
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px", overflowY: "auto" }}>
+          <div style={{
+            width: getPreviewWidth(),
+            height: "90%",
+            backgroundColor: "#fff",
+            border: deviceView === "desktop" ? "1px solid #ddd" : "12px solid #333", // Looks like a phone bezel
+            borderRadius: deviceView === "desktop" ? "4px" : "36px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+            overflowY: "auto", // Scrolling inside the device
+            transition: "all 0.3s ease", // Smooth animation when switching devices
+            position: "relative"
+          }}>
+            {/* We pass deviceView strictly as a prop now, instead of reading window size! */}
+            <Renderer schema={schema} deviceType={deviceView} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
+const DeviceButton = ({ label, active, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      padding: "8px 16px",
+      backgroundColor: active ? "#333" : "#eee",
+      color: active ? "#fff" : "#333",
+      border: "none",
+      borderRadius: "20px",
+      cursor: "pointer",
+      fontWeight: "bold"
+    }}
+  >
+    {label}
+  </button>
+);
+
 const Page = ({ children }) => (
   <div style={{
-      width: "100%",
-      minHeight: "100vh",
-      display: "grid",
-      gridTemplateColumns: "repeat(100, 1fr)",
-      gridTemplateRows: "repeat(100, 1fr)",
-      gap: "4px",
-      padding: "20px",
-      boxSizing: "border-box",
+    width: "100%",
+    minHeight: "100vh",
+    display: "grid",
+    gridTemplateColumns: "repeat(100, 1fr)",
+    gridTemplateRows: "repeat(100, 1fr)",
+    gap: "0px",
+    padding: "20px",
+    boxSizing: "border-box",
   }}>
     {children}
   </div>
@@ -50,7 +134,7 @@ const Carousel = ({ data, children }) => {
     <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "12px" }}>
       {/* 2A. The Sliding Track */}
       <div style={{
-          display: "flex",
+        display: "flex",
         transition: "transform 0.5s ease-in-out",
         transform: `translateX(-${currentIndex * 100}%)` // Moves the slider left and right
       }}>
@@ -117,12 +201,12 @@ const Description = ({ data, style }) => (
   <p style={{
     fontSize: "14px",
     margin: "4px 0",
-      display: "-webkit-box",
-      WebkitLineClamp: data.maxLines ?? 2,
-      WebkitBoxOrient: "vertical",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      ...style,
+    display: "-webkit-box",
+    WebkitLineClamp: data.maxLines ?? 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    ...style,
   }}>
     {data.text}
   </p>
@@ -183,15 +267,15 @@ const DeliveryInfo = ({ data, style }) => {
 const Button = ({ data, style }) => (
   <button style={{
     marginTop: "10px",
-      width: "100%",
+    width: "100%",
     padding: "10px",
     backgroundColor: "#ffa41c",
     border: "1px solid #ff8f00",
     borderRadius: "20px",
-      fontSize: "14px",
+    fontSize: "14px",
     fontWeight: "bold",
-      cursor: "pointer",
-      ...style,
+    cursor: "pointer",
+    ...style,
   }}>
     {data.label}
   </button>
@@ -217,20 +301,7 @@ const ComponentMap = {
   "Button": Button,
 };
 
-const Renderer = ({ schema }) => {
-  const [deviceType, setDeviceType] = useState("desktop");
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 600) setDeviceType("mobile");
-      else if (width < 1024) setDeviceType("tablet");
-      else setDeviceType("desktop");
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+const Renderer = ({ schema, deviceType }) => {
 
   if (!schema) return null;
 
@@ -250,8 +321,8 @@ const Renderer = ({ schema }) => {
     <div style={placementStyle}>
       <TargetComponent data={schema.data} style={schema.containerStyle}>
         {schema.children && schema.children.map((child, idx) => (
-            <Renderer key={idx} schema={child} />
-          ))}
+          <Renderer key={idx} schema={child} deviceType={deviceType} />
+        ))}
       </TargetComponent>
     </div>
   );
