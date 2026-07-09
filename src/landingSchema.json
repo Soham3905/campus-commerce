@@ -59,123 +59,123 @@
       ]
     },
     {
-      "type": "ProductCard",
-      "containerStyle": {
-        "backgroundColor": "#f0f8ff",
-        "border": "2px solid #007185",
-        "borderRadius": "12px"
-      },
+      "type": "ProductList",
       "placement": {
         "mobile": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 26,
-          "rowEnd": 100
+          "rowEnd": 60
         },
         "tablet": {
           "colStart": 1,
-          "colEnd": 50,
-          "rowStart": 31,
-          "rowEnd": 100
+          "colEnd": 100,
+          "rowStart": 26,
+          "rowEnd": 60
         },
         "desktop": {
           "colStart": 1,
-          "colEnd": 25,
+          "colEnd": 100,
           "rowStart": 36,
-          "rowEnd": 100
+          "rowEnd": 75
         }
       },
       "children": [
         {
-          "type": "Image",
-          "data": {
-            "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
-            "altText": "Image of SereneLife"
-          }
-        },
-        {
-          "type": "Label",
+          "type": "ProductCard",
           "children": [
             {
-              "type": "Sponsored",
+              "type": "Image",
               "data": {
-                "text": "Sponsored"
+                "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
+                "altText": "Image of SereneLife"
               }
             },
             {
-              "type": "Icon",
-              "data": {
-                "imageUrl": "",
-                "altText": "Info Icon"
-              }
-            }
-          ]
-        },
-        {
-          "type": "Title",
-          "data": {
-            "text": "SereneLife"
-          }
-        },
-        {
-          "type": "Description",
-          "data": {
-            "text": "SereneLife Small Compact Folding Shopping Cart with Removable Waterproof Liner – 360° Swivel Wheels, Rust‑Proof Steel Frame, 70 lb Capacity – Portable Grocery, Laundry & Travel Cart (Blue)"
-          }
-        },
-        {
-          "type": "Rating",
-          "children": [
+              "type": "Label",
+              "children": [
+                {
+                  "type": "Sponsored",
+                  "data": {
+                    "text": "Sponsored"
+                  }
+                },
+                {
+                  "type": "Icon",
+                  "data": {
+                    "imageUrl": "",
+                    "altText": "Info Icon"
+                  }
+                }
+              ]
+            },
             {
-              "type": "Score",
+              "type": "Title",
               "data": {
-                "text": "4.4",
-                "out of": "5"
+                "text": "SereneLife"
               }
             },
             {
-              "type": "ReviewCount",
+              "type": "Description",
               "data": {
-                "text": "376"
+                "text": "SereneLife Small Compact Folding Shopping Cart with Removable Waterproof Liner – 360° Swivel Wheels, Rust‑Proof Steel Frame, 70 lb Capacity – Portable Grocery, Laundry & Travel Cart (Blue)"
+              }
+            },
+            {
+              "type": "Rating",
+              "children": [
+                {
+                  "type": "Score",
+                  "data": {
+                    "text": "4.4",
+                    "out of": "5"
+                  }
+                },
+                {
+                  "type": "ReviewCount",
+                  "data": {
+                    "text": "376"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Badge",
+              "containerStyle": {
+                "backgroundColor": "#2d6a4f"
+              },
+              "data": {
+                "text": "Limited Time Offer"
+              }
+            },
+            {
+              "type": "PriceBlock",
+              "data": {
+                "sellingPrice": "₹7,089",
+                "mrp": "₹12,250",
+                "discount": "42%"
+              }
+            },
+            {
+              "type": "OfferText",
+              "data": {
+                "text": "Up to 5% back with Amazon Pay ICICI card"
+              }
+            },
+            {
+              "type": "DeliveryInfo",
+              "data": {
+                "prefix": "FREE delivery",
+                "daysOffset": 7
+              }
+            },
+            {
+              "type": "Button",
+              "data": {
+                "label": "Add to Cart"
               }
             }
           ]
-        },
-        {
-          "type": "Badge",
-          "containerStyle": {
-            "backgroundColor": "#2d6a4f"
-          },
-          "data": {
-            "text": "Limited Time Offer"
-          }
-        },
-        {
-          "type": "PriceBlock",
-          "data": {
-            "sellingPrice": "₹7,089",
-            "mrp": "₹12,250",
-            "discount": "42%"
-          }
-        },
-        {
-          "type": "OfferText",
-          "data": {
-            "text": "Up to 5% back with Amazon Pay ICICI card"
-          }
-        },
-        {
-          "type": "DeliveryInfo",
-          "data": {
-            "prefix": "FREE delivery",
-            "daysOffset": 7
-          }
-        },
-        {
-          "type": "Button",
-          "data": {
-            "label": "Add to Cart"
-          }
         }
       ]
     }
