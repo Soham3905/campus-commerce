@@ -1,4 +1,4 @@
-{
+export const fullPageJSON = {
   "type": "Page",
   "children": [
     {
@@ -77,7 +77,7 @@
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 36,
-          "rowEnd": 75
+          "rowEnd": 100
         }
       },
       "children": [

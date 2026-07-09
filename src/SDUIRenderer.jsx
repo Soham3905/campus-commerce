@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import jsonData from "./landingSchema.json";
+import { fullPageJSON } from "./landingSchema";
+
+const TEMPLATES = {
+  "Full Page": fullPageJSON,
+  "Carousel Only": fullPageJSON.children[0],
+  "Product List": fullPageJSON.children[1],
+};
 
 export default function SDUIRenderer() {
-  const [jsonText, setJsonText] = useState(JSON.stringify(jsonData, null, 2));
-  const [schema, setSchema] = useState(jsonData);
+  const [activeTab, setActiveTab] = useState("Full Page");
+  const [jsonText, setJsonText] = useState(JSON.stringify(TEMPLATES["Full Page"], null, 2));
+  const [schema, setSchema] = useState(TEMPLATES["Full Page"]);
   const [deviceView, setDeviceView] = useState("desktop");
   const [error, setError] = useState("");
 
@@ -16,6 +23,14 @@ export default function SDUIRenderer() {
       setError("Sorry, We cannot handle it..");
     }
   }
+
+  const loadTemplate = (tabName) => {
+    setActiveTab(tabName);
+    const newJson = TEMPLATES[tabName];
+    setJsonText(JSON.stringify(newJson, null, 2));
+    setSchema(newJson);
+    setError("");
+  };
 
   const getPreviewWidth = () => {
     if (deviceView === "mobile") return "375px";
@@ -43,6 +58,29 @@ export default function SDUIRenderer() {
           >
             Apply Changes
           </button>
+        </div>
+
+        {/*NAVIGATION TABS */}
+        <div style={{ display: "flex", gap: "8px", padding: "12px", background: "#1e1e2e", borderBottom: "1px solid #2a2a35", overflowX: "auto" }}>
+          {Object.keys(TEMPLATES).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => loadTemplate(tab)}
+              style={{
+                padding: "6px 12px",
+                backgroundColor: activeTab === tab ? "#4f46e5" : "transparent",
+                color: activeTab === tab ? "#fff" : "#a6accd",
+                border: activeTab === tab ? "none" : "1px solid #444",
+                borderRadius: "16px",
+                cursor: "pointer",
+                fontSize: "11px",
+                fontWeight: "bold",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
         {error && <div style={{ background: "rgba(220,38,38,0.15)", borderLeft: "3px solid #dc2626", color: "#fca5a5", padding: "10px", fontSize: "13px" }}>{error}</div>}
@@ -298,6 +336,7 @@ const Renderer = ({ schema, deviceType }) => {
     const coordinates = schema.placement[deviceType];
     if (coordinates) {
       placementStyle = {
+        ...placementStyle,
         gridColumn: `${coordinates.colStart} / ${coordinates.colEnd}`,
         gridRow: `${coordinates.rowStart} / ${coordinates.rowEnd}`,
       };
