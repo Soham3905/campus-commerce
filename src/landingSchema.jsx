@@ -1,26 +1,30 @@
 export const fullPageJSON = {
   "type": "Page",
+  "containerStyle": {
+  },
   "children": [
     {
       "type": "Carousel",
+      "containerStyle" : {
+      },
       "placement": {
         "mobile": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 1,
-          "rowEnd": 25
+          "rowEnd": 18
         },
         "tablet": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 1,
-          "rowEnd": 30
+          "rowEnd": 18
         },
         "desktop": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 1,
-          "rowEnd": 35
+          "rowEnd": 18
         }
       },
       "data": {
@@ -33,23 +37,15 @@ export const fullPageJSON = {
         {
           "type": "Image",
           "containerStyle": {
-            "borderRadius": "12px",
-            "width": "100%",
-            "height": "300px",
-            "objectFit": "cover"
           },
           "data": {
-            "imageUrl": "https://m.media-amazon.com/images/I/71cFljdB3kL._SX3000_.jpg",
+            "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg",
             "altText": "Ad 1"
           }
         },
         {
           "type": "Image",
-          "style": {
-            "borderRadius": "12px",
-            "width": "100%",
-            "height": "300px",
-            "objectFit": "cover"
+          "containerStyle": {
           },
           "data": {
             "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg",
@@ -60,24 +56,26 @@ export const fullPageJSON = {
     },
     {
       "type": "ProductList",
+      "containerStyle" : {
+      },
       "placement": {
         "mobile": {
           "colStart": 1,
           "colEnd": 100,
-          "rowStart": 26,
-          "rowEnd": 60
+          "rowStart": 19,
+          "rowEnd": 68
         },
         "tablet": {
           "colStart": 1,
           "colEnd": 100,
-          "rowStart": 26,
-          "rowEnd": 60
+          "rowStart": 19,
+          "rowEnd": 68
         },
         "desktop": {
           "colStart": 1,
           "colEnd": 100,
-          "rowStart": 36,
-          "rowEnd": 100
+          "rowStart": 19,
+          "rowEnd": 68
         }
       },
       "children": [
@@ -142,7 +140,6 @@ export const fullPageJSON = {
             {
               "type": "Badge",
               "containerStyle": {
-                "backgroundColor": "#2d6a4f"
               },
               "data": {
                 "text": "Limited Time Offer"

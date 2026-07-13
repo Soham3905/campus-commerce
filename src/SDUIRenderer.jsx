@@ -36,25 +36,26 @@ export default function SDUIRenderer() {
     if (deviceView === "mobile") return "375px";
     if (deviceView === "tablet") return "768px";
     return "100%";
-  }
+  };
+
+  const getPreviewHeight = () => {
+    if (deviceView === "mobile") return "812px";
+    if (deviceView === "tablet") return "1024px";
+    return "100%";
+  };
 
   return (
-    <div style={{ display: "flex", height: "100vh", backgroundColor: "#1e1e1e", color: "#fff", fontFamily: "sans-serif" }}>
+    <div style={{ display: "flex", height: "100vh" }}>
 
       {/* -- LEFT PANEL: JSON EDITOR -- */}
-      <div style={{ width: "25%", display: "flex", flexDirection: "column", borderRight: "1px solid #2a2a35", background: "#13131f" }}>
+      <div style={{ width: "22%", display: "flex", flexDirection: "column", borderRight: "1px solid #2a2a35", background: "#13131f" }}>
 
         {/* Editor Header */}
         <div style={{ padding: "12px 16px", background: "#1a1a24", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #2a2a35" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
-            <h3 style={{ margin: "0 0 0 8px", fontSize: "14px", color: "#cdd6f4" }}>⚙️ SDUI Studio</h3>
-          </div>
+          <h3 style={{ fontSize: "14px", color: "#cdd6f4" }}>⚙️ SDUI Studio</h3>
           <button
             onClick={handleApplyJson}
-            style={{ padding: "6px 16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "12px", boxShadow: "0 2px 8px rgba(124,58,237,0.4)" }}
+            style={{ padding: "6px 16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "12px" }}
           >
             Apply Changes
           </button>
@@ -75,7 +76,6 @@ export default function SDUIRenderer() {
                 cursor: "pointer",
                 fontSize: "11px",
                 fontWeight: "bold",
-                whiteSpace: "nowrap"
               }}
             >
               {tab}
@@ -89,13 +89,12 @@ export default function SDUIRenderer() {
         <textarea
           value={jsonText}
           onChange={(e) => setJsonText(e.target.value)}
-          spellCheck={false}
-          style={{ flex: 1, padding: "16px", background: "transparent", color: "#89dceb", fontSize: "13px", fontFamily: "monospace", border: "none", outline: "none", resize: "none", lineHeight: "1.6" }}
+          style={{ flex: 1, padding: "10px", background: "transparent", color: "#89dceb", fontSize: "13px", fontFamily: "monospace" }}
         />
       </div>
 
       {/* -- RIGHT PANEL: DEVICE PREVIEWER -- */}
-      <div style={{ width: "75%", display: "flex", flexDirection: "column", background: "radial-gradient(circle at center, #1f1f33 0%, #0f0f1a 100%)" }}>
+      <div style={{ width: "78%", display: "flex", flexDirection: "column", background: "radial-gradient(circle at center, #1f1f33 0%, #0f0f1a 100%)" }}>
 
         {/* Navigation Bar */}
         <div style={{ padding: "12px 24px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -108,26 +107,13 @@ export default function SDUIRenderer() {
         </div>
 
         {/* Simulated Device Canvas */}
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", padding: "30px", overflowY: "auto" }}>
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "15px", overflowY: "auto" }}>
           <div style={{
             width: getPreviewWidth(),
-            height: "95%",
-            backgroundColor: "#f3f3f3",
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            border: deviceView === "desktop" ? "1px solid #ddd" : "12px solid #1c1c1e",
-            borderRadius: deviceView === "mobile" ? "40px" : deviceView === "tablet" ? "24px" : "8px",
-            boxShadow: deviceView === "desktop" ? "0 10px 40px rgba(0,0,0,0.3)" : "0 30px 60px rgba(0,0,0,0.6)",
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            overflow: "hidden"
+            height: getPreviewHeight(),
           }}>
-            {/* Simulated Phone Notch */}
-            {deviceView === "mobile" && (
-              <div style={{ width: "120px", height: "24px", background: "#1c1c1e", borderRadius: "0 0 16px 16px", alignSelf: "center", position: "absolute", top: 0, zIndex: 10 }} />
-            )}
             {/* Screen Content Container */}
-            <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: deviceView === "mobile" ? "30px" : "0px", backgroundColor: "#f3f3f3" }}>
+            <div style={{ backgroundColor: "#f3f3f3" }}>
               <Renderer schema={schema} deviceType={deviceView} />
             </div>
           </div>
@@ -144,43 +130,40 @@ const DeviceButton = ({ label, active, onClick }) => (
       padding: "6px 16px",
       background: active ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "transparent",
       color: active ? "#fff" : "rgba(255,255,255,0.6)",
-      border: "none",
       borderRadius: "8px",
       cursor: "pointer",
       fontWeight: "bold",
       fontSize: "12px",
-      transition: "all 0.2s ease"
     }}
   >
     {label}
   </button>
 );
 
-const Page = ({ children }) => (
+const Page = ({ children, style }) => (
   <div style={{
-    width: "100%",
     display: "grid",
     gridTemplateColumns: "repeat(100, 1fr)",
     gridTemplateRows: "repeat(100, 10px)",
     gap: "0px",
-    padding: "16px",
-    boxSizing: "border-box",
+    height: "100%",
+    padding: "10px", ...style
   }}>
     {children}
   </div>
 );
 
 const ProductList = ({ children, style }) => (
-  <div style={{ display: "flex", overflowX: "auto", gap: "16px", padding: "8px", width: "100%", scrollBehavior: "smooth", ...style }}>
+  <div style={{ display: "flex", overflowX: "auto", gap: "10px", padding: "8px", width: "100%", scrollBehavior: "smooth", ...style }}>
     {React.Children.map(children, (child) => (
-      <div style={{ width: "260px", flexShrink: 0, display: "flex" }}>
+      <div style={{ display: "flex" }}>
         {child}
       </div>
     ))}
   </div>
 );
 
-const Carousel = ({ data, children }) => {
+const Carousel = ({ data, children, style }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -197,18 +180,18 @@ const Carousel = ({ data, children }) => {
   if (!children) return null;
 
   return (
-    <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: "16px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: "10px", ...style }}>
       <div style={{ display: "flex", transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)", transform: `translateX(-${currentIndex * 100}%)` }}>
         {React.Children.map(children, (child) => (
-          <div style={{ minWidth: "100%", flexShrink: 0 }}>{child}</div>
+          <div style={{ minWidth: "100%" }}>{child}</div>
         ))}
       </div>
       {data.showDots && (
-        <div style={{ position: "absolute", bottom: "12px", width: "100%", display: "flex", justifyContent: "center", gap: "8px" }}>
+        <div style={{ position: "absolute", bottom: "0px", width: "100%", display: "flex", justifyContent: "center" }}>
           {children.map((_, idx) => (
             <div key={idx} onClick={() => setCurrentIndex(idx)} style={{
               width: currentIndex === idx ? "20px" : "8px", height: "8px", borderRadius: "4px",
-              backgroundColor: currentIndex === idx ? "#000000" : "rgba(255,255,255,0.5)", cursor: "pointer", transition: "width 0.3s ease"
+              backgroundColor: currentIndex === idx ? "#a6a2a2ff" : "rgba(255,255,255,0.5)", cursor: "pointer", transition: "width 0.3s ease"
             }} />
           ))}
         </div>
@@ -220,9 +203,7 @@ const Carousel = ({ data, children }) => {
 const ProductCard = ({ children, style }) => (
   <div
     style={{
-      border: "1px solid #e8e8e8", padding: "16px", borderRadius: "16px", backgroundColor: "#fff",
-      overflow: "hidden",
-      boxShadow: "0 2px 12px rgba(0,0,0,0.06)", transition: "all 0.2s ease", display: "flex", flexDirection: "column", gap: "4px", ...style
+      padding: "10px", width: "280px", borderRadius: "10px", backgroundColor: "#fff", ...style
     }}
   >
     {children}
@@ -230,13 +211,13 @@ const ProductCard = ({ children, style }) => (
 );
 
 const ProductImage = ({ data, style }) => (
-  <div style={{ width: "100%", backgroundColor: "#f8f9fa", borderRadius: "8px", overflow: "hidden", marginBottom: "8px" }}>
+  <div style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
     <img src={data.imageUrl} alt={data.altText} style={{ width: "100%", height: "180px", objectFit: "contain", ...style }} />
   </div>
 );
 
 const Label = ({ children, style }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "2px 0", ...style }}>{children}</div>
+  <div style={{ display: "flex", alignItems: "center", gap: "3px", ...style }}>{children}</div>
 );
 
 const Sponsored = ({ data, style }) =>
@@ -247,47 +228,47 @@ const Icon = ({ data, style }) => (
   <img src={data.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Information_icon.svg/24px-Information_icon.svg.png"} alt={data.altText} style={{ width: "14px", height: "14px", opacity: 0.4, cursor: "pointer", ...style }} />
 );
 
-const Title = ({ data, style }) => <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#111", margin: "4px 0", lineHeight: "1.3", ...style }}>{data.text}</h3>;
+const Title = ({ data, style }) => <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#111", ...style }}>{data.text}</h3>;
 
 const Description = ({ data, style }) => (
-  <p style={{ fontSize: "13px", color: "#555", margin: "2px 0 8px 0", display: "-webkit-box", WebkitLineClamp: data.maxLines ?? 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: "1.5", ...style }}>
+  <p style={{ fontSize: "13px", color: "#555", display: "-webkit-box", WebkitLineClamp: data.maxLines ?? 2, WebkitBoxOrient: "vertical", overflow: "hidden", ...style }}>
     {data.text}
   </p>
 );
 
-const Rating = ({ children, style }) => <div style={{ display: "flex", alignItems: "center", gap: "8px", margin: "4px 0", ...style }}>{children}</div>;
+const Rating = ({ children, style }) => <div style={{ display: "flex", alignItems: "center", gap: "8px", ...style }}>{children}</div>;
 
 const Score = ({ data, style }) => (
-  <span style={{ fontSize: "13px", color: "#e77600", fontWeight: "bold", background: "rgba(231,118,0,0.1)", padding: "2px 8px", borderRadius: "12px", ...style }}>
+  <span style={{ fontSize: "10px", color: "#e77600", fontWeight: "bold", background: "rgba(231,118,0,0.1)", borderRadius: "8px", ...style }}>
     ★ {data.text}
-    {data["out of"] && <span style={{ color: "#888", fontWeight: "normal", fontSize: "11px" }}> / {data["out of"]}</span>}
+    {data["out of"] && <span style={{ color: "#888", fontWeight: "bold", fontSize: "10px" }}> / {data["out of"]}</span>}
   </span>
 );
 
-const ReviewCount = ({ data, style }) => <span style={{ fontSize: "12px", color: "#007185", fontWeight: "500", ...style }}>({data.text} reviews)</span>;
+const ReviewCount = ({ data, style }) => <span style={{ fontSize: "11px", color: "#007185", fontWeight: "500", ...style }}>({data.text} reviews)</span>;
 
 const Badge = ({ data, style }) => (
-  <span style={{ display: "inline-block", backgroundColor: "#cc0c39", color: "white", padding: "4px 10px", fontSize: "11px", fontWeight: "bold", borderRadius: "16px", marginBottom: "4px", ...style }}>
+  <span style={{ backgroundColor: "#cc0c39", color: "white", padding: "4px 10px", fontSize: "11px", fontWeight: "bold", borderRadius: "16px", ...style }}>
     {data.text}
   </span>
 );
 
 const PriceBlock = ({ data, style }) => (
-  <div style={{ margin: "8px 0", display: "flex", alignItems: "baseline", gap: "8px", ...style }}>
-    <span style={{ fontSize: "22px", fontWeight: "800", color: "#111" }}>{data.sellingPrice}</span>
-    <span style={{ fontSize: "13px", color: "#888", textDecoration: "line-through" }}>M.R.P: {data.mrp}</span>
-    <span style={{ fontSize: "12px", color: "#16a34a", fontWeight: "700", background: "rgba(22,163,74,0.12)", padding: "2px 6px", borderRadius: "4px" }}>{data.discount} OFF</span>
+  <div style={{ display: "flex", alignItems: "baseline", gap: "8px", ...style }}>
+    <span style={{ fontSize: "20px", fontWeight: "800", color: "#111" }}>{data.sellingPrice}</span>
+    <span style={{ fontSize: "10px", color: "#888", textDecoration: "line-through" }}>M.R.P: {data.mrp}</span>
+    <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700", background: "rgba(22,163,74,0.12)", padding: "2px 6px", borderRadius: "4px" }}>{data.discount} OFF</span>
   </div>
 );
 
-const OfferText = ({ data, style }) => <p style={{ fontSize: "12px", color: "#007185", margin: "4px 0", fontWeight: "500", display: "flex", alignItems: "center", gap: "4px", ...style }}>🏷️ {data.text}</p>;
+const OfferText = ({ data, style }) => <p style={{ fontSize: "12px", color: "#007185", fontWeight: "500", display: "flex", alignItems: "center", ...style }}>🏷️ {data.text}</p>;
 
 const DeliveryInfo = ({ data, style }) => {
   const deliveryDate = new Date();
   deliveryDate.setDate(deliveryDate.getDate() + (data.daysOffset ?? 7));
   const formatted = deliveryDate.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
   return (
-    <p style={{ fontSize: "13px", margin: "8px 0", color: "#333", display: "flex", alignItems: "center", gap: "6px", ...style }}>
+    <p style={{ fontSize: "12px", color: "#333", ...style }}>
       🚚 <span style={{ fontWeight: "700" }}>{data.prefix ?? "FREE delivery"}</span> {formatted}
     </p>
   );
@@ -296,8 +277,8 @@ const DeliveryInfo = ({ data, style }) => {
 const Button = ({ data, style }) => (
   <button
     style={{
-      marginTop: "12px", width: "100%", padding: "12px", background: "linear-gradient(135deg, #ffa41c, #ff8f00)", color: "#111", border: "none", borderRadius: "24px",
-      fontSize: "14px", fontWeight: "800", cursor: "pointer", boxShadow: "0 4px 12px rgba(255,164,28,0.3)", transition: "all 0.2s ease", ...style
+      width: "100%", padding: "8px", background: "linear-gradient(135deg, #ffa41c, #ff8f00)", color: "#111", borderRadius: "24px",
+      fontSize: "14px", fontWeight: "800", cursor: "pointer", ...style
     }}
   >
     {data.label}
@@ -329,9 +310,9 @@ const Renderer = ({ schema, deviceType }) => {
   if (!schema) return null;
 
   const TargetComponent = ComponentMap[schema.type];
-  if (!TargetComponent) return <div>Unknown Component: {schema.type}</div>;
+  if (!TargetComponent) return <div style={{ color: "red" }}>Unknown Component: {schema.type}</div>;
 
-  let placementStyle = { height: "100%", width: "100%", display: "flex", flexDirection: "column" };
+  let placementStyle = {};
   if (schema.placement) {
     const coordinates = schema.placement[deviceType];
     if (coordinates) {
