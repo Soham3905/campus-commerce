@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
 
 const TEMPLATES = {
@@ -285,6 +285,65 @@ const Button = ({ data, style }) => (
   </button>
 );
 
+const useLongPress = (onLongPress, onClick, ms = 600) => {
+  const timerRef = useRef();
+  const isLongPressStarted = useRef(false);
+
+  const start = useCallback((e) => {
+    isLongPressStarted.current = false;
+    timerRef.current = setTimeout(() => {
+      isLongPressStarted.current = true;
+      onLongPress(e);
+    }, ms);
+  }, [onLongPress, ms]);
+
+  const stop = useCallback((e) => {
+    clearTimeout(timerRef.current);
+    if (!isLongPressStarted.current && onClick) {
+      onClick(e);
+    }
+  }, [onClick]);
+
+  return {
+    onMouseDown: start,
+    onMouseUp: stop,
+    onTouchStart: start,
+    onTouchEnd: stop
+  }
+}
+
+const ContextMenu = ({ data, onClose }) => {
+  if (!data) return null;
+
+  return (
+    <div style={{
+      position: "fixed", top: "0%", left: "10%", width: "100%", height: "100%",
+      backgroundColor: "rgba(0,0,0,0.6)", display: "flex",
+      justifyContent: "center", alignItems: "center"
+    }} onClick={onClose}>
+      <div
+        style={{ background: "#fff", borderRadius: "12px", width: "190px", }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div style={{ padding: "15px", borderBottom: "1px solid #eee", fontWeight: "bold", textAlign: "center" }}>
+          {data.title}
+        </div>
+        {data.options.map((opt, i) => (
+          <div
+            key={i}
+            style={{ padding: "15px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", borderBottom: i === data.options.length - 1 ? "none" : "1px solid #f0f0f0", }}
+            onMouseEnter={(e) => e.target.style.background = "#f9f9f9"}
+            onMouseLeave={(e) => e.target.style.background = "transparent"}
+          >
+            <span>{opt.icon}</span>
+            <span style={{ fontSize: "14px" }}>{opt.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const ComponentMap = {
   "Page": Page,
   "ProductList": ProductList,
@@ -307,10 +366,19 @@ const ComponentMap = {
 };
 
 const Renderer = ({ schema, deviceType }) => {
+  const [menuData, setMenuData] = useState(null);
+
   if (!schema) return null;
 
   const TargetComponent = ComponentMap[schema.type];
   if (!TargetComponent) return <div style={{ color: "red" }}>Unknown Component: {schema.type}</div>;
+
+  // Handle Long Press...
+  const longPressProps = useLongPress(() => {
+    if (schema.actions?.onLongPress?.type === "SHOW_CONTEXT_MENU") {
+      setMenuData(schema.actions.onLongPress.payload);
+    }
+  })
 
   let placementStyle = {};
   if (schema.placement) {
@@ -325,12 +393,15 @@ const Renderer = ({ schema, deviceType }) => {
   }
 
   return (
-    <div style={placementStyle}>
-      <TargetComponent data={schema.data} style={schema.containerStyle}>
-        {schema.children && schema.children.map((child, idx) => (
-          <Renderer key={idx} schema={child} deviceType={deviceType} />
-        ))}
-      </TargetComponent>
-    </div>
+    <>
+      <div style={placementStyle}  {...(schema.actions?.onLongPress ? longPressProps : {})}>
+        <TargetComponent data={schema.data} style={schema.containerStyle}>
+          {schema.children && schema.children.map((child, idx) => (
+            <Renderer key={idx} schema={child} deviceType={deviceType} />
+          ))}
+        </TargetComponent>
+      </div>
+      {menuData && <ContextMenu data={menuData} onClose={() => setMenuData(null)} />}
+    </>
   );
 };

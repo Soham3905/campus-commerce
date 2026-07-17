@@ -5,7 +5,7 @@ export const fullPageJSON = {
   "children": [
     {
       "type": "Carousel",
-      "containerStyle" : {
+      "containerStyle": {
       },
       "placement": {
         "mobile": {
@@ -56,7 +56,7 @@ export const fullPageJSON = {
     },
     {
       "type": "ProductList",
-      "containerStyle" : {
+      "containerStyle": {
       },
       "placement": {
         "mobile": {
@@ -81,6 +81,46 @@ export const fullPageJSON = {
       "children": [
         {
           "type": "ProductCard",
+          "actions": {
+            "onLongPress": {
+              "type": "SHOW_CONTEXT_MENU",
+              "payload": {
+                "title": "Quick Actions",
+                "options": [
+                  {
+                    "label": "Add to Wishlist",
+                    "icon": "❤️",
+                    "action": {
+                      "type": "API_CALL",
+                      "endpoint": "",
+                      "method": "",
+                      "body": {}
+                    }
+                  },
+                  {
+                    "label": "Add to Cart",
+                    "icon": "🛒",
+                    "action": {
+                      "type": "API_CALL",
+                      "endpoint": "",
+                      "method": "",
+                      "body": {}
+                    }
+                  },
+                  {
+                    "label": "Add to Favorite",
+                    "icon": "⭐",
+                    "action": {
+                      "type": "API_CALL",
+                      "endpoint": "",
+                      "method": "",
+                      "body": {}
+                    }
+                  }
+                ]
+              }
+            }
+          },
           "children": [
             {
               "type": "Image",
