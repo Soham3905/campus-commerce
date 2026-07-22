@@ -1,18 +1,113 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { fullPageJSON } from "./landingSchema";
+import { setServerState, setReduxValue } from "./store/countSlice";
+
+const API_BASE_URL = "http://localhost:4000";
 
 const TEMPLATES = {
   "Full Page": fullPageJSON,
-  "Carousel Only": fullPageJSON.children[0],
-  "Product List": fullPageJSON.children[1],
+  "Carousel Only": fullPageJSON.children[1],
+  "Product List": fullPageJSON.children[2],
 };
 
+function normalizeValue(value, type) {
+  if (type === "Number") return Number(value);
+  if (type === "string") return String(value);
+  return value;
+}
+
+function getByPath(obj, path) {
+  if (!obj || !path) return undefined;
+  return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+}
+
+function buildPayload(payloadBlocks = [], appState, componentData) {
+  const result = {};
+
+  payloadBlocks.forEach((block) => {
+    (block.requestConfig || []).forEach((item) => {
+      if (!item.requestKeyName) return;
+
+      let value;
+
+      if (item.getValueFrom === "componentData") {
+        value = getByPath(componentData, item.getValueFromKey);
+        console.log("componentData:", item.getValueFromKey, "→", value);
+      } else if (item.getValueFrom === "redux") {
+        // appState is already state.count
+        value = getByPath(appState, item.getValueFromKey);
+        console.log("redux:", item.getValueFromKey, "→", value);
+      } else if (item.getValueFrom === "express") {
+        // appState is already state.count, so serverState is appState.serverState
+        value = getByPath(appState.serverState, item.getValueFromKey);
+        console.log("express:", item.getValueFromKey, "→", value);
+      } else if (item.getValueFrom === "static") {
+        value = item.value;
+        console.log("static:", item.requestKeyName, "→", value);
+      }
+      result[item.requestKeyName] = normalizeValue(value, item.type);
+    });
+  });
+
+  return result;
+}
+
+async function executeOptionAction(option, appState, dispatch, closeMenu, setError, componentData) {
+  const action = option.action || option.apiConfig || {};
+  if (!action) return;
+
+  try {
+    if (action.type === "API_CALL") {
+      const payload = buildPayload(action.payload, appState, componentData);
+      const response = await fetch(action.endpoint, {
+        method: action.method || "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          actionName: action.actionName,
+          payload,
+        })
+      })
+      const data = await response.json();
+      if (data?.state) {
+        dispatch(setServerState(data.state))
+      }
+      closeMenu();
+      return;
+    }
+    if (action.type === "SET_REDUX_VALUE") {
+      dispatch(setReduxValue({ key: action.key, value: action.value }));
+      closeMenu();
+      return;
+    }
+  } catch (err) {
+    if (setError) setError(err.message || "Action failed");
+  }
+}
+
 export default function SDUIRenderer() {
+  const dispatch = useDispatch();
+  // Select only the count slice to avoid full-state re-renders
+  const appState = useSelector((state) => state.count);
   const [activeTab, setActiveTab] = useState("Full Page");
   const [jsonText, setJsonText] = useState(JSON.stringify(TEMPLATES["Full Page"], null, 2));
   const [schema, setSchema] = useState(TEMPLATES["Full Page"]);
   const [deviceView, setDeviceView] = useState("desktop");
   const [error, setError] = useState("");
+  const [menu, setMenu] = useState(null);
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const stateRes = await fetch(`${API_BASE_URL}/api/state`);
+        const stateData = await stateRes.json();
+        dispatch(setServerState(stateData));
+      } catch (err) {
+        setError("Error loading initial state");
+      }
+    };
+    loadInitialData();
+  }, [dispatch])
 
   const handleApplyJson = () => {
     try {
@@ -43,6 +138,19 @@ export default function SDUIRenderer() {
     if (deviceView === "tablet") return "1024px";
     return "100%";
   };
+
+  const closeMenu = () => setMenu(null);
+
+  const handleOptionSelect = async (option) => {
+    await executeOptionAction(
+      option,
+      appState,
+      dispatch,
+      closeMenu,
+      setError,
+      menu?.schema?.data
+    )
+  }
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
@@ -114,11 +222,16 @@ export default function SDUIRenderer() {
           }}>
             {/* Screen Content Container */}
             <div style={{ backgroundColor: "#f3f3f3" }}>
-              <Renderer schema={schema} deviceType={deviceView} />
+              <Renderer schema={schema} deviceType={deviceView} appState={appState} openMenu={setMenu} />
             </div>
           </div>
         </div>
       </div>
+      <ContextMenu
+        data={menu}
+        onClose={closeMenu}
+        onSelect={handleOptionSelect}
+      />
     </div>
   );
 }
@@ -149,6 +262,55 @@ const Page = ({ children, style }) => (
     height: "100%",
     padding: "10px", ...style
   }}>
+    {children}
+  </div>
+);
+
+
+const HeaderButton = ({ data, appState, style }) => {
+  const countKey = data?.id ? `${data.id}Count` : null;
+  // appState is state.count, so serverState is appState.serverState
+  const count = countKey ? (appState?.serverState?.[countKey] ?? 0) : 0;
+
+  return (
+    <div
+      style={{
+        padding: "8px 12px",
+        borderRadius: 12,
+        background: "#f8fafc",
+        border: "1px solid #e5e7eb",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 4, ...style
+      }}
+    >
+      <span style={{ fontWeight: 600, fontSize: 12 }}>
+        {data?.icon} {data?.label}
+      </span>
+
+      <span
+        style={{
+          minWidth: 15,
+          height: 15,
+          borderRadius: 999,
+          background: "#111827",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 10,
+          fontWeight: 600,
+        }}
+      >
+        {count}
+      </span>
+    </div>
+  );
+};
+
+const Header = ({ children, style }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 12, ...style }}>
     {children}
   </div>
 );
@@ -312,12 +474,12 @@ const useLongPress = (onLongPress, onClick, ms = 600) => {
   }
 }
 
-const ContextMenu = ({ data, onClose }) => {
+const ContextMenu = ({ data, onClose, onSelect }) => {
   if (!data) return null;
 
   return (
     <div style={{
-      position: "fixed", top: "0%", left: "10%", width: "100%", height: "100%",
+      position: "fixed", top: 0, left: "10%", width: "100%", height: "100%",
       backgroundColor: "rgba(0,0,0,0.6)", display: "flex",
       justifyContent: "center", alignItems: "center"
     }} onClick={onClose}>
@@ -334,6 +496,7 @@ const ContextMenu = ({ data, onClose }) => {
             style={{ padding: "15px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", borderBottom: i === data.options.length - 1 ? "none" : "1px solid #f0f0f0", }}
             onMouseEnter={(e) => e.target.style.background = "#f9f9f9"}
             onMouseLeave={(e) => e.target.style.background = "transparent"}
+            onClick={() => onSelect(opt)}
           >
             <span>{opt.icon}</span>
             <span style={{ fontSize: "14px" }}>{opt.label}</span>
@@ -346,6 +509,8 @@ const ContextMenu = ({ data, onClose }) => {
 
 const ComponentMap = {
   "Page": Page,
+  "Header": Header,
+  "HeaderButton": HeaderButton,
   "ProductList": ProductList,
   "Carousel": Carousel,
   "ProductCard": ProductCard,
@@ -365,18 +530,21 @@ const ComponentMap = {
   "Button": Button,
 };
 
-const Renderer = ({ schema, deviceType }) => {
-  const [menuData, setMenuData] = useState(null);
-
+const Renderer = ({ schema, deviceType, appState, openMenu }) => {
   if (!schema) return null;
 
   const TargetComponent = ComponentMap[schema.type];
   if (!TargetComponent) return <div style={{ color: "red" }}>Unknown Component: {schema.type}</div>;
 
   // Handle Long Press...
-  const longPressProps = useLongPress(() => {
-    if (schema.actions?.onLongPress?.type === "SHOW_CONTEXT_MENU") {
-      setMenuData(schema.actions.onLongPress.payload);
+  const longPressHandlers = useLongPress(() => {
+    const lp = schema.actions?.onLongPress;
+    if (lp?.type === "SHOW_CONTEXT_MENU") {
+      openMenu({
+        title: lp.data?.title || "Actions",
+        options: lp.data?.options || [],
+        schema,
+      });
     }
   })
 
@@ -394,14 +562,13 @@ const Renderer = ({ schema, deviceType }) => {
 
   return (
     <>
-      <div style={placementStyle}  {...(schema.actions?.onLongPress ? longPressProps : {})}>
-        <TargetComponent data={schema.data} style={schema.containerStyle}>
+      <div style={placementStyle} {...(schema.actions?.onLongPress ? longPressHandlers : {})}>
+        <TargetComponent data={schema.data} appState={appState} style={schema.containerStyle}>
           {schema.children && schema.children.map((child, idx) => (
-            <Renderer key={idx} schema={child} deviceType={deviceType} />
+            <Renderer key={idx} schema={child} deviceType={deviceType} appState={appState} openMenu={openMenu} />
           ))}
         </TargetComponent>
       </div>
-      {menuData && <ContextMenu data={menuData} onClose={() => setMenuData(null)} />}
     </>
   );
 };

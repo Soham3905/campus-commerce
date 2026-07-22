@@ -1,6 +1,12 @@
 import SDUIRenderer from './SDUIRenderer';
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 function App() {
- return <SDUIRenderer />;
+    return (
+        <Provider store={store}>
+            <SDUIRenderer />
+        </Provider>
+    )
 }
 
 export default App;

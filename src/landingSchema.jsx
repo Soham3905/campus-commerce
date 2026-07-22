@@ -1,30 +1,81 @@
 export const fullPageJSON = {
   "type": "Page",
-  "containerStyle": {
-  },
+  "containerStyle": {},
+  "statusCode": 200,
+  "statusMessage": "Success",
+  "actions": {},
   "children": [
     {
-      "type": "Carousel",
-      "containerStyle": {
-      },
+      "type": "Header",
+      "containerStyle": {},
       "placement": {
         "mobile": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 1,
-          "rowEnd": 18
+          "rowEnd": 8
         },
         "tablet": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 1,
-          "rowEnd": 18
+          "rowEnd": 8
         },
         "desktop": {
           "colStart": 1,
           "colEnd": 100,
           "rowStart": 1,
-          "rowEnd": 18
+          "rowEnd": 8
+        }
+      },
+      "children": [
+        {
+          "type": "HeaderButton",
+          "data": {
+            "id": "cart",
+            "label": "Cart",
+            "icon": "🛒"
+          },
+        },
+        {
+          "type": "HeaderButton",
+          "data": {
+            "id": "wishlist",
+            "label": "Wishlist",
+            "icon": "❤️",
+          },
+        },
+        {
+          "type": "HeaderButton",
+          "data": {
+            "id": "favourites",
+            "label": "Favourites",
+            "icon": "⭐",
+          },
+        }
+      ]
+    },
+    {
+      "type": "Carousel",
+      "containerStyle": {},
+      "placement": {
+        "mobile": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 9,
+          "rowEnd": 28
+        },
+        "tablet": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 9,
+          "rowEnd": 28
+        },
+        "desktop": {
+          "colStart": 1,
+          "colEnd": 100,
+          "rowStart": 9,
+          "rowEnd": 28
         }
       },
       "data": {
@@ -36,8 +87,7 @@ export const fullPageJSON = {
       "children": [
         {
           "type": "Image",
-          "containerStyle": {
-          },
+          "containerStyle": {},
           "data": {
             "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg",
             "altText": "Ad 1"
@@ -45,8 +95,7 @@ export const fullPageJSON = {
         },
         {
           "type": "Image",
-          "containerStyle": {
-          },
+          "containerStyle": {},
           "data": {
             "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg",
             "altText": "Ad 2"
@@ -56,35 +105,37 @@ export const fullPageJSON = {
     },
     {
       "type": "ProductList",
-      "containerStyle": {
-      },
+      "containerStyle": {},
       "placement": {
         "mobile": {
           "colStart": 1,
           "colEnd": 100,
-          "rowStart": 19,
+          "rowStart": 29,
           "rowEnd": 68
         },
         "tablet": {
           "colStart": 1,
           "colEnd": 100,
-          "rowStart": 19,
+          "rowStart": 29,
           "rowEnd": 68
         },
         "desktop": {
           "colStart": 1,
           "colEnd": 100,
-          "rowStart": 19,
+          "rowStart": 29,
           "rowEnd": 68
         }
       },
       "children": [
         {
           "type": "ProductCard",
+          "data": {
+            "id": "serenelife-001",
+          },
           "actions": {
             "onLongPress": {
               "type": "SHOW_CONTEXT_MENU",
-              "payload": {
+              "data": {
                 "title": "Quick Actions",
                 "options": [
                   {
@@ -92,9 +143,27 @@ export const fullPageJSON = {
                     "icon": "❤️",
                     "action": {
                       "type": "API_CALL",
-                      "endpoint": "",
-                      "method": "",
-                      "body": {}
+                      "actionName": "ADD_TO_WISHLIST",
+                      "endpoint": "http://localhost:4000/api/action",
+                      "method": "POST",
+                      "payload": [
+                        {
+                          "requestConfig": [
+                            {
+                              "requestKeyName": "productId",
+                              "getValueFrom": "componentData",
+                              "getValueFromKey": "id",
+                              "type": "string"
+                            },
+                            {
+                              "requestKeyName": "quantity",
+                              "getValueFrom": "static",
+                              "value": 1,
+                              "type": "Number",
+                            }
+                          ]
+                        }
+                      ]
                     }
                   },
                   {
@@ -102,19 +171,56 @@ export const fullPageJSON = {
                     "icon": "🛒",
                     "action": {
                       "type": "API_CALL",
-                      "endpoint": "",
-                      "method": "",
-                      "body": {}
+                      "actionName": "ADD_TO_CART",
+                      "endpoint": "http://localhost:4000/api/action",
+                      "method": "POST",
+                      "payload": [
+                        {
+                          "requestConfig": [
+                            {
+                              "requestKeyName": "productId",
+                              "getValueFrom": "componentData",
+                              "getValueFromKey": "id",
+                              "type": "string"
+                            },
+                            {
+                              "requestKeyName": "quantity",
+                              "getValueFrom": "redux",
+                              "getValueFromKey": "cartCount",
+                              // "value" : 1,
+                              "type": "Number",
+                            }
+                          ]
+                        }
+                      ]
                     }
                   },
                   {
-                    "label": "Add to Favorite",
+                    "label": "Add to Favourite",
                     "icon": "⭐",
                     "action": {
                       "type": "API_CALL",
-                      "endpoint": "",
-                      "method": "",
-                      "body": {}
+                      "actionName": "ADD_TO_FAVOURITE",
+                      "endpoint": "http://localhost:4000/api/action",
+                      "method": "POST",
+                      "payload": [
+                        {
+                          "requestConfig": [
+                            {
+                              "requestKeyName": "productId",
+                              "getValueFrom": "componentData",
+                              "getValueFromKey": "id",
+                              "type": "string"
+                            },
+                            {
+                              "requestKeyName": "currentCount",
+                              "getValueFrom": "express",
+                              "getValueFromKey": "favouritesCount",
+                              "type": "Number"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   }
                 ]
@@ -151,7 +257,7 @@ export const fullPageJSON = {
               "type": "Title",
               "data": {
                 "text": "SereneLife"
-              }
+              },
             },
             {
               "type": "Description",
