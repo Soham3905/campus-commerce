@@ -9,9 +9,9 @@ export const fullPageJSON = {
       "type": "Header",
       "containerStyle": {},
       "placement": {
-        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 8 },
-        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 8 },
-        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 8 }
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 7 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 7 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 7 }
       },
       "children": [
         { "type": "HeaderButton", "data": { "id": "cart", "label": "Cart", "icon": "🛒" } },
@@ -23,9 +23,9 @@ export const fullPageJSON = {
       "type": "Carousel",
       "containerStyle": {},
       "placement": {
-        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 9, "rowEnd": 28 },
-        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 9, "rowEnd": 28 },
-        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 9, "rowEnd": 28 }
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 47 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 47 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 47 }
       },
       "data": {
         "showDots": true,
@@ -36,12 +36,21 @@ export const fullPageJSON = {
       "children": [
         {
           "type": "Image",
-          "containerStyle": {},
+          "containerStyle": {
+            "borderRadius": "24px",
+            "width": "400px",
+            "display": "block",
+            "margin": "0 auto",
+            "objectFit": "cover"
+          },
           "data": { "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg", "altText": "Ad 1" }
         },
         {
           "type": "Image",
-          "containerStyle": {},
+          "containerStyle": {
+            "borderRadius": "24px",
+            "objectFit": "cover"
+          },
           "data": { "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg", "altText": "Ad 2" }
         }
       ]
@@ -50,9 +59,9 @@ export const fullPageJSON = {
       "type": "ProductList",
       "containerStyle": {},
       "placement": {
-        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 29, "rowEnd": 68 },
-        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 29, "rowEnd": 68 },
-        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 29, "rowEnd": 68 }
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 }
       },
       "children": [
         {
@@ -115,7 +124,7 @@ export const fullPageJSON = {
                 { "type": "ReviewCount", "data": { "text": "376" } }
               ]
             },
-            { "type": "Badge", "containerStyle": {}, "data": { "text": "Limited Time Offer" } },
+            { "type": "Badge", "containerStyle": { "backgroundColor": "#fbbf24" }, "data": { "text": "Limited Time Offer" } },
             { "type": "PriceBlock", "data": { "sellingPrice": "₹7,089", "mrp": "₹12,250", "discount": "42%" } },
             { "type": "OfferText", "data": { "text": "Up to 5% back with Amazon Pay ICICI card" } },
             { "type": "DeliveryInfo", "data": { "prefix": "FREE delivery", "daysOffset": 7 } },
@@ -127,9 +136,9 @@ export const fullPageJSON = {
     {
       "type": "CategoryGrid",
       "placement": {
-        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 75, "rowEnd": 100 },
-        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 75, "rowEnd": 100 },
-        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 75, "rowEnd": 100 }
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 }
       },
       "children": [
         {
@@ -179,9 +188,9 @@ export const fullPageJSON = {
     {
       "type": "SearchBar",
       "placement": {
-        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 84, "rowEnd": 100 },
-        "tablet": { "colStart": 20, "colEnd": 80, "rowStart": 84, "rowEnd": 100 },
-        "desktop": { "colStart": 20, "colEnd": 80, "rowStart": 84, "rowEnd": 100 }
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 8, "rowEnd": 15 },
+        "tablet": { "colStart": 20, "colEnd": 80, "rowStart": 8, "rowEnd": 15 },
+        "desktop": { "colStart": 20, "colEnd": 80, "rowStart": 8, "rowEnd": 15 }
       },
       "data": {
         "placeholder": "Search for electronics, clothes...",
@@ -208,6 +217,76 @@ export const fullPageJSON = {
           "actionName": "ON_BLUR_SEARCH"
         }
       }
+    },
+    {
+      "type": "HeroBanner",
+      "placement": {
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 48, "rowEnd": 88 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 48, "rowEnd": 88 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 48, "rowEnd": 88 }
+      },
+      "data": {
+        "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80",
+        "title": "Season End Sale",
+        "subtitle": "Get up to 70% off on all electronics!",
+        "altText": "Summer Sale Banner"
+      },
+      "actions": {
+        "onMount": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "ON_MOUNT_HERO_BANNER"
+        },
+        "onError": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "ON_ERROR_HERO_BANNER"
+        }
+      },
+      "children": [
+        {
+          "type": "CountDownTimer",
+          "containerStyle": {
+            "width": "300px",
+            "background": "linear-gradient(transparent, rgba(0,0,0,0.8))",
+            "border": "none",
+            "color": "#fff",
+            "textAlign": "left"
+          },
+          "data": {
+            "label": "Flash Sale Ends In",
+            "expiredText": "Offer Expired",
+            "targetDate": "2026-08-12T01:30:00",
+            "showDays": "true",
+            "format": "DD:HH:MM:SS"
+          },
+        }
+      ]
+    },
+    {
+      "type": "CountDownTimer",
+      "placement": {
+        "mobile": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 },
+        "tablet": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 },
+        "desktop": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 }
+      },
+      "data": {
+        "label": "Flash Sale Ends In",
+        "expiredText": "Offer Expired",
+        "targetDate": "2026-08-10T01:09:00",
+        "showDays": "true",
+        "format": "DD:HH:MM:SS"
+      },
+      "actions": {
+        "onExpire": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "FLASH_SALE_ENDED"
+        }
+      }
+    },
+    {
+      
     }
   ]
 }

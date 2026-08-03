@@ -7,6 +7,8 @@ const TEMPLATES = {
   "Product List": fullPageJSON.children[2],
   "Category Grid": fullPageJSON.children[3],
   "Search Bar": fullPageJSON.children[4],
+  "HeroBanner": fullPageJSON.children[5],
+  "CountDownTimer": fullPageJSON.children[6],
 };
 
 async function executeOptionAction(option, closeMenu, setError) {
@@ -60,9 +62,9 @@ export default function SDUIRenderer() {
   };
 
   const getPreviewHeight = () => {
-    if (deviceView === "mobile") return "1024px";
-    if (deviceView === "tablet") return "1024px";
-    return "1024px";
+    if (deviceView === "mobile") return "2000px";
+    if (deviceView === "tablet") return "2000px";
+    return "2000px";
   };
 
   const closeMenu = () => setMenu(null);
@@ -176,7 +178,7 @@ const Page = ({ children, style }) => (
   <div style={{
     display: "grid",
     gridTemplateColumns: "repeat(100, 1fr)",
-    gridTemplateRows: "repeat(100, 10px)",
+    gridTemplateRows: "repeat(200, 10px)",
     gap: "0px",
     height: "100%",
     padding: "10px", ...style
@@ -354,6 +356,49 @@ const SearchBar = ({ data, style, actions }) => {
           placeholder={data?.placeholder || "Search products..."}
           style={{ fontSize: "14px", width: "100%", border: "none", outline: "none" }}
         />
+      </div>
+    </div>
+  );
+}
+
+const HeroBanner = ({ data, style, actions, children }) => {
+
+  useEffect(() => {
+    if (actions?.onMount) {
+      executeOptionAction({ action: actions.onMount });
+    }
+  }, [actions]);
+
+  return (
+    <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden", ...style }}>
+      <img
+        src={data.imageUrl}
+        alt={data.altText}
+        onError={() => {
+          if (actions?.onError) {
+            executeOptionAction({ action: actions.onError });
+          }
+        }}
+        style={{ width: "100%", height: "400px", objectFit: "cover" }}
+      />
+      {/* Overlay Text */}
+      <div style={{
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        right: "0",
+        padding: "20px",
+        background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
+        color: "#fff"
+      }}>
+        <h2 style={{ margin: 0, fontSize: "20px" }}>{data.title}</h2>
+        <p style={{ margin: "4px 0 0", fontSize: "14px", opacity: 0.9 }}>{data.subtitle}</p>
+        
+        {children && (
+          <div style={{ marginTop: "10px" }}>
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -541,6 +586,45 @@ const ContextMenu = ({ data, onClose, onSelect }) => {
   );
 };
 
+const CountDownTimer = ({ data, style, actions }) => {
+  const [timeLeft, setTimeLeft] = useState(null);
+
+  useEffect(() => {
+    const target = new Date(data.targetDate).getTime();
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = target - now;
+      if (diff < 0) {
+        clearInterval(interval);
+        setTimeLeft(data.expiredText || "Expired...");
+        if (actions?.onExpire) {
+          executeOptionAction({ action: actions.onExpire });
+        }
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+      if (data.showDays === "true") {
+        setTimeLeft(`${days}d ${hours}h ${mins}m ${secs}s`);
+      } else {
+        setTimeLeft(`${hours}h ${mins}m ${secs}s`);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [data]);
+
+  return (
+    <div style={{ padding: "10px", backgroundColor: "#fff3cd", borderRadius: "12px", border: "1px solid #ffeeba", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", ...style }}>
+      <h3 style={{ color: style?.color || "#856404", fontSize: "16px", margin: "0 0 5px 0" }}>{data.label}</h3>
+      <div style={{ fontSize: "20px", fontWeight: "600", color: style?.color || "#856404", fontFamily: "monospace" }}>
+        {timeLeft || "Loading..."}
+      </div>
+    </div>
+  )
+}
+
 const ComponentMap = {
   "Page": Page,
   "Header": Header,
@@ -550,6 +634,8 @@ const ComponentMap = {
   "CategoryGrid": CategoryGrid,
   "CategoryItem": CategoryItem,
   "SearchBar": SearchBar,
+  "HeroBanner": HeroBanner,
+  "CountDownTimer": CountDownTimer,
   "ProductCard": ProductCard,
   "Image": ProductImage,
   "Label": Label,
