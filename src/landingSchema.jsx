@@ -266,7 +266,7 @@ export const fullPageJSON = {
     {
       "type": "CountDownTimer",
       "placement": {
-        "mobile": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 },
+        "mobile": { "colStart": 1, "colEnd": 80, "rowStart": 140, "rowEnd": 150 },
         "tablet": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 },
         "desktop": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 }
       },
@@ -286,7 +286,24 @@ export const fullPageJSON = {
       }
     },
     {
-      
+      "type": "CouponCode",
+      "placement": {
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 151, "rowEnd": 160 },
+        "tablet": { "colStart": 1, "colEnd": 30, "rowStart": 151, "rowEnd": 160 },
+        "desktop": { "colStart": 1, "colEnd": 30, "rowStart": 151, "rowEnd": 160 }
+      },
+      "data": {
+        "title": "Special Offer",
+        "coupon": "SAVE20",
+        "description": "Get 20% OFF on orders above ₹999",
+        "copyLabel": "Copy Code"
+      },
+      "actions": {
+        "onCopy": {
+          "type": "COPY_TO_CLIPBOARD",
+          "value": "SAVE20"
+        }
+      }
     }
   ]
 }

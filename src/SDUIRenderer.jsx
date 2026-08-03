@@ -9,6 +9,7 @@ const TEMPLATES = {
   "Search Bar": fullPageJSON.children[4],
   "HeroBanner": fullPageJSON.children[5],
   "CountDownTimer": fullPageJSON.children[6],
+  "CouponCode" : fullPageJSON.children[7],
 };
 
 async function executeOptionAction(option, closeMenu, setError) {
@@ -21,8 +22,14 @@ async function executeOptionAction(option, closeMenu, setError) {
       const response = await fetch(action.endpoint);
       const json = await response.json();
       console.log("[API_CALL] Response:", json);
-      closeMenu();
+      if (closeMenu) closeMenu();
       return;
+    }
+    if (action.type === "COPY_TO_CLIPBOARD") {
+      console.log(`[COPY_TO_CLIPBOARD] Copied: ${action.value}`);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(action.value);
+      }
     }
   } catch (err) {
     if (setError) setError(err.message || "Action failed");
@@ -393,7 +400,7 @@ const HeroBanner = ({ data, style, actions, children }) => {
       }}>
         <h2 style={{ margin: 0, fontSize: "20px" }}>{data.title}</h2>
         <p style={{ margin: "4px 0 0", fontSize: "14px", opacity: 0.9 }}>{data.subtitle}</p>
-        
+
         {children && (
           <div style={{ marginTop: "10px" }}>
             {children}
@@ -625,6 +632,33 @@ const CountDownTimer = ({ data, style, actions }) => {
   )
 }
 
+const CouponCode = ({ data, style, actions }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (actions?.onCopy) {
+      executeOptionAction({ action: actions.onCopy });
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div style={{ padding: "12px", backgroundColor: "#e8f5e9", borderRadius: "8px", border: "2px dashed #4caf50", display: "flex", justifyContent: "space-between", alignItems: "center", ...style }}>
+      <div>
+        <h4 style={{ color: "#2e7d32", fontSize: "16px" }}>{data.title}</h4>
+        <p style={{ fontSize: "12px", color: "#555" }}>{data.description}</p>
+      </div>
+      <button
+        onClick={handleCopy}
+        style={{ padding: "4px 10px", backgroundColor: copied ? "#81c784" : "#4caf50", color: "#fff", borderRadius: "10px", cursor: "pointer", fontWeight: "600"}}
+      >
+        {copied ? "Copied!" : data.copyLabel}
+      </button>
+    </div>
+  );
+};
+
 const ComponentMap = {
   "Page": Page,
   "Header": Header,
@@ -636,6 +670,7 @@ const ComponentMap = {
   "SearchBar": SearchBar,
   "HeroBanner": HeroBanner,
   "CountDownTimer": CountDownTimer,
+  "CouponCode": CouponCode,
   "ProductCard": ProductCard,
   "Image": ProductImage,
   "Label": Label,
