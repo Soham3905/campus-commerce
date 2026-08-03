@@ -433,8 +433,9 @@ const ProductCard = ({ children, style }) => {
       {/* Quick Add Overlay */}
       <div style={{
         position: "absolute",
-        bottom: isHovered ? "100px" : "-50px",
-        transition: "bottom 0.3s ease-in-out",
+        bottom: isHovered ? "200px" : "-50px",
+        right: isHovered ? "12px" : "-50px",
+        transition: "right 0.6s ease-in-out",
         width: "90%",
       }}>
         <button
