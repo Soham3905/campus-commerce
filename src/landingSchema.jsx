@@ -29,9 +29,21 @@ export const fullPageJSON = {
       },
       "data": {
         "showDots": true,
-        "autoPlay": true,
-        "autoPLayInterval": 3000,
+        "autoPlay": false,
+        "autoPlayInterval": 3000,
         "infiniteLoop": true
+      },
+      "actions": {
+        "onSwipeLeft": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "CAROUSEL_SWIPE_LEFT"
+        },
+        "onSwipeRight": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "CAROUSEL_SWIPE_RIGHT"
+        }
       },
       "children": [
         {

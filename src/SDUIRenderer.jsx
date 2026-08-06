@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { act, useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
 
 const TEMPLATES = {
@@ -228,24 +228,75 @@ const ProductList = ({ children, style }) => (
   </div>
 );
 
-const Carousel = ({ data, children, style }) => {
+const Carousel = ({ data, children, style, actions }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     if (!data.autoPlay || !children) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => {
-        if (prevIndex === children.length - 1) return data.infiniteLoop ? 0 : prevIndex;
-        return prevIndex + 1;
-      });
-    }, data.autoPLayInterval || 3000);
+      nextSlide();
+    }, data.autoPlayInterval || 3000);
     return () => clearInterval(interval);
-  }, [data.autoPlay, data.autoPLayInterval, data.infiniteLoop, children]);
+  }, [data.autoPlay, data.autoPlayInterval, data.infiniteLoop, children]);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => {
+      const count = React.Children.count(children);
+      if (prevIndex === count - 1) return data.infiniteLoop ? 0 : prevIndex;
+      return prevIndex + 1;
+    })
+  }
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => {
+      const count = React.Children.count(children);
+      if (prevIndex === 0) return data.infiniteLoop ? count - 1 : prevIndex;
+      return prevIndex - 1;
+    })
+  }
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  }
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  }
+
+  const handleTouchEnd = (e) => {
+    if(!touchStart || !touchEnd){
+      return;
+    }
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if(isLeftSwipe){
+      nextSlide();
+      if(actions?.onSwipeLeft){
+        executeOptionAction({ action: actions.onSwipeLeft });
+      }
+    }else if(isRightSwipe){
+      prevSlide();
+      if(actions?.onSwipeRight){
+        executeOptionAction({ action: actions.onSwipeRight });
+      }
+    }
+  }
 
   if (!children) return null;
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", borderRadius: "10px", ...style }}>
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: "10px", ...style }}
+    onTouchStart={handleTouchStart}
+    onTouchMove={handleTouchMove}
+    onTouchEnd={handleTouchEnd}
+    >
       <div style={{ display: "flex", transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)", transform: `translateX(-${currentIndex * 100}%)` }}>
         {React.Children.map(children, (child) => (
           <div style={{ minWidth: "100%" }}>{child}</div>
@@ -253,7 +304,7 @@ const Carousel = ({ data, children, style }) => {
       </div>
       {data.showDots && (
         <div style={{ position: "absolute", bottom: "0px", width: "100%", display: "flex", justifyContent: "center" }}>
-          {children.map((_, idx) => (
+          {React.Children.map(children, (_, idx) => (
             <div key={idx} onClick={() => setCurrentIndex(idx)} style={{
               width: currentIndex === idx ? "20px" : "8px", height: "8px", borderRadius: "4px",
               backgroundColor: currentIndex === idx ? "#a6a2a2ff" : "rgba(255,255,255,0.5)", cursor: "pointer", transition: "width 0.3s ease"
