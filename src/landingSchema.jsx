@@ -75,6 +75,18 @@ export const fullPageJSON = {
         "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 },
         "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 }
       },
+      "actions": {
+        "onScroll": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "ON_SCROLL_PRODUCT"
+        },
+        "onEndReached": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "LOAD_MORE_PRODUCTS"
+        }
+      },
       "children": [
         {
           "type": "ProductCard",
@@ -102,11 +114,6 @@ export const fullPageJSON = {
                   }
                 ]
               }
-            },
-            "onHover": {
-              "type": "API_CALL",
-              "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-              "actionName": "PRODUCT_HOVER_ANALYTICS"
             },
           },
           "children": [
@@ -272,6 +279,13 @@ export const fullPageJSON = {
             "showDays": "true",
             "format": "DD:HH:MM:SS"
           },
+          "actions": {
+            "onHover": {
+              "type": "API_CALL",
+              "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+              "actionName": "PRODUCT_HOVER_ANALYTICS"
+            },
+          }
         }
       ]
     },
@@ -314,6 +328,92 @@ export const fullPageJSON = {
         "onCopy": {
           "type": "COPY_TO_CLIPBOARD",
           "value": "SAVE20"
+        }
+      }
+    },
+    {
+      "type": "StoryRow",
+      "placement": {
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 165, "rowEnd": 175 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 165, "rowEnd": 175 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 165, "rowEnd": 175 }
+      },
+      "actions": {
+        "onDrop": {
+          "type": "API_CALL",
+          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+          "actionName": "ON_DROP_STORY"
+        }
+      },
+      "children": [
+        {
+          "type": "StoryCircle",
+          "data": {
+            "label": "Sale",
+            "imageUrl": "https://picsum.photos/id/2/100/100"
+          },
+          "actions": {
+            "onDrag": {
+              "type": "API_CALL",
+              "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+              "actionName": "ON_DRAG_STORY"
+            }
+          }
+        },
+        {
+          "type": "StoryCircle",
+          "data": {
+            "label": "Trending",
+            "imageUrl": "https://picsum.photos/id/3/100/100"
+          }
+        },
+        {
+          "type": "StoryCircle",
+          "data": {
+            "label": "Electronics",
+            "imageUrl": "https://picsum.photos/id/4/100/100"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ShareButton",
+      "placement": {
+        "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 180, "rowEnd": 185 },
+        "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 180, "rowEnd": 185 },
+        "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 180, "rowEnd": 185 }
+      },
+      "data": {
+        "label": "Share",
+        "icon": "📤"
+      },
+      "actions": {
+        "onTap": {
+          "type": "OPEN_BOTTOM_SHEET",
+          "data": {
+            "options": [
+              {
+                "label": "WhatsApp",
+                "icon": "💬",
+                "action": {
+                  "type": "API_CALL",
+                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+                  "actionName": "ON_TAP_SHARE_WHATSAPP"
+                }
+              },
+              {
+                "label": "Instagram",
+                "icon": "📸",
+                "action": {
+                  "type": "API_CALL",
+                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+                  "actionName": "ON_TAP_SHARE_INSTAGRAM"
+                }
+              },
+              { "label": "Twitter", "icon": "🐦" },
+              { "label": "Copy Link", "icon": "🔗" }
+            ]
+          }
         }
       }
     }

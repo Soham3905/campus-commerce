@@ -9,7 +9,9 @@ const TEMPLATES = {
   "Search Bar": fullPageJSON.children[4],
   "HeroBanner": fullPageJSON.children[5],
   "CountDownTimer": fullPageJSON.children[6],
-  "CouponCode" : fullPageJSON.children[7],
+  "CouponCode": fullPageJSON.children[7],
+  "StoryRow": fullPageJSON.children[8],
+  "Share": fullPageJSON.children[9],
 };
 
 async function executeOptionAction(option, closeMenu, setError) {
@@ -43,6 +45,7 @@ export default function SDUIRenderer() {
   const [deviceView, setDeviceView] = useState("desktop");
   const [error, setError] = useState("");
   const [menu, setMenu] = useState(null);
+  const [sheetData, setSheetData] = useState(null);
 
   const handleApplyJson = () => {
     try {
@@ -75,6 +78,8 @@ export default function SDUIRenderer() {
   };
 
   const closeMenu = () => setMenu(null);
+
+  const closeSheet = () => setSheetData(null);
 
   const handleOptionSelect = async (option) => {
     await executeOptionAction(option, closeMenu, setError);
@@ -147,14 +152,22 @@ export default function SDUIRenderer() {
           <div style={{
             width: getPreviewWidth(),
             height: getPreviewHeight(),
+            position: "relative",
+            overflow: "hidden"
           }}>
             {/* Screen Content Container */}
             <div style={{ backgroundColor: "#f3f3f3" }}>
-              <Renderer schema={schema} deviceType={deviceView} openMenu={setMenu} />
+              <Renderer schema={schema} deviceType={deviceView} openMenu={setMenu} openSheet={setSheetData} />
             </div>
             <ContextMenu
               data={menu}
               onClose={closeMenu}
+              onSelect={handleOptionSelect}
+            />
+            <BottomSheet
+              isOpen={!!sheetData}
+              data={sheetData}
+              onClose={closeSheet}
               onSelect={handleOptionSelect}
             />
           </div>
@@ -218,20 +231,83 @@ const Header = ({ children, style }) => (
   </div>
 );
 
-const ProductList = ({ children, style }) => (
-  <div style={{ display: "flex", overflowX: "auto", gap: "10px", padding: "8px", width: "100%", scrollBehavior: "smooth", ...style }}>
-    {React.Children.map(children, (child) => (
-      <div style={{ display: "flex" }}>
-        {child}
+const ProductList = ({ children, style, actions }) => {
+  const [isFetching, setIsFetching] = useState(false);
+  const fetchingRef = useRef(false);
+  const lastScrollTime = useRef(0);
+
+  const handleScroll = (e) => {
+    const scrollLeft = e.target.scrollLeft;
+    const clientWidth = e.target.clientWidth;
+    const scrollWidth = e.target.scrollWidth;
+
+    if (actions?.onScroll) {
+      const now = Date.now();
+      if (now - lastScrollTime.current > 1000) { // 1000ms delay for scroll to be noticeable..
+        lastScrollTime.current = now;
+        executeOptionAction({ action: actions.onScroll });
+      }
+    }
+
+    const nearEnd = scrollLeft + clientWidth >= scrollWidth - 50;
+    if (nearEnd && actions?.onEndReached && !fetchingRef.current) {
+      fetchingRef.current = true;
+      setIsFetching(true);
+      console.log("[onEndReached]: Loading next page...");
+      executeOptionAction({ action: actions.onEndReached });
+      setTimeout(() => {
+        fetchingRef.current = false;
+        setIsFetching(false);
+      }, 2000);
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div
+        onScroll={handleScroll}
+        style={{ display: "flex", overflowX: "auto", gap: "10px", padding: "8px", width: "100%", scrollBehavior: "smooth", scrollbarWidth: "none", ...style }}>
+        {React.Children.map(children, (child) => (
+          <div style={{ display: "flex" }}>
+            {child}
+          </div>
+        ))
+        }
+        {/* Visual Loader when fetching more */}
+        {isFetching && (
+          <div style={{
+            minWidth: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#fff",
+            borderRadius: "10px"
+          }}>
+            <div className="spinner"></div>
+          </div>
+        )}
       </div>
-    ))}
-  </div>
-);
+
+      <style>{`
+        .spinner {
+          width: 20px; height: 20px;
+          border: 3px solid #f3f3f3;
+          border-top: 3px solid #4f46e5;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      `}</style>
+    </div>
+  );
+};
 
 const Carousel = ({ data, children, style, actions }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [onMouseUp, setOnMouseUp] = useState(null);
+  const [onMouseDown, setOnMouseDown] = useState(null);
 
   const minSwipeDistance = 50;
 
@@ -264,38 +340,84 @@ const Carousel = ({ data, children, style, actions }) => {
     setTouchStart(e.targetTouches[0].clientX);
   }
 
+  const handleOnMouseUp = (e) => {
+    const endX = e.clientX;
+    if (!onMouseDown || !endX) {
+      setOnMouseDown(null);
+      setOnMouseUp(null);
+      return;
+    }
+    const distance = onMouseDown - endX;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+      if (actions?.onSwipeLeft) {
+        executeOptionAction({ action: actions.onSwipeLeft });
+      }
+    } else if (isRightSwipe) {
+      prevSlide();
+      if (actions?.onSwipeRight) {
+        executeOptionAction({ action: actions.onSwipeRight });
+      }
+    }
+    setOnMouseDown(null);
+    setOnMouseUp(null);
+  }
+
   const handleTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (touchStart !== null) {
+      setTouchEnd(e.targetTouches[0].clientX);
+    }
+  }
+
+  const handleOnMouseMove = (e) => {
+    if (onMouseDown !== null) {
+      setOnMouseUp(e.clientX);
+    }
   }
 
   const handleTouchEnd = (e) => {
-    if(!touchStart || !touchEnd){
+    if (!touchStart || !touchEnd) {
       return;
     }
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
 
-    if(isLeftSwipe){
+    if (isLeftSwipe) {
       nextSlide();
-      if(actions?.onSwipeLeft){
+      if (actions?.onSwipeLeft) {
         executeOptionAction({ action: actions.onSwipeLeft });
       }
-    }else if(isRightSwipe){
+    } else if (isRightSwipe) {
       prevSlide();
-      if(actions?.onSwipeRight){
+      if (actions?.onSwipeRight) {
         executeOptionAction({ action: actions.onSwipeRight });
       }
     }
+    setTouchStart(null);
+    setTouchEnd(null);
+  }
+
+  const handleOnMouseDown = (e) => {
+    setOnMouseUp(null);
+    setOnMouseDown(e.clientX);
   }
 
   if (!children) return null;
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", borderRadius: "10px", ...style }}
-    onTouchStart={handleTouchStart}
-    onTouchMove={handleTouchMove}
-    onTouchEnd={handleTouchEnd}
+    <div style={{ position: "relative", overflow: "hidden", borderRadius: "10px", userSelect: "none", ...style }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleOnMouseDown}
+      onMouseUp={handleOnMouseUp}
+      onMouseMove={handleOnMouseMove}
+      onMouseLeave={handleOnMouseUp}
+      onDragStart={(e) => e.preventDefault()}
     >
       <div style={{ display: "flex", transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)", transform: `translateX(-${currentIndex * 100}%)` }}>
         {React.Children.map(children, (child) => (
@@ -319,11 +441,13 @@ const Carousel = ({ data, children, style, actions }) => {
 const CategoryGrid = ({ children, style }) => (
   <div style={{
     display: "grid",
-    gridTemplateColumns: "repeat(20,1fr)",
+    gridAutoFlow: "column",
     gap: "12px",
     padding: "10px",
     backgroundColor: "#fff",
     borderRadius: "12px",
+    overflowX: "auto",
+    scrollbarWidth: "none",
     ...style
   }}>{children}
   </div>
@@ -703,10 +827,128 @@ const CouponCode = ({ data, style, actions }) => {
       </div>
       <button
         onClick={handleCopy}
-        style={{ padding: "4px 10px", backgroundColor: copied ? "#81c784" : "#4caf50", color: "#fff", borderRadius: "10px", cursor: "pointer", fontWeight: "600"}}
+        style={{ padding: "4px 10px", backgroundColor: copied ? "#81c784" : "#4caf50", color: "#fff", borderRadius: "10px", cursor: "pointer", fontWeight: "600" }}
       >
         {copied ? "Copied!" : data.copyLabel}
       </button>
+    </div>
+  );
+};
+
+const StoryRow = ({ children, style, actions }) => {
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (actions?.onDrop) {
+      executeOptionAction({ action: actions.onDrop });
+    }
+  };
+  return (
+    <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      style={{ display: "flex", gap: "8px", padding: "10px 4px", overflowX: "auto", backgroundColor: "#fff", scrollbarWidth: "none", borderBottom: "1px solid #efefef", borderRadius: "24px", ...style }}>
+      {children}
+    </div>
+  );
+}
+
+const StoryCircle = ({ data, style, actions }) => {
+  const handleDragStart = (e) => {
+    e.dataTransfer.effectAllowed = "move";
+    if (actions?.onDrag) {
+      executeOptionAction({ action: actions.onDrag });
+    }
+  }
+  return (
+    <div
+      style={{
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", cursor: "grab", flexShrink: 0, ...style
+      }}
+    >
+      <div
+        draggable="true"
+        onDragStart={handleDragStart}
+        style={{
+          width: "60px",
+          height: "60px",
+          borderRadius: "50%",
+          padding: "2px",
+          border: "2px solid #e1306c",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#fff"
+        }}>
+        <img
+          src={data.imageUrl}
+          alt={data.label}
+          style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
+        />
+      </div>
+      <span style={{ fontSize: "11px", fontWeight: "500", color: "#262626" }}>{data.label}</span>
+    </div>
+  );
+}
+
+const ShareButton = ({ data }) => {
+  return <button style={{ border: "1px solid #ddd", padding: "5px 10px", borderRadius: "15px", fontSize: "12px", cursor: "pointer" }}>
+    {data?.icon} {data.label}
+  </button>
+}
+
+const BottomSheet = ({ data, isOpen, onClose, onSelect }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1000,
+        display: "flex", alignItems: "flex-end"
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%", backgroundColor: "#fff", borderTopLeftRadius: "20px",
+          borderTopRightRadius: "20px", padding: "10px", animation: "slideUp 0.3s ease-out"
+        }}
+      >
+        <div style={{ width: "40px", height: "4px", backgroundColor: "#ddd", borderRadius: "2px", margin: "0 auto 10px" }} />
+        <h3 style={{ textAlign: "center", marginBottom: "10px", fontSize: "14px" }}>Share via</h3>
+
+        <div style={{ display: "grid", gridAutoFlow: "column", gap: "10px" }}>
+          {data.options.map((option, idx) => (
+            <div
+              key={idx}
+              onClick={() => {
+                if (onSelect) onSelect(option);
+                onClose();
+              }}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", cursor: "pointer" }}
+            >
+              <div style={{ fontSize: "20px", background: "#f0f0f0", width: "30px", height: "30px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {option.icon}
+              </div>
+              <span style={{ fontSize: "11px" }}>{option.label}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={onClose}
+          style={{ width: "100%", marginTop: "20px", padding: "4px", border: "none", background: "#eee", borderRadius: "8px", fontWeight: "bold" }}
+        >
+          Cancel
+        </button>
+      </div>
+      <style>{`
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+      `}</style>
     </div>
   );
 };
@@ -723,6 +965,9 @@ const ComponentMap = {
   "HeroBanner": HeroBanner,
   "CountDownTimer": CountDownTimer,
   "CouponCode": CouponCode,
+  "StoryRow": StoryRow,
+  "StoryCircle": StoryCircle,
+  "ShareButton": ShareButton,
   "ProductCard": ProductCard,
   "Image": ProductImage,
   "Label": Label,
@@ -740,7 +985,7 @@ const ComponentMap = {
   "Button": Button,
 };
 
-const Renderer = ({ schema, deviceType, openMenu }) => {
+const Renderer = ({ schema, deviceType, openMenu, openSheet }) => {
   if (!schema) return null;
 
   const TargetComponent = ComponentMap[schema.type];
@@ -764,7 +1009,14 @@ const Renderer = ({ schema, deviceType, openMenu }) => {
     const tapAction = schema.actions?.onTap;
     if (tapAction) {
       e.stopPropagation();
-      executeOptionAction({ action: tapAction });
+      if (tapAction.type === "OPEN_BOTTOM_SHEET") {
+        openSheet({
+          options: tapAction.data?.options || [],
+          schema,
+        });
+      } else {
+        executeOptionAction({ action: tapAction });
+      }
     }
   }
 
@@ -798,7 +1050,7 @@ const Renderer = ({ schema, deviceType, openMenu }) => {
       <div style={placementStyle} {...interactionProps}>
         <TargetComponent data={schema.data} style={schema.containerStyle} actions={schema.actions}>
           {schema.children && schema.children.map((child, idx) => (
-            <Renderer key={idx} schema={child} deviceType={deviceType} openMenu={openMenu} />
+            <Renderer key={idx} schema={child} deviceType={deviceType} openMenu={openMenu} openSheet={openSheet} />
           ))}
         </TargetComponent>
       </div>
