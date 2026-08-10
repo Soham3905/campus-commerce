@@ -37,12 +37,14 @@ export const fullPageJSON = {
         "onSwipeLeft": {
           "type": "API_CALL",
           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-          "actionName": "CAROUSEL_SWIPE_LEFT"
+          "actionName": "CAROUSEL_SWIPE_LEFT",
+          "minSwipeDistance": 50
         },
         "onSwipeRight": {
           "type": "API_CALL",
           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-          "actionName": "CAROUSEL_SWIPE_RIGHT"
+          "actionName": "CAROUSEL_SWIPE_RIGHT",
+          "minSwipeDistance": 50
         }
       },
       "children": [
@@ -79,12 +81,14 @@ export const fullPageJSON = {
         "onScroll": {
           "type": "API_CALL",
           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-          "actionName": "ON_SCROLL_PRODUCT"
+          "actionName": "ON_SCROLL_PRODUCT",
+          "debounceDuration": 1000
         },
         "onEndReached": {
           "type": "API_CALL",
           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-          "actionName": "LOAD_MORE_PRODUCTS"
+          "actionName": "LOAD_MORE_PRODUCTS",
+          "nearEndThreshold": 50
         }
       },
       "children": [
@@ -149,7 +153,7 @@ export const fullPageJSON = {
             { "type": "DeliveryInfo", "data": { "prefix": "FREE delivery", "daysOffset": 7 } },
             { "type": "Button", "data": { "label": "Add to Cart" } }
           ]
-        }
+        },
       ]
     },
     {
@@ -218,7 +222,8 @@ export const fullPageJSON = {
         "onChange": {
           "type": "API_CALL",
           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-          "actionName": "ON_CHANGE_SEARCH"
+          "actionName": "ON_CHANGE_SEARCH",
+          "debounceDuration": 500
         },
         "onSubmit": {
           "type": "API_CALL",
@@ -283,7 +288,7 @@ export const fullPageJSON = {
             "onHover": {
               "type": "API_CALL",
               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-              "actionName": "PRODUCT_HOVER_ANALYTICS"
+              "actionName": "On_HOVER"
             },
           }
         }
