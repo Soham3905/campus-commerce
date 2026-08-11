@@ -1,17 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
 
+const pageChildren = fullPageJSON.children[0].children;
+
 const TEMPLATES = {
   "Full Page": fullPageJSON,
-  "Carousel Only": fullPageJSON.children[1],
-  "Product List": fullPageJSON.children[2],
-  "Category Grid": fullPageJSON.children[3],
-  "Search Bar": fullPageJSON.children[4],
-  "HeroBanner": fullPageJSON.children[5],
-  "CountDownTimer": fullPageJSON.children[6],
-  "CouponCode": fullPageJSON.children[7],
-  "StoryRow": fullPageJSON.children[8],
-  "Share": fullPageJSON.children[9],
+  "Carousel Only": pageChildren[1],
+  "Product List": pageChildren[2],
+  "Category Grid": pageChildren[3],
+  "Search Bar": pageChildren[4],
+  "HeroBanner": pageChildren[5],
+  "CountDownTimer": pageChildren[6],
+  "CouponCode": pageChildren[7],
+  "StoryRow": pageChildren[8],
+  "Share": pageChildren[9],
+  "Navbar" : fullPageJSON.children[1],
 };
 
 async function executeOptionAction(option) {
@@ -68,8 +71,8 @@ export default function SDUIRenderer() {
   };
 
   const getPreviewHeight = () => {
-    if (deviceView === "mobile") return "812px";
-    if (deviceView === "tablet") return "1024px";
+    if (deviceView === "mobile") return "100%";
+    if (deviceView === "tablet") return "100%";
     return "100%";
   };
 
@@ -141,7 +144,7 @@ export default function SDUIRenderer() {
         </div>
 
         {/* Simulated Device Canvas */}
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "15px", overflowY: "auto", scrollbarWidth: "none" }}>
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "15px", overflowY: "auto" }}>
           <div style={{
             width: getPreviewWidth(),
             height: getPreviewHeight(),
@@ -327,8 +330,20 @@ const ActionWrapper = ({ actions, children, style }) => {
   return <div style={style}>{children}</div>;
 };
 
+const Home = ({ children, style }) => {
+  return (
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      ...style 
+    }}>
+      {children}
+    </div>
+  );
+};
+
 const Page = ({ children, style }) => (
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 1fr)", gap: "0px", height: "100%", padding: "10px", ...style }}>
+  <div style={{display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 10px)", gap: "0px", height: "100%", padding: "10px", ...style }}>
     {children}
   </div>
 );
@@ -669,6 +684,29 @@ const ShareButton = ({ data }) => {
   </button>
 }
 
+// For position sticky in NavBar ...these styles are applied on the outermost div container but this is not a good idea
+    //  The Best Practice Way (Move it out of the grid) A bottom navigation bar conceptually shouldn't be a cell inside the page's grid. The cleanest SDUI architecture is to make the NavBar a sibling to the scrolling page, rather than a child of it.
+    //  You would introduce a root wrapper (e.g., "type": "Screen") where the children are:
+    // - The Page grid (which scrolls).
+    // - The NavBar (which sits at the bottom with position: sticky).
+    // Because they would both sit directly inside the #f3f3f3 scroll container without being trapped in grid cells, position: sticky; bottom: 0; would work perfectly out of the box.
+
+const NavBar = ({ data, style }) => {
+  return (
+    <div
+      style={{ display: "flex", justifyContent: "space-around", alignItems: "center", backgroundColor: "#ffffff", borderTop: "1px solid #e5e7eb", ...style }}>
+      {data?.items.map((item, idx) => (
+        <div
+          key={idx}
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer", color: item.isActive ? "#4f46e5" : "#6b7280" }}>
+          <span style={{ fontSize: "20px" }}>{item.icon}</span>
+          <span style={{ fontSize: "10px", fontWeight: "600" }}>{item.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const ContextMenu = ({ data, onClose, onSelect }) => {
   if (!data) return null;
 
@@ -756,6 +794,7 @@ const BottomSheet = ({ data, isOpen, onClose, onSelect }) => {
 };
 
 const ComponentMap = {
+  "Home" : Home,
   "Page": Page,
   "Header": Header,
   "HeaderButton": HeaderButton,
@@ -770,6 +809,7 @@ const ComponentMap = {
   "StoryRow": StoryRow,
   "StoryCircle": StoryCircle,
   "ShareButton": ShareButton,
+  "NavBar": NavBar,
   "ProductCard": ProductCard,
   "Image": ProductImage,
   "Label": Label,
@@ -961,9 +1001,16 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet }) => {
     }
   }
 
+  const stickyStyle = schema.containerStyle?.position === 'sticky' ? {
+    position: 'sticky',
+    top: schema.containerStyle.top,
+    bottom: schema.containerStyle.bottom,
+    zIndex: schema.containerStyle.zIndex
+  } : {};
+
   return (
     <>
-      <div style={placementStyle} {...interactionProps}>
+      <div style={{ ...placementStyle, ...stickyStyle }} {...interactionProps}>
         <ActionWrapper actions={schema.actions}>
           <TargetComponent data={schema.data} style={schema.containerStyle} actions={schema.actions} isHovered={isHovered} onError={handleError} onExpire={handleExpire} onCopy={handleCopy}>
             {schema.children && schema.children.map((child, idx) => (
