@@ -1,6 +1,35 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
 
+const createDummyPage = (titleText) => ({
+  "type": "Home",
+  "children": [
+    {
+      "type": "Page",
+      "children": [
+        {
+          "type": "Title",
+          "placement" : {
+            "mobile": {"colStart" : 1, "colEnd" : 100, "rowStart": 1, "rowEnd": 5},
+            "tablet": {"colStart" : 1, "colEnd" : 100, "rowStart": 1, "rowEnd": 5},
+            "desktop": {"colStart" : 1, "colEnd" : 100, "rowStart": 1, "rowEnd": 5}
+          },
+          "data": { "text": titleText }
+        }
+      ]
+    },
+    fullPageJSON.children[1] 
+  ]
+});
+
+
+const PageRoutes = {
+  "home" : fullPageJSON,
+  "categories" : createDummyPage("Categories Page 🗂️"),
+  "cart" : createDummyPage("Cart Page 🛒"),
+  "account" : createDummyPage("Account Page 👤"),
+}
+
 const pageChildren = fullPageJSON.children[0].children;
 
 const TEMPLATES = {
@@ -45,6 +74,16 @@ export default function SDUIRenderer() {
   const [error, setError] = useState("");
   const [menu, setMenu] = useState(null);
   const [sheetData, setSheetData] = useState(null);
+
+  const handleNavigate = (route) => {
+    console.log(`Navigating to: ${route}`);
+    const newPageSchema = PageRoutes[route];
+    
+    if (newPageSchema) {
+      setSchema(newPageSchema);
+      setJsonText(JSON.stringify(newPageSchema, null, 2));
+    }
+  };
 
   const handleApplyJson = () => {
     try {
@@ -153,7 +192,7 @@ export default function SDUIRenderer() {
           }}>
             {/* Screen Content Container */}
             <div style={{ backgroundColor: "#f3f3f3", height: "100%", overflowY: "auto", scrollbarWidth: "none" }}>
-              <Renderer schema={schema} deviceType={deviceView} openMenu={setMenu} openSheet={setSheetData} />
+              <Renderer schema={schema} deviceType={deviceView} openMenu={setMenu} openSheet={setSheetData} onNavigate={handleNavigate} />
             </div>
             <ContextMenu
               data={menu}
@@ -684,20 +723,18 @@ const ShareButton = ({ data }) => {
   </button>
 }
 
-// For position sticky in NavBar ...these styles are applied on the outermost div container but this is not a good idea
-    //  The Best Practice Way (Move it out of the grid) A bottom navigation bar conceptually shouldn't be a cell inside the page's grid. The cleanest SDUI architecture is to make the NavBar a sibling to the scrolling page, rather than a child of it.
-    //  You would introduce a root wrapper (e.g., "type": "Screen") where the children are:
-    // - The Page grid (which scrolls).
-    // - The NavBar (which sits at the bottom with position: sticky).
-    // Because they would both sit directly inside the #f3f3f3 scroll container without being trapped in grid cells, position: sticky; bottom: 0; would work perfectly out of the box.
-
-const NavBar = ({ data, style }) => {
+const NavBar = ({ data, style, onNavigate }) => {
   return (
     <div
       style={{ display: "flex", justifyContent: "space-around", alignItems: "center", backgroundColor: "#ffffff", borderTop: "1px solid #e5e7eb", ...style }}>
       {data?.items.map((item, idx) => (
         <div
           key={idx}
+          onClick={() => {
+            if (item.actions?.onTap?.type === "NAVIGATE" && onNavigate) {
+              onNavigate(item.actions.onTap.route);
+            }
+          }}
           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer", color: item.isActive ? "#4f46e5" : "#6b7280" }}>
           <span style={{ fontSize: "20px" }}>{item.icon}</span>
           <span style={{ fontSize: "10px", fontWeight: "600" }}>{item.label}</span>
@@ -827,7 +864,7 @@ const ComponentMap = {
   "Button": Button,
 };
 
-const Renderer = ({ schema, deviceType, openMenu, openSheet }) => {
+const Renderer = ({ schema, deviceType, openMenu, openSheet, onNavigate }) => {
   const debounceTimer = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -888,6 +925,10 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet }) => {
           options: tapAction.data?.options || [],
           schema,
         });
+      } else if (tapAction.type === "NAVIGATE") {
+        if (onNavigate) {
+          onNavigate(tapAction.route);
+        }
       } else {
         executeOptionAction({ action: tapAction });
       }
@@ -1012,9 +1053,9 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet }) => {
     <>
       <div style={{ ...placementStyle, ...stickyStyle }} {...interactionProps}>
         <ActionWrapper actions={schema.actions}>
-          <TargetComponent data={schema.data} style={schema.containerStyle} actions={schema.actions} isHovered={isHovered} onError={handleError} onExpire={handleExpire} onCopy={handleCopy}>
+          <TargetComponent data={schema.data} style={schema.containerStyle} actions={schema.actions} isHovered={isHovered} onError={handleError} onExpire={handleExpire} onCopy={handleCopy} onNavigate={onNavigate}>
             {schema.children && schema.children.map((child, idx) => (
-              <Renderer key={idx} schema={child} deviceType={deviceType} openMenu={openMenu} openSheet={openSheet} />
+              <Renderer key={idx} schema={child} deviceType={deviceType} openMenu={openMenu} openSheet={openSheet} onNavigate={onNavigate} />
             ))}
           </TargetComponent>
         </ActionWrapper>

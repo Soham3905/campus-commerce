@@ -440,19 +440,50 @@ export const fullPageJSON = {
           {
             "label": "Home",
             "icon": "🏠",
-            "isActive": "true"
+            "isActive": "true",
+            "actions": {
+              "onTap": {
+                "type": "NAVIGATE",
+                "route": "home",
+                "actionName": "ON_TAP_HOME"
+              }
+            }
           },
           {
             "label": "Categories",
-            "icon": "🗂️"
+            "icon": "🗂️",
+            "isActive": "false",
+            "actions": {
+              "onTap": {
+                "type": "NAVIGATE",
+                "route": "categories",
+                "actionName": "ON_TAP_CATEGORIES"
+              }
+            }
           },
           {
             "label": "Cart",
-            "icon": "🛒"
+            "icon": "🛒",
+            "isActive": "false",
+            "actions": {
+              "onTap": {
+                "type": "NAVIGATE",
+                "route": "cart",
+                "actionName": "ON_TAP_CART"
+              }
+            }
           },
           {
             "label": "Account",
-            "icon": "👤"
+            "icon": "👤",
+            "isActive": "false",
+            "actions": {
+              "onTap": {
+                "type": "NAVIGATE",
+                "route": "account",
+                "actionName": "ON_TAP_ACCOUNT"
+              }
+            }
           }
         ]
       }
