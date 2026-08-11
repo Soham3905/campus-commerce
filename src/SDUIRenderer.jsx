@@ -4,7 +4,7 @@ import { fullPageJSON } from "./landingSchema";
 const createDummyPage = (titleText, routeName) => {
   // Deep clone the NavBar so we can modify it without breaking the original
   const navBar = JSON.parse(JSON.stringify(fullPageJSON.children[1]));
-  
+
   if (navBar.data && navBar.data.items) {
     navBar.data.items.forEach(item => {
       if (item.actions?.onTap?.route === routeName) {
@@ -58,6 +58,7 @@ const TEMPLATES = {
   "CouponCode": pageChildren[7],
   "StoryRow": pageChildren[8],
   "Share": pageChildren[9],
+  "Footer": pageChildren[10],
   "Navbar": fullPageJSON.children[1],
 };
 
