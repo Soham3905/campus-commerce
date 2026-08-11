@@ -426,6 +426,36 @@ export const fullPageJSON = {
             }
           }
         },
+        {
+          "type": "Footer",
+          "placement": {
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 187, "rowEnd": 195 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 187, "rowEnd": 195 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 187, "rowEnd": 195 }
+          },
+          "data": {
+            "sections": [
+              {
+                "title": "Get to Know Us",
+                "links": [
+                  { "label": "About Us", "url": "https://example.com/about" },
+                  { "label": "Careers", "url": "https://example.com/careers" },
+                  { "label": "Community", "url": "https://example.com/community" }
+                ]
+              },
+              {
+                "title": "Connect With Us",
+                "links": [
+                  { "label": "Instagram", "url": "https://instagram.com" },
+                  { "label": "Facebook", "url": "https://facebook.com" },
+                  { "label": "Twitter", "url": "https://twitter.com" },
+                  { "label": "LinkedIn", "url": "https://linkedin.com" }
+                ]
+              },
+            ],
+            "copyrightText": "© 2024-2026, SDUI-Commerce, Inc. or its affiliates"
+          }
+        },
       ]
     },
     {

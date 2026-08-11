@@ -1,33 +1,48 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
 
-const createDummyPage = (titleText) => ({
-  "type": "Home",
-  "children": [
-    {
-      "type": "Page",
-      "children": [
-        {
-          "type": "Title",
-          "placement" : {
-            "mobile": {"colStart" : 1, "colEnd" : 100, "rowStart": 1, "rowEnd": 5},
-            "tablet": {"colStart" : 1, "colEnd" : 100, "rowStart": 1, "rowEnd": 5},
-            "desktop": {"colStart" : 1, "colEnd" : 100, "rowStart": 1, "rowEnd": 5}
-          },
-          "data": { "text": titleText }
-        }
-      ]
-    },
-    fullPageJSON.children[1] 
-  ]
-});
+const createDummyPage = (titleText, routeName) => {
+  // Deep clone the NavBar so we can modify it without breaking the original
+  const navBar = JSON.parse(JSON.stringify(fullPageJSON.children[1]));
+  
+  if (navBar.data && navBar.data.items) {
+    navBar.data.items.forEach(item => {
+      if (item.actions?.onTap?.route === routeName) {
+        item.isActive = "true";
+      } else {
+        item.isActive = "false";
+      }
+    });
+  }
+
+  return {
+    "type": "Home",
+    "children": [
+      {
+        "type": "Page",
+        "children": [
+          {
+            "type": "Title",
+            "placement": {
+              "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 },
+              "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 },
+              "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 }
+            },
+            "data": { "text": titleText }
+          }
+        ]
+      },
+      navBar
+    ]
+  };
+};
 
 
 const PageRoutes = {
-  "home" : fullPageJSON,
-  "categories" : createDummyPage("Categories Page 🗂️"),
-  "cart" : createDummyPage("Cart Page 🛒"),
-  "account" : createDummyPage("Account Page 👤"),
+  "home": fullPageJSON,
+  "categories": createDummyPage("Categories Page 🗂️", "categories"),
+  "cart": createDummyPage("Cart Page 🛒", "cart"),
+  "account": createDummyPage("Account Page 👤", "account"),
 }
 
 const pageChildren = fullPageJSON.children[0].children;
@@ -43,7 +58,7 @@ const TEMPLATES = {
   "CouponCode": pageChildren[7],
   "StoryRow": pageChildren[8],
   "Share": pageChildren[9],
-  "Navbar" : fullPageJSON.children[1],
+  "Navbar": fullPageJSON.children[1],
 };
 
 async function executeOptionAction(option) {
@@ -78,7 +93,7 @@ export default function SDUIRenderer() {
   const handleNavigate = (route) => {
     console.log(`Navigating to: ${route}`);
     const newPageSchema = PageRoutes[route];
-    
+
     if (newPageSchema) {
       setSchema(newPageSchema);
       setJsonText(JSON.stringify(newPageSchema, null, 2));
@@ -371,10 +386,10 @@ const ActionWrapper = ({ actions, children, style }) => {
 
 const Home = ({ children, style }) => {
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      ...style 
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      ...style
     }}>
       {children}
     </div>
@@ -382,7 +397,7 @@ const Home = ({ children, style }) => {
 };
 
 const Page = ({ children, style }) => (
-  <div style={{display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 10px)", gap: "0px", height: "100%", padding: "10px", ...style }}>
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 10px)", gap: "0px", height: "100%", padding: "10px", ...style }}>
     {children}
   </div>
 );
@@ -735,7 +750,7 @@ const NavBar = ({ data, style, onNavigate }) => {
               onNavigate(item.actions.onTap.route);
             }
           }}
-          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer", color: item.isActive ? "#4f46e5" : "#6b7280" }}>
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer", color: (item.isActive === "true") ? "#4f46e5" : "#6b7280" }}>
           <span style={{ fontSize: "20px" }}>{item.icon}</span>
           <span style={{ fontSize: "10px", fontWeight: "600" }}>{item.label}</span>
         </div>
@@ -743,6 +758,34 @@ const NavBar = ({ data, style, onNavigate }) => {
     </div>
   );
 }
+
+const Footer = ({ data, style }) => {
+  return (
+    <div style={{ padding: "10px", backgroundColor: "#0f172a", color: "#f8fafc", ...style }}>
+      <div style={{ display: "grid", gridAutoFlow: "column", gap: "10px" }}>
+        {data.sections?.map((section, i) => (
+          <div key={i}>
+            <h4 style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px", color: "#818cf8" }}>
+              {section.title}
+            </h4>
+            <ul>
+              {section.links?.map((link, j) => (
+                <li key={j} style={{ fontSize: "11px", marginBottom: "5px", cursor: "pointer", color: "#94a3b8" }} onMouseEnter={(e) => e.target.style.color = "#ffffff"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div style={{ borderTop: "1px solid #64748b", paddingTop: "8px", textAlign: "center", fontSize: "11px", opacity: 0.6 }}>
+        {data.copyrightText}
+      </div>
+    </div>
+  );
+};
 
 const ContextMenu = ({ data, onClose, onSelect }) => {
   if (!data) return null;
@@ -831,7 +874,7 @@ const BottomSheet = ({ data, isOpen, onClose, onSelect }) => {
 };
 
 const ComponentMap = {
-  "Home" : Home,
+  "Home": Home,
   "Page": Page,
   "Header": Header,
   "HeaderButton": HeaderButton,
@@ -847,6 +890,7 @@ const ComponentMap = {
   "StoryCircle": StoryCircle,
   "ShareButton": ShareButton,
   "NavBar": NavBar,
+  "Footer": Footer,
   "ProductCard": ProductCard,
   "Image": ProductImage,
   "Label": Label,
