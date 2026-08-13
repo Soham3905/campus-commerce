@@ -45,7 +45,7 @@ const PageRoutes = {
   "account": createDummyPage("Account Page 👤", "account"),
 }
 
-const pageChildren = fullPageJSON.children[0].children;
+const pageChildren = fullPageJSON?.children?.[0]?.children || [];
 
 const TEMPLATES = {
   "Full Page": fullPageJSON,
@@ -59,7 +59,7 @@ const TEMPLATES = {
   "StoryRow": pageChildren[8],
   "Share": pageChildren[9],
   "Footer": pageChildren[10],
-  "Navbar": fullPageJSON.children[1],
+  "Navbar": fullPageJSON?.children?.[1],
 };
 
 async function executeOptionAction(option) {
@@ -137,6 +137,18 @@ export default function SDUIRenderer() {
 
   const handleOptionSelect = async (option) => {
     try {
+      const action = option.action || {};
+      
+      // Handle opening another sheet directly from an option
+      if (action.type === "OPEN_BOTTOM_SHEET") {
+        closeMenu();
+        setSheetData({
+          title: action.data?.title,
+          options: action.data?.options || [],
+        });
+        return;
+      }
+
       await executeOptionAction(option);
       closeMenu();
       closeSheet();
@@ -406,18 +418,18 @@ const Page = ({ children, style }) => (
 const Header = ({ children, style }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 12, ...style }}>
     {children}
-  </div>
-);
+    </div>
+  );
 
 const HeaderButton = ({ data, style }) => (
   <div
-    style={{
+      style={{
       padding: "8px 12px", borderRadius: 12, background: "#f8fafc", border: "1px solid #e5e7eb", display: "flex", alignItems: "center", gap: 6, ...style
-    }}
-  >
-    <span style={{ fontWeight: 600, fontSize: 12 }}> {data?.icon} {data?.label}</span>
-  </div>
-);
+      }}
+    >
+      <span style={{ fontWeight: 600, fontSize: 12 }}> {data?.icon} {data?.label}</span>
+    </div>
+  );
 
 const ProductList = ({ children }) => {
   return (
@@ -733,8 +745,8 @@ const StoryCircle = ({ data, style }) => {
   );
 }
 
-const ShareButton = ({ data }) => {
-  return <button style={{ border: "1px solid #ddd", padding: "5px 10px", borderRadius: "15px", fontSize: "12px", cursor: "pointer" }}>
+const ShareButton = ({ data, style }) => {
+  return <button style={{ border: "1px solid #ddd", padding: "5px 10px", borderRadius: "15px", fontSize: "12px", cursor: "pointer", ...style }}>
     {data?.icon} {data.label}
   </button>
 }
@@ -841,7 +853,7 @@ const BottomSheet = ({ data, isOpen, onClose, onSelect }) => {
         }}
       >
         <div style={{ width: "40px", height: "4px", backgroundColor: "#ddd", borderRadius: "2px", margin: "0 auto 10px" }} />
-        <h3 style={{ textAlign: "center", marginBottom: "10px", fontSize: "14px" }}>Share via</h3>
+        <h3 style={{ textAlign: "center", marginBottom: "10px", fontSize: "14px" }}>{data.title || "Share via"}</h3>
 
         <div style={{ display: "grid", gridAutoFlow: "column", gap: "10px" }}>
           {data.options.map((option, idx) => (
@@ -967,6 +979,7 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, onNavigate }) => {
       e.stopPropagation();
       if (tapAction.type === "OPEN_BOTTOM_SHEET") {
         openSheet({
+          title: tapAction.data?.title,
           options: tapAction.data?.options || [],
           schema,
         });
