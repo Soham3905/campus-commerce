@@ -90,6 +90,7 @@ export default function SDUIRenderer() {
   const [error, setError] = useState("");
   const [menu, setMenu] = useState(null);
   const [sheetData, setSheetData] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
 
   const handleNavigate = (route) => {
     console.log(`Navigating to: ${route}`);
@@ -138,7 +139,7 @@ export default function SDUIRenderer() {
   const handleOptionSelect = async (option) => {
     try {
       const action = option.action || {};
-      
+
       // Handle opening another sheet directly from an option
       if (action.type === "OPEN_BOTTOM_SHEET") {
         closeMenu();
@@ -161,48 +162,55 @@ export default function SDUIRenderer() {
     <div style={{ display: "flex", height: "100vh" }}>
 
       {/* -- LEFT PANEL: JSON EDITOR -- */}
-      <div style={{ width: "22%", display: "flex", flexDirection: "column", borderRight: "1px solid #2a2a35", background: "#13131f" }}>
+      {isSidebarOpen && (
+        <div style={{ width: "22%", minWidth: "300px", display: "flex", flexDirection: "column", borderRight: "1px solid #2a2a35", background: "#13131f" }}>
 
-        {/* Editor Header */}
-        <div style={{ padding: "12px 16px", background: "#1a1a24", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #2a2a35" }}>
-          <h3 style={{ fontSize: "14px", color: "#cdd6f4" }}>⚙️ SDUI Studio</h3>
-          <button
-            onClick={handleApplyJson}
-            style={{ padding: "6px 16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "12px" }}
-          >
-            Apply Changes
-          </button>
-        </div>
-
-        {/*NAVIGATION TABS */}
-        <div style={{ display: "flex", gap: "8px", padding: "12px", background: "#1e1e2e", borderBottom: "1px solid #2a2a35", overflowX: "auto" }}>
-          {Object.keys(TEMPLATES).map((tab) => (
+          {/* Editor Header */}
+          <div style={{ padding: "12px 16px", background: "#1a1a24", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #2a2a35" }}>
+            <h3 style={{ fontSize: "14px", color: "#cdd6f4" }}>⚙️ SDUI Studio</h3>
             <button
-              key={tab}
-              onClick={() => loadTemplate(tab)}
-              style={{ padding: "6px 12px", backgroundColor: activeTab === tab ? "#4f46e5" : "transparent", color: activeTab === tab ? "#fff" : "#a6accd", border: activeTab === tab ? "none" : "1px solid #444", borderRadius: "16px", cursor: "pointer", fontSize: "11px", fontWeight: "bold", }}
+              onClick={handleApplyJson}
+              style={{ padding: "6px 16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "12px" }}
             >
-              {tab}
+              Apply Changes
             </button>
-          ))}
+          </div>
+
+          {/*NAVIGATION TABS */}
+          <div style={{ display: "flex", gap: "8px", padding: "12px", background: "#1e1e2e", borderBottom: "1px solid #2a2a35", overflowX: "auto" }}>
+            {Object.keys(TEMPLATES).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => loadTemplate(tab)}
+                style={{ padding: "6px 12px", backgroundColor: activeTab === tab ? "#4f46e5" : "transparent", color: activeTab === tab ? "#fff" : "#a6accd", border: activeTab === tab ? "none" : "1px solid #444", borderRadius: "16px", cursor: "pointer", fontSize: "11px", fontWeight: "bold", }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {error && <div style={{ background: "rgba(220,38,38,0.15)", borderLeft: "3px solid #dc2626", color: "#fca5a5", padding: "10px", fontSize: "13px" }}>{error}</div>}
+
+          {/* Text Area */}
+          <textarea
+            value={jsonText}
+            onChange={(e) => setJsonText(e.target.value)}
+            style={{ flex: 1, padding: "10px", background: "transparent", color: "#89dceb", fontSize: "12px", fontFamily: "monospace" }}
+          />
         </div>
-
-        {error && <div style={{ background: "rgba(220,38,38,0.15)", borderLeft: "3px solid #dc2626", color: "#fca5a5", padding: "10px", fontSize: "13px" }}>{error}</div>}
-
-        {/* Text Area */}
-        <textarea
-          value={jsonText}
-          onChange={(e) => setJsonText(e.target.value)}
-          style={{ flex: 1, padding: "10px", background: "transparent", color: "#89dceb", fontSize: "12px", fontFamily: "monospace" }}
-        />
-      </div>
+      )}
 
       {/* -- RIGHT PANEL: DEVICE PREVIEWER -- */}
-      <div style={{ width: "78%", display: "flex", flexDirection: "column", background: "radial-gradient(circle at center, #1f1f33 0%, #0f0f1a 100%)" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "radial-gradient(circle at center, #1f1f33 0%, #0f0f1a 100%)" }}>
 
         {/* Navigation Bar */}
         <div style={{ padding: "12px 24px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "bold" }}>Preview Area</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: "transparent", border: "none", color: "white", fontSize: "20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              ☰
+            </button>
+            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "bold" }}>Preview Area</span>
+          </div>
           <div style={{ display: "flex", gap: "6px", background: "rgba(0,0,0,0.2)", padding: "4px", borderRadius: "10px" }}>
             <DeviceButton label="📱 Mobile" active={deviceView === "mobile"} onClick={() => setDeviceView("mobile")} />
             <DeviceButton label="📟 Tablet" active={deviceView === "tablet"} onClick={() => setDeviceView("tablet")} />
@@ -418,18 +426,18 @@ const Page = ({ children, style }) => (
 const Header = ({ children, style }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 12, ...style }}>
     {children}
-    </div>
-  );
+  </div>
+);
 
 const HeaderButton = ({ data, style }) => (
   <div
-      style={{
+    style={{
       padding: "8px 12px", borderRadius: 12, background: "#f8fafc", border: "1px solid #e5e7eb", display: "flex", alignItems: "center", gap: 6, ...style
-      }}
-    >
-      <span style={{ fontWeight: 600, fontSize: 12 }}> {data?.icon} {data?.label}</span>
-    </div>
-  );
+    }}
+  >
+    <span style={{ fontWeight: 600, fontSize: 12 }}> {data?.icon} {data?.label}</span>
+  </div>
+);
 
 const ProductList = ({ children }) => {
   return (
@@ -489,7 +497,7 @@ const Carousel = ({ data, children, style, actions }) => {
         ))}
       </div>
       {data.showDots && (
-        <div style={{ position: "absolute", bottom: "0px", width: "100%", display: "flex", justifyContent: "center" }}>
+        <div style={{ position: "absolute", bottom: "10px", width: "100%", display: "flex", justifyContent: "center" }}>
           {React.Children.map(children, (_, idx) => (
             <div key={idx} onClick={() => setCurrentIndex(idx)} style={{
               width: currentIndex === idx ? "20px" : "8px", height: "8px", borderRadius: "4px",
@@ -886,6 +894,14 @@ const BottomSheet = ({ data, isOpen, onClose, onSelect }) => {
   );
 };
 
+const Box = ({ children, style }) => (
+  <div style={style}>{children}</div>
+);
+
+const Text = ({ data, style }) => (
+  <span style={style}>{data?.text}</span>
+);
+
 const ComponentMap = {
   "Home": Home,
   "Page": Page,
@@ -898,6 +914,8 @@ const ComponentMap = {
   "SearchBar": SearchBar,
   "HeroBanner": HeroBanner,
   "CountDownTimer": CountDownTimer,
+  "Box": Box,
+  "Text": Text,
   "CouponCode": CouponCode,
   "StoryRow": StoryRow,
   "StoryCircle": StoryCircle,
