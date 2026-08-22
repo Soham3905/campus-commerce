@@ -15,7 +15,7 @@ export interface GridPlacement {
 }
 
 export interface SDUIAction {
-  type: 'API_CALL' | 'COPY_TO_CLIPBOARD' | 'NAVIGATE' | 'OPEN_BOTTOM_SHEET' | 'SHOW_CONTEXT_MENU';
+  type: 'API_CALL' | 'COPY_TO_CLIPBOARD' | 'NAVIGATE' | 'OPEN_BOTTOM_SHEET' | 'SHOW_CONTEXT_MENU' | 'SHOW_IMAGE_MODAL' | 'SHOW_IMAGE_PREVIEW';
   actionName?: string;
   endpoint?: string;
   value?: string;

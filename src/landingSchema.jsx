@@ -1,3 +1,529 @@
+// export const fullPageJSON = {
+//   "type": "Home",
+//   "containerStyle": {},
+//   "statusCode": 200,
+//   "statusMessage": "Success",
+//   "actions": {},
+//   "children": [
+//     {
+//       "type": "Page",
+//       "containerStyle": {},
+//       "children": [
+//         {
+//           "type": "Header",
+//           "containerStyle": {},
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 7 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 7 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 7 }
+//           },
+//           "children": [
+//             { "type": "HeaderButton", "data": { "id": "cart", "label": "Cart", "icon": "🛒" } },
+//             { "type": "HeaderButton", "data": { "id": "wishlist", "label": "Wishlist", "icon": "❤️" } },
+//             { "type": "HeaderButton", "data": { "id": "favourites", "label": "Favourites", "icon": "⭐" } }
+//           ]
+//         },
+//         {
+//           "type": "Carousel",
+//           "containerStyle": {},
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 47 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 47 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 47 }
+//           },
+//           "data": {
+//             "showDots": true,
+//             "autoPlay": false,
+//             "autoPlayInterval": 3000,
+//             "infiniteLoop": true
+//           },
+//           "actions": {
+//             "onSwipeLeft": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "CAROUSEL_SWIPE_LEFT",
+//               "minSwipeDistance": 50
+//             },
+//             "onSwipeRight": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "CAROUSEL_SWIPE_RIGHT",
+//               "minSwipeDistance": 50
+//             }
+//           },
+//           "children": [
+//             {
+//               "type": "Image",
+//               "containerStyle": {
+//                 "borderRadius": "24px",
+//                 "width": "400px",
+//                 "display": "block",
+//                 "margin": "0 auto",
+//                 "objectFit": "cover"
+//               },
+//               "data": { "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg", "altText": "Ad 1" }
+//             },
+//             {
+//               "type": "Image",
+//               "containerStyle": {
+//                 "borderRadius": "24px",
+//                 "objectFit": "cover"
+//               },
+//               "data": { "imageUrl": "https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg", "altText": "Ad 2" }
+//             }
+//           ]
+//         },
+//         {
+//           "type": "ProductList",
+//           "containerStyle": {},
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 89, "rowEnd": 140 }
+//           },
+//           "actions": {
+//             "onScroll": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_SCROLL_PRODUCT",
+//               "debounceDuration": 1000
+//             },
+//             "onEndReached": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "LOAD_MORE_PRODUCTS",
+//               "nearEndThreshold": 50
+//             }
+//           },
+//           "children": [
+//             {
+//               "type": "ProductCard",
+//               "data": { "id": "serenelife-001" },
+//               "actions": {
+//                 "onLongPress": {
+//                   "type": "SHOW_CONTEXT_MENU",
+//                   "data": {
+//                     "title": "Quick Actions",
+//                     "options": [
+//                       {
+//                         "label": "Add to Wishlist",
+//                         "icon": "❤️",
+//                         "action": { "type": "API_CALL", "endpoint": "https://jsonplaceholder.typicode.com/todos/1", "actionName": "ADD_TO_WISHLIST" }
+//                       },
+//                       {
+//                         "label": "Add to Cart",
+//                         "icon": "🛒",
+//                         "action": { "type": "API_CALL", "endpoint": "https://jsonplaceholder.typicode.com/todos/1", "actionName": "ADD_TO_CART" }
+//                       },
+//                       {
+//                         "label": "Add to Favourite",
+//                         "icon": "⭐",
+//                         "action": { "type": "API_CALL", "endpoint": "https://jsonplaceholder.typicode.com/todos/1", "actionName": "ADD_TO_FAVOURITE" }
+//                       }
+//                     ]
+//                   }
+//                 },
+//               },
+//               "children": [
+//                 {
+//                   "type": "Image",
+//                   "data": {
+//                     "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
+//                     "altText": "Image of SereneLife"
+//                   }
+//                 },
+//                 {
+//                   "type": "Label",
+//                   "children": [
+//                     { "type": "Sponsored", "data": { "text": "Sponsored" } },
+//                     { "type": "Icon", "data": { "imageUrl": "", "altText": "Info Icon" } }
+//                   ]
+//                 },
+//                 { "type": "Title", "data": { "text": "SereneLife" } },
+//                 {
+//                   "type": "Description",
+//                   "data": { "text": "SereneLife Small Compact Folding Shopping Cart with Removable Waterproof Liner – 360° Swivel Wheels, Rust‑Proof Steel Frame, 70 lb Capacity – Portable Grocery, Laundry & Travel Cart (Blue)" }
+//                 },
+//                 {
+//                   "type": "Rating",
+//                   "children": [
+//                     { "type": "Score", "data": { "text": "4.4", "out of": "5" } },
+//                     { "type": "ReviewCount", "data": { "text": "376" } }
+//                   ]
+//                 },
+//                 { "type": "Badge", "containerStyle": { "backgroundColor": "#fbbf24" }, "data": { "text": "Limited Time Offer" } },
+//                 { "type": "PriceBlock", "data": { "sellingPrice": "₹7,089", "mrp": "₹12,250", "discount": "42%" } },
+//                 { "type": "OfferText", "data": { "text": "Up to 5% back with Amazon Pay ICICI card" } },
+//                 { "type": "DeliveryInfo", "data": { "prefix": "FREE delivery", "daysOffset": 7 } },
+//                 { "type": "Button", "data": { "label": "Add to Cart" } }
+//               ]
+//             },
+//           ]
+//         },
+//         {
+//           "type": "CategoryGrid",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 }
+//           },
+//           "children": [
+//             {
+//               "type": "CategoryItem",
+//               "data": {
+//                 "label": "Mobiles",
+//                 "icon": "📱"
+//               },
+//               "actions": {
+//                 "onTap": {
+//                   "type": "API_CALL",
+//                   "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//                   "actionName": "ON_TAP_MOBILE"
+//                 },
+//               }
+//             },
+//             {
+//               "type": "CategoryItem",
+//               "data": {
+//                 "label": "Fashion",
+//                 "icon": "👕",
+//               },
+//               "actions": {
+//                 "onTap": {
+//                   "type": "API_CALL",
+//                   "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//                   "actionName": "ON_TAP_FASHION"
+//                 },
+//               }
+//             },
+//             {
+//               "type": "CategoryItem",
+//               "data": { "label": "Laptops", "icon": "💻" },
+//               "actions": {
+//                 "onTap": { "type": "API_CALL", "endpoint": "https://jsonplaceholder.typicode.com/todos/1", "actionName": "ON_TAP_LAPTOPS" }
+//               }
+//             },
+//             {
+//               "type": "CategoryItem",
+//               "data": { "label": "Home", "icon": "🏠" },
+//               "actions": {
+//                 "onTap": { "type": "API_CALL", "endpoint": "https://jsonplaceholder.typicode.com/todos/1", "actionName": "ON_TAP_HOME" }
+//               }
+//             }
+//           ]
+//         },
+//         {
+//           "type": "SearchBar",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 8, "rowEnd": 15 },
+//             "tablet": { "colStart": 20, "colEnd": 80, "rowStart": 8, "rowEnd": 15 },
+//             "desktop": { "colStart": 20, "colEnd": 80, "rowStart": 8, "rowEnd": 15 }
+//           },
+//           "data": {
+//             "placeholder": "Search for electronics, clothes...",
+//           },
+//           "actions": {
+//             "onChange": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_CHANGE_SEARCH",
+//               "debounceDuration": 500
+//             },
+//             "onSubmit": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_SUBMIT_SEARCH"
+//             },
+//             "onFocus": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_FOCUS_SEARCH"
+//             },
+//             "onBlur": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_BLUR_SEARCH"
+//             }
+//           }
+//         },
+//         {
+//           "type": "HeroBanner",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 48, "rowEnd": 88 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 48, "rowEnd": 88 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 48, "rowEnd": 88 }
+//           },
+//           "data": {
+//             "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80",
+//             "title": "Season End Sale",
+//             "subtitle": "Get up to 70% off on all electronics!",
+//             "altText": "Summer Sale Banner"
+//           },
+//           "actions": {
+//             "onMount": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_MOUNT_HERO_BANNER"
+//             },
+//             "onError": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_ERROR_HERO_BANNER"
+//             }
+//           },
+//           "children": [
+//             {
+//               "type": "CountDownTimer",
+//               "containerStyle": {
+//                 "width": "300px",
+//                 "background": "linear-gradient(transparent, rgba(0,0,0,0.8))",
+//                 "border": "none",
+//                 "color": "#fff",
+//                 "textAlign": "left"
+//               },
+//               "data": {
+//                 "label": "Flash Sale Ends In",
+//                 "expiredText": "Offer Expired",
+//                 "targetDate": "2026-08-12T01:30:00",
+//                 "showDays": "true",
+//                 "format": "DD:HH:MM:SS"
+//               },
+//               "actions": {
+//                 "onHover": {
+//                   "type": "API_CALL",
+//                   "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//                   "actionName": "On_HOVER"
+//                 },
+//               }
+//             }
+//           ]
+//         },
+//         {
+//           "type": "CountDownTimer",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 80, "rowStart": 140, "rowEnd": 150 },
+//             "tablet": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 },
+//             "desktop": { "colStart": 1, "colEnd": 30, "rowStart": 140, "rowEnd": 150 }
+//           },
+//           "data": {
+//             "label": "Flash Sale Ends In",
+//             "expiredText": "Offer Expired",
+//             "targetDate": "2026-08-10T01:09:00",
+//             "showDays": "true",
+//             "format": "DD:HH:MM:SS"
+//           },
+//           "actions": {
+//             "onExpire": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "FLASH_SALE_ENDED"
+//             }
+//           }
+//         },
+//         {
+//           "type": "CouponCode",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 151, "rowEnd": 160 },
+//             "tablet": { "colStart": 1, "colEnd": 30, "rowStart": 151, "rowEnd": 160 },
+//             "desktop": { "colStart": 1, "colEnd": 30, "rowStart": 151, "rowEnd": 160 }
+//           },
+//           "data": {
+//             "title": "Special Offer",
+//             "coupon": "SAVE20",
+//             "description": "Get 20% OFF on orders above ₹999",
+//             "copyLabel": "Copy Code"
+//           },
+//           "actions": {
+//             "onCopy": {
+//               "type": "COPY_TO_CLIPBOARD",
+//               "value": "SAVE20"
+//             }
+//           }
+//         },
+//         {
+//           "type": "StoryRow",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 165, "rowEnd": 175 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 165, "rowEnd": 175 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 165, "rowEnd": 175 }
+//           },
+//           "actions": {
+//             "onDrop": {
+//               "type": "API_CALL",
+//               "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//               "actionName": "ON_DROP_STORY"
+//             }
+//           },
+//           "children": [
+//             {
+//               "type": "StoryCircle",
+//               "data": {
+//                 "label": "Sale",
+//                 "imageUrl": "https://picsum.photos/id/2/100/100"
+//               },
+//               "actions": {
+//                 "onDrag": {
+//                   "type": "API_CALL",
+//                   "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//                   "actionName": "ON_DRAG_STORY"
+//                 }
+//               }
+//             },
+//             {
+//               "type": "StoryCircle",
+//               "data": {
+//                 "label": "Trending",
+//                 "imageUrl": "https://picsum.photos/id/3/100/100"
+//               }
+//             },
+//             {
+//               "type": "StoryCircle",
+//               "data": {
+//                 "label": "Electronics",
+//                 "imageUrl": "https://picsum.photos/id/4/100/100"
+//               }
+//             }
+//           ]
+//         },
+//         {
+//           "type": "ShareButton",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 180, "rowEnd": 185 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 180, "rowEnd": 185 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 180, "rowEnd": 185 }
+//           },
+//           "data": {
+//             "label": "Share",
+//             "icon": "📤"
+//           },
+//           "actions": {
+//             "onTap": {
+//               "type": "OPEN_BOTTOM_SHEET",
+//               "data": {
+//                 "options": [
+//                   {
+//                     "label": "WhatsApp",
+//                     "icon": "💬",
+//                     "action": {
+//                       "type": "API_CALL",
+//                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//                       "actionName": "ON_TAP_SHARE_WHATSAPP"
+//                     }
+//                   },
+//                   {
+//                     "label": "Instagram",
+//                     "icon": "📸",
+//                     "action": {
+//                       "type": "API_CALL",
+//                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+//                       "actionName": "ON_TAP_SHARE_INSTAGRAM"
+//                     }
+//                   },
+//                   { "label": "Twitter", "icon": "🐦" },
+//                   { "label": "Copy Link", "icon": "🔗" }
+//                 ]
+//               }
+//             }
+//           }
+//         },
+//         {
+//           "type": "Footer",
+//           "placement": {
+//             "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 187, "rowEnd": 195 },
+//             "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 187, "rowEnd": 195 },
+//             "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 187, "rowEnd": 195 }
+//           },
+//           "data": {
+//             "sections": [
+//               {
+//                 "title": "Get to Know Us",
+//                 "links": [
+//                   { "label": "About Us", "url": "https://example.com/about" },
+//                   { "label": "Careers", "url": "https://example.com/careers" },
+//                   { "label": "Community", "url": "https://example.com/community" }
+//                 ]
+//               },
+//               {
+//                 "title": "Connect With Us",
+//                 "links": [
+//                   { "label": "Instagram", "url": "https://instagram.com" },
+//                   { "label": "Facebook", "url": "https://facebook.com" },
+//                   { "label": "Twitter", "url": "https://twitter.com" },
+//                   { "label": "LinkedIn", "url": "https://linkedin.com" }
+//                 ]
+//               },
+//             ],
+//             "copyrightText": "© 2024-2026, SDUI-Commerce, Inc. or its affiliates"
+//           }
+//         },
+//         {
+
+//         }
+//       ]
+//     },
+//     {
+//       "type": "NavBar",
+//       "containerStyle": {
+//         "position": "sticky",
+//         "bottom": "0",
+//         "zIndex": "100"
+//       },
+//       "data": {
+//         "items": [
+//           {
+//             "label": "Home",
+//             "icon": "🏠",
+//             "isActive": "true",
+//             "actions": {
+//               "onTap": {
+//                 "type": "NAVIGATE",
+//                 "route": "home",
+//                 "actionName": "ON_TAP_HOME"
+//               }
+//             }
+//           },
+//           {
+//             "label": "Categories",
+//             "icon": "🗂️",
+//             "isActive": "false",
+//             "actions": {
+//               "onTap": {
+//                 "type": "NAVIGATE",
+//                 "route": "categories",
+//                 "actionName": "ON_TAP_CATEGORIES"
+//               }
+//             }
+//           },
+//           {
+//             "label": "Cart",
+//             "icon": "🛒",
+//             "isActive": "false",
+//             "actions": {
+//               "onTap": {
+//                 "type": "NAVIGATE",
+//                 "route": "cart",
+//                 "actionName": "ON_TAP_CART"
+//               }
+//             }
+//           },
+//           {
+//             "label": "Account",
+//             "icon": "👤",
+//             "isActive": "false",
+//             "actions": {
+//               "onTap": {
+//                 "type": "NAVIGATE",
+//                 "route": "account",
+//                 "actionName": "ON_TAP_ACCOUNT"
+//               }
+//             }
+//           }
+//         ]
+//       }
+//     }
+//   ]
+// }
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SDUI Landing Page Schema — CampusCommerce
 //
@@ -21,22 +547,20 @@
 export const fullPageJSON = {
   "type": "Home",
   "containerStyle": {
-    "background": "linear-gradient(180deg, #F6F6F4 0%, #F6F6F4 100%)",
-    "backgroundImage": "linear-gradient(180deg, #F6F6F4 0%, #F6F6F4 100%)",
-    "backgroundColor": "#F6F6F4",
+    // "background": "linear-gradient(180deg, #F6F6F4 0%, #F6F6F4 100%)",
+    // "backgroundImage": "linear-gradient(180deg, #F6F6F4 0%, #F6F6F4 100%)",
+    // "backgroundColor": "#F6F6F4",
     "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    "color": "#101F26",
-    "display": "flex",
-    "flexDirection": "column",
-    "minHeight": "100vh",
-    "width": "100%",
-    "maxWidth": "100%",
-    "margin": "0",
-    "boxSizing": "border-box",
-    "overflowX": "hidden",
-    "WebkitFontSmoothing": "antialiased",
-    "letterSpacing": "-0.005em",
-    "accentColor": "#C4185F"
+    // "color": "#101F26",
+    // "display": "flex",
+    // "flexDirection": "column",
+    // "minHeight": "100vh",
+    // "width": "100%",
+    // "maxWidth": "100%",
+    // "boxSizing": "border-box",
+    // "WebkitFontSmoothing": "antialiased",
+    // "letterSpacing": "-0.005em",
+    // "accentColor": "#C4185F"
   },
   "statusCode": 200,
   "statusMessage": "Success",
@@ -44,79 +568,25 @@ export const fullPageJSON = {
   "children": [
     {
       "type": "Page",
-      "containerStyle": {
-        "background": "linear-gradient(180deg, #F6F6F4 0%, #F6F6F4 100%)",
-        "backgroundImage": "linear-gradient(180deg, #F6F6F4 0%, #F6F6F4 100%)",
-        "backgroundColor": "#F6F6F4",
-        "display": "grid",
-        "gridTemplateColumns": "repeat(99, minmax(0, 1fr))",
-        "gridTemplateRows": "none",
-        "gridAutoRows": "minmax(0, auto)",
-        "gridAutoFlow": "row",
-        "alignItems": "start",
-        "alignContent": "start",
-        "columnGap": "0px",
-        "rowGap": "0px",
-        "flex": "1 1 auto",
-        "width": "100%",
-        "maxWidth": "100%",
-        "minWidth": "0",
-        "boxSizing": "border-box",
-        "padding": "0px",
-        "overflowX": "hidden"
-      },
+      "containerStyle": {},
       "children": [
         {
           "type": "Header",
           "containerStyle": {
-            "background": "linear-gradient(180deg, #11404C 0%, #0D3540 100%)",
-            "backgroundImage": "linear-gradient(180deg, #11404C 0%, #0D3540 100%)",
+            "background": "linear-gradient(180deg, #103E4B 0%, #0D3540 100%)",
             "backgroundColor": "#0D3540",
-            "display": "flex",
-            "flexDirection": "row",
-            "flexWrap": "nowrap",
-            "alignItems": "center",
-            "justifyContent": "flex-start",
-            "gap": "0",
+            "height": "48px",
             "padding": "0 max(16px, calc((100% - 1180px) / 2))",
-            "height": "46px",
-            "minHeight": "46px",
-            "width": "100%",
-            "maxWidth": "100%",
-            "minWidth": "0",
             "boxSizing": "border-box",
-            "position": "sticky",
-            "top": "0",
-            "zIndex": "210",
-            "alignSelf": "start",
-            "color": "#FFFFFF",
-            "borderBottom": "1px solid rgba(255,255,255,0.07)",
-            "boxShadow": "none",
-            "overflow": "auto hidden",
+            "borderBottom": "1px solid rgba(255, 255, 255, 0.08)",
+            "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.15)",
             "overflowX": "auto",
-            "overflowY": "hidden",
-            "WebkitOverflowScrolling": "touch",
-            "scrollPaddingLeft": "max(16px, calc((100% - 1180px) / 2))"
+            "scrollbarWidth": "none"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 1,
-              "rowEnd": 2
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 1,
-              "rowEnd": 2
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 1,
-              "rowEnd": 2
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 }
           },
           "children": [
             {
@@ -125,13 +595,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "flex-start",
-                "gap": "0",
-                "padding": "0",
-                "height": "46px",
-                "flex": "1 1 auto",
-                "minWidth": "0",
-                "marginRight": "auto",
-                "textAlign": "left",
                 "background": "none",
                 "backgroundImage": "none",
                 "backgroundColor": "transparent",
@@ -149,7 +612,7 @@ export const fullPageJSON = {
               "data": {
                 "id": "logo",
                 "label": "SDUI·Commerce",
-                "icon": ""
+                "icon": "♥"
               },
               "actions": {
                 "onTap": {
@@ -165,10 +628,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "0",
-                "padding": "0 12px",
-                "height": "46px",
-                "flex": "0 0 auto",
                 "background": "none",
                 "backgroundImage": "none",
                 "backgroundColor": "transparent",
@@ -182,7 +641,6 @@ export const fullPageJSON = {
                 "boxSizing": "border-box",
                 "cursor": "pointer",
                 "boxShadow": "inset 0 -2px 0 #C4185F",
-                "marginLeft": "auto"
               },
               "data": {
                 "id": "home",
@@ -203,10 +661,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "0",
-                "padding": "0 12px",
-                "height": "46px",
-                "flex": "0 0 auto",
                 "background": "none",
                 "backgroundImage": "none",
                 "backgroundColor": "transparent",
@@ -239,10 +693,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "0",
-                "padding": "0 12px",
-                "height": "46px",
-                "flex": "0 0 auto",
                 "background": "none",
                 "backgroundImage": "none",
                 "backgroundColor": "transparent",
@@ -275,10 +725,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "0",
-                "padding": "0 12px",
-                "height": "46px",
-                "flex": "0 0 auto",
                 "background": "none",
                 "backgroundImage": "none",
                 "backgroundColor": "transparent",
@@ -311,11 +757,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "padding": "0 14px",
-                "height": "32px",
-                "flex": "0 0 auto",
-                "marginLeft": "8px",
-                "borderRadius": "8px",
                 "background": "none",
                 "backgroundImage": "none",
                 "backgroundColor": "transparent",
@@ -349,10 +790,6 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "padding": "0 14px",
-                "height": "32px",
-                "flex": "0 0 auto",
-                "marginLeft": "8px",
                 "borderRadius": "8px",
                 "border": "1px solid #C4185F",
                 "color": "#FFFFFF",
@@ -383,69 +820,34 @@ export const fullPageJSON = {
             "background": "linear-gradient(180deg, #0D3540 0%, #08242A 100%)",
             "backgroundImage": "linear-gradient(180deg, #0D3540 0%, #08242A 100%)",
             "backgroundColor": "#08242A",
-            "display": "flex",
-            "flexDirection": "row",
             "flexWrap": "wrap",
-            "alignItems": "center",
             "justifyContent": "flex-start",
-            "gap": "10px",
-            "rowGap": "10px",
             "padding": "12px max(16px, calc((100% - 1180px) / 2))",
-            "minHeight": "68px",
-            "width": "100%",
-            "maxWidth": "100%",
-            "minWidth": "0",
             "boxSizing": "border-box",
             "position": "sticky",
-            "top": "46px",
-            "zIndex": "200",
-            "alignSelf": "start",
-            "overflow": "visible",
+            "top": "2px",
+            "zIndex": "100",
             "color": "#FFFFFF",
             "borderBottom": "none",
-            "boxShadow": "0 8px 20px rgba(10,42,49,0.18)"
+            "boxShadow": "0 4px 14px rgba(10,42,49,0.18)"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 2,
-              "rowEnd": 3
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 2,
-              "rowEnd": 3
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 2,
-              "rowEnd": 3
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 6, "rowEnd": 10 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 6, "rowEnd": 10 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 6, "rowEnd": 10 }
           },
           "children": [
             {
               "type": "SearchBar",
               "containerStyle": {
-                "flex": "1 1 320px",
-                "minWidth": "0",
-                "maxWidth": "100%",
-                "margin": "0",
-                "padding": "0 14px",
-                "height": "44px",
-                "display": "flex",
+                "width": "340px",
                 "alignItems": "center",
                 "border": "1px solid #E4E7E4",
                 "borderRadius": "12px",
                 "boxShadow": "none",
                 "boxSizing": "border-box",
-                "fontSize": "15px",
                 "color": "#101F26",
                 "caretColor": "#C4185F",
-                "width": "100%",
-                "overflow": "hidden",
                 "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundColor": "#FFFFFF"
@@ -483,12 +885,8 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "8px",
-                "padding": "0 16px",
-                "height": "42px",
-                "flex": "0 0 auto",
                 "borderRadius": "12px",
-                "fontSize": "14px",
+                "fontSize": "12px",
                 "fontWeight": "600",
                 "letterSpacing": "0.005em",
                 "whiteSpace": "nowrap",
@@ -499,7 +897,6 @@ export const fullPageJSON = {
                 "backgroundColor": "#C4185F",
                 "border": "1px solid #C4185F",
                 "color": "#FFFFFF",
-                "marginLeft": "auto",
                 "boxShadow": "0 2px 10px rgba(196,24,95,0.28)"
               },
               "data": {
@@ -522,12 +919,8 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "8px",
-                "padding": "0 16px",
-                "height": "42px",
-                "flex": "0 0 auto",
                 "borderRadius": "12px",
-                "fontSize": "14px",
+                "fontSize": "12px",
                 "fontWeight": "600",
                 "letterSpacing": "0.005em",
                 "whiteSpace": "nowrap",
@@ -559,12 +952,8 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "gap": "8px",
-                "padding": "0 16px",
-                "height": "42px",
-                "flex": "0 0 auto",
                 "borderRadius": "12px",
-                "fontSize": "14px",
+                "fontSize": "12px",
                 "fontWeight": "600",
                 "letterSpacing": "0.005em",
                 "whiteSpace": "nowrap",
@@ -595,46 +984,13 @@ export const fullPageJSON = {
         {
           "type": "StoryRow",
           "containerStyle": {
-            "display": "flex",
-            "flexDirection": "row",
-            "flexWrap": "nowrap",
-            "alignItems": "flex-start",
-            "justifyContent": "flex-start",
-            "gap": "16px",
             "padding": "20px max(16px, calc((100% - 1180px) / 2)) 8px",
-            "width": "100%",
-            "maxWidth": "100%",
-            "minWidth": "0",
-            "boxSizing": "border-box",
-            "alignSelf": "start",
-            "height": "fit-content",
             "backgroundColor": "transparent",
-            "overflow": "auto hidden",
-            "overflowX": "auto",
-            "overflowY": "hidden",
-            "WebkitOverflowScrolling": "touch",
-            "scrollSnapType": "x proximity",
-            "scrollPaddingLeft": "max(16px, calc((100% - 1180px) / 2))"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 3,
-              "rowEnd": 4
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 3,
-              "rowEnd": 4
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 3,
-              "rowEnd": 4
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 11, "rowEnd": 22 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 11, "rowEnd": 22 }
           },
           "actions": {
             "onDrop": {
@@ -647,18 +1003,10 @@ export const fullPageJSON = {
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "width": "76px",
-                "flex": "0 0 auto",
-                "textAlign": "center",
-                "fontSize": "12px",
-                "fontWeight": "600",
-                "lineHeight": "16px",
-                "color": "#101F26",
-                "scrollSnapAlign": "start",
-                "borderColor": "#C4185F",
-                "accentColor": "#C4185F",
-                "--story-ring": "#C4185F",
-                "--ring-color": "#C4185F"
+                "borderColor": "#123A44",
+                "accentColor": "#123A44",
+                "--story-ring": "#123A44",
+                "--ring-color": "#123A44"
               },
               "data": {
                 "label": "Sale",
@@ -669,20 +1017,18 @@ export const fullPageJSON = {
                   "type": "API_CALL",
                   "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                   "actionName": "ON_DRAG_STORY"
+                },
+                "onTap": {
+                  "type": "SHOW_IMAGE_MODAL",
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/2/600/600"
+                  }
                 }
               }
             },
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "width": "76px",
-                "flex": "0 0 auto",
-                "textAlign": "center",
-                "fontSize": "12px",
-                "fontWeight": "600",
-                "lineHeight": "16px",
-                "color": "#101F26",
-                "scrollSnapAlign": "start",
                 "borderColor": "#C4185F",
                 "accentColor": "#C4185F",
                 "--story-ring": "#C4185F",
@@ -691,19 +1037,19 @@ export const fullPageJSON = {
               "data": {
                 "label": "Trending",
                 "imageUrl": "https://picsum.photos/id/3/200/200"
+              },
+              "actions": {
+                "onTap": {
+                  "type": "SHOW_IMAGE_MODAL",
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/3/600/600"
+                  }
+                }
               }
             },
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "width": "76px",
-                "flex": "0 0 auto",
-                "textAlign": "center",
-                "fontSize": "12px",
-                "fontWeight": "600",
-                "lineHeight": "16px",
-                "color": "#101F26",
-                "scrollSnapAlign": "start",
                 "borderColor": "#C4185F",
                 "accentColor": "#C4185F",
                 "--story-ring": "#C4185F",
@@ -712,19 +1058,19 @@ export const fullPageJSON = {
               "data": {
                 "label": "Electronics",
                 "imageUrl": "https://picsum.photos/id/4/200/200"
+              },
+              "actions": {
+                "onTap": {
+                  "type": "SHOW_IMAGE_MODAL",
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/4/600/600"
+                  }
+                }
               }
             },
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "width": "76px",
-                "flex": "0 0 auto",
-                "textAlign": "center",
-                "fontSize": "12px",
-                "fontWeight": "600",
-                "lineHeight": "16px",
-                "color": "#101F26",
-                "scrollSnapAlign": "start",
                 "borderColor": "#C4185F",
                 "accentColor": "#C4185F",
                 "--story-ring": "#C4185F",
@@ -733,19 +1079,19 @@ export const fullPageJSON = {
               "data": {
                 "label": "Kitchen",
                 "imageUrl": "https://picsum.photos/id/30/200/200"
+              },
+              "actions": {
+                "onTap": {
+                  "type": "SHOW_IMAGE_MODAL",
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/30/600/600"
+                  }
+                }
               }
             },
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "width": "76px",
-                "flex": "0 0 auto",
-                "textAlign": "center",
-                "fontSize": "12px",
-                "fontWeight": "600",
-                "lineHeight": "16px",
-                "color": "#101F26",
-                "scrollSnapAlign": "start",
                 "borderColor": "#C4185F",
                 "accentColor": "#C4185F",
                 "--story-ring": "#C4185F",
@@ -754,19 +1100,19 @@ export const fullPageJSON = {
               "data": {
                 "label": "Fashion",
                 "imageUrl": "https://picsum.photos/id/21/200/200"
+              },
+              "actions": {
+                "onTap": {
+                  "type": "SHOW_IMAGE_MODAL",
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/21/600/600"
+                  }
+                }
               }
             },
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "width": "76px",
-                "flex": "0 0 auto",
-                "textAlign": "center",
-                "fontSize": "12px",
-                "fontWeight": "600",
-                "lineHeight": "16px",
-                "color": "#101F26",
-                "scrollSnapAlign": "start",
                 "borderColor": "#C4185F",
                 "accentColor": "#C4185F",
                 "--story-ring": "#C4185F",
@@ -775,6 +1121,14 @@ export const fullPageJSON = {
               "data": {
                 "label": "Beauty",
                 "imageUrl": "https://picsum.photos/id/64/200/200"
+              },
+              "actions": {
+                "onTap": {
+                  "type": "SHOW_IMAGE_MODAL",
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/64/600/600"
+                  }
+                }
               }
             }
           ]
@@ -785,62 +1139,24 @@ export const fullPageJSON = {
             "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
             "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
             "backgroundColor": "#FFFFFF",
-            "display": "grid",
-            "gridTemplateColumns": "repeat(auto-fit, minmax(84px, 1fr))",
-            "gridAutoRows": "minmax(0, auto)",
-            "justifyItems": "center",
-            "columnGap": "8px",
-            "rowGap": "12px",
-            "margin": "8px max(16px, calc((100% - 1180px) / 2)) 0",
-            "padding": "14px 12px",
             "borderRadius": "16px",
             "border": "1px solid #E4E7E4",
             "boxShadow": "0 1px 2px rgba(16,31,38,0.04)",
             "boxSizing": "border-box",
-            "minWidth": "0",
-            "maxWidth": "100%",
-            "alignSelf": "start",
-            "width": "auto",
-            "overflow": "visible"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 4,
-              "rowEnd": 5
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 4,
-              "rowEnd": 5
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 4,
-              "rowEnd": 5
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 35 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 22, "rowEnd": 30 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 22, "rowEnd": 30 }
           },
           "children": [
             {
               "type": "CategoryItem",
               "containerStyle": {
-                "display": "flex",
-                "flexDirection": "column",
-                "alignItems": "center",
-                "justifyContent": "flex-start",
                 "gap": "10px",
-                "padding": "12px 4px",
-                "width": "100%",
-                "maxWidth": "108px",
                 "borderRadius": "12px",
-                "fontSize": "12px",
                 "fontWeight": "600",
-                "lineHeight": "16px",
-                "letterSpacing": "0.005em",
-                "textAlign": "center",
+                "fontSize": "16px",
                 "color": "#101F26",
                 "cursor": "pointer",
                 "boxSizing": "border-box"
@@ -860,20 +1176,10 @@ export const fullPageJSON = {
             {
               "type": "CategoryItem",
               "containerStyle": {
-                "display": "flex",
-                "flexDirection": "column",
-                "alignItems": "center",
-                "justifyContent": "flex-start",
                 "gap": "10px",
-                "padding": "12px 4px",
-                "width": "100%",
-                "maxWidth": "108px",
                 "borderRadius": "12px",
-                "fontSize": "12px",
                 "fontWeight": "600",
-                "lineHeight": "16px",
-                "letterSpacing": "0.005em",
-                "textAlign": "center",
+                "fontSize": "16px",
                 "color": "#101F26",
                 "cursor": "pointer",
                 "boxSizing": "border-box"
@@ -893,20 +1199,10 @@ export const fullPageJSON = {
             {
               "type": "CategoryItem",
               "containerStyle": {
-                "display": "flex",
-                "flexDirection": "column",
-                "alignItems": "center",
-                "justifyContent": "flex-start",
                 "gap": "10px",
-                "padding": "12px 4px",
-                "width": "100%",
-                "maxWidth": "108px",
                 "borderRadius": "12px",
-                "fontSize": "12px",
                 "fontWeight": "600",
-                "lineHeight": "16px",
-                "letterSpacing": "0.005em",
-                "textAlign": "center",
+                "fontSize": "16px",
                 "color": "#101F26",
                 "cursor": "pointer",
                 "boxSizing": "border-box"
@@ -926,20 +1222,10 @@ export const fullPageJSON = {
             {
               "type": "CategoryItem",
               "containerStyle": {
-                "display": "flex",
-                "flexDirection": "column",
-                "alignItems": "center",
-                "justifyContent": "flex-start",
                 "gap": "10px",
-                "padding": "12px 4px",
-                "width": "100%",
-                "maxWidth": "108px",
                 "borderRadius": "12px",
-                "fontSize": "12px",
                 "fontWeight": "600",
-                "lineHeight": "16px",
-                "letterSpacing": "0.005em",
-                "textAlign": "center",
+                "fontSize": "16px",
                 "color": "#101F26",
                 "cursor": "pointer",
                 "boxSizing": "border-box"
@@ -959,20 +1245,10 @@ export const fullPageJSON = {
             {
               "type": "CategoryItem",
               "containerStyle": {
-                "display": "flex",
-                "flexDirection": "column",
-                "alignItems": "center",
-                "justifyContent": "flex-start",
                 "gap": "10px",
-                "padding": "12px 4px",
-                "width": "100%",
-                "maxWidth": "108px",
                 "borderRadius": "12px",
-                "fontSize": "12px",
                 "fontWeight": "600",
-                "lineHeight": "16px",
-                "letterSpacing": "0.005em",
-                "textAlign": "center",
+                "fontSize": "16px",
                 "color": "#101F26",
                 "cursor": "pointer",
                 "boxSizing": "border-box"
@@ -992,20 +1268,10 @@ export const fullPageJSON = {
             {
               "type": "CategoryItem",
               "containerStyle": {
-                "display": "flex",
-                "flexDirection": "column",
-                "alignItems": "center",
-                "justifyContent": "flex-start",
                 "gap": "10px",
-                "padding": "12px 4px",
-                "width": "100%",
-                "maxWidth": "108px",
                 "borderRadius": "12px",
-                "fontSize": "12px",
                 "fontWeight": "600",
-                "lineHeight": "16px",
-                "letterSpacing": "0.005em",
-                "textAlign": "center",
+                "fontSize": "16px",
                 "color": "#101F26",
                 "cursor": "pointer",
                 "boxSizing": "border-box"
@@ -1021,41 +1287,20 @@ export const fullPageJSON = {
                   "actionName": "ON_TAP_GROCERY"
                 }
               }
-            }
+            },
           ]
         },
         {
           "type": "Carousel",
           "containerStyle": {
-            "margin": "20px max(16px, calc((100% - 1180px) / 2)) 0",
             "borderRadius": "16px",
-            "overflow": "hidden",
             "border": "1px solid #E4E7E4",
             "boxSizing": "border-box",
-            "minWidth": "0",
-            "maxWidth": "100%",
-            "alignSelf": "start",
-            "width": "auto"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 5,
-              "rowEnd": 6
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 5,
-              "rowEnd": 6
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 5,
-              "rowEnd": 6
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 36, "rowEnd": 53 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 56 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 56 }
           },
           "data": {
             "showDots": true,
@@ -1081,31 +1326,25 @@ export const fullPageJSON = {
             {
               "type": "Image",
               "containerStyle": {
-                "width": "100%",
-                "height": "clamp(150px, 24vw, 300px)",
-                "display": "block",
+                "height": "300px",
                 "objectFit": "cover",
                 "borderRadius": "16px",
-                "maxWidth": "100%"
               },
               "data": {
                 "imageUrl": "https://picsum.photos/id/1080/1600/500",
-                "altText": "Monsoon electronics sale"
+                "altText": ""
               }
             },
             {
               "type": "Image",
               "containerStyle": {
-                "width": "100%",
-                "height": "clamp(150px, 24vw, 300px)",
-                "display": "block",
+                "height": "300px",
                 "objectFit": "cover",
                 "borderRadius": "16px",
-                "maxWidth": "100%"
               },
               "data": {
                 "imageUrl": "https://picsum.photos/id/180/1600/500",
-                "altText": "Bank offers this week"
+                "altText": ""
               }
             }
           ]
@@ -1113,38 +1352,15 @@ export const fullPageJSON = {
         {
           "type": "HeroBanner",
           "containerStyle": {
-            "position": "relative",
-            "margin": "16px max(16px, calc((100% - 1180px) / 2)) 0",
             "borderRadius": "16px",
-            "overflow": "hidden",
-            "minHeight": "clamp(220px, 30vw, 340px)",
             "border": "1px solid #E4E7E4",
             "boxShadow": "0 1px 2px rgba(16,31,38,0.05)",
             "boxSizing": "border-box",
-            "minWidth": "0",
-            "maxWidth": "100%",
-            "alignSelf": "start",
-            "width": "auto"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 6,
-              "rowEnd": 7
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 6,
-              "rowEnd": 7
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 6,
-              "rowEnd": 7
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 68, "rowEnd": 105 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 63, "rowEnd": 102 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 63, "rowEnd": 102 }
           },
           "data": {
             "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80",
@@ -1168,28 +1384,20 @@ export const fullPageJSON = {
             {
               "type": "CountDownTimer",
               "containerStyle": {
-                "background": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-                "backgroundImage": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-                "backgroundColor": "#C4185F",
+                "backgroundColor": "transparent",
                 "position": "absolute",
-                "top": "16px",
+                "bottom": "100px",
                 "left": "16px",
-                "width": "auto",
-                "padding": "9px 14px",
-                "borderRadius": "10px",
                 "border": "1px solid rgba(255,255,255,0.24)",
                 "color": "#FFFFFF",
-                "textAlign": "left",
                 "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                "fontSize": "13px",
-                "fontWeight": "600",
                 "letterSpacing": "0.04em",
                 "boxShadow": "0 4px 16px rgba(196,24,95,0.32)"
               },
               "data": {
                 "label": "Flash sale ends in",
                 "expiredText": "Sale ended",
-                "targetDate": "2026-08-14T23:59:00",
+                "targetDate": "2026-10-14T23:59:00",
                 "showDays": "true",
                 "format": "DD:HH:MM:SS"
               },
@@ -1228,20 +1436,20 @@ export const fullPageJSON = {
             "mobile": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 7,
-              "rowEnd": 8
+              "rowStart": 108,
+              "rowEnd": 110
             },
             "tablet": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 7,
-              "rowEnd": 8
+              "rowStart": 102,
+              "rowEnd": 104
             },
             "desktop": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 7,
-              "rowEnd": 8
+              "rowStart": 103,
+              "rowEnd": 104
             }
           },
           "data": {
@@ -1284,20 +1492,20 @@ export const fullPageJSON = {
             "mobile": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 8,
-              "rowEnd": 9
+              "rowStart": 150,
+              "rowEnd": 109
             },
             "tablet": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 8,
-              "rowEnd": 9
+              "rowStart": 150,
+              "rowEnd": 112
             },
             "desktop": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 8,
-              "rowEnd": 9
+              "rowStart": 150,
+              "rowEnd": 112
             }
           },
           "data": {
@@ -1343,20 +1551,20 @@ export const fullPageJSON = {
             "mobile": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 9,
-              "rowEnd": 10
+              "rowStart": 109,
+              "rowEnd": 163
             },
             "tablet": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 9,
-              "rowEnd": 10
+              "rowStart": 112,
+              "rowEnd": 166
             },
             "desktop": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 9,
-              "rowEnd": 10
+              "rowStart": 112,
+              "rowEnd": 166
             }
           },
           "actions": {
@@ -3176,9 +3384,24 @@ export const fullPageJSON = {
             "border": "2px dashed #0284c7"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 9, "rowEnd": 10 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 9, "rowEnd": 10 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 9, "rowEnd": 10 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 163,
+              "rowEnd": 169
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 166,
+              "rowEnd": 172
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 166,
+              "rowEnd": 172
+            }
           },
           "children": [
             {
@@ -3217,20 +3440,20 @@ export const fullPageJSON = {
             "mobile": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 10,
-              "rowEnd": 11
+              "rowStart": 169,
+              "rowEnd": 200
             },
             "tablet": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 10,
-              "rowEnd": 11
+              "rowStart": 172,
+              "rowEnd": 200
             },
             "desktop": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 10,
-              "rowEnd": 11
+              "rowStart": 172,
+              "rowEnd": 200
             }
           },
           "data": {

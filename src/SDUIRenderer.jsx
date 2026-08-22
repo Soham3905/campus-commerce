@@ -49,12 +49,13 @@ const pageChildren = fullPageJSON?.children?.[0]?.children || [];
 
 const TEMPLATES = {
   "Full Page": fullPageJSON,
-  "Carousel Only": pageChildren[1],
-  "Product List": pageChildren[2],
-  "Category Grid": pageChildren[3],
+  "Header": pageChildren[1],
   "Search Bar": pageChildren[4],
+  "Category Grid": pageChildren[3],
+  "Carousel Only": pageChildren[1],
   "HeroBanner": pageChildren[5],
   "CountDownTimer": pageChildren[6],
+  "Product List": pageChildren[2],
   "CouponCode": pageChildren[7],
   "StoryRow": pageChildren[8],
   "Share": pageChildren[9],
@@ -90,6 +91,7 @@ export default function SDUIRenderer() {
   const [error, setError] = useState("");
   const [menu, setMenu] = useState(null);
   const [sheetData, setSheetData] = useState(null);
+  const [imageModal, setImageModal] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
 
   const handleNavigate = (route) => {
@@ -136,6 +138,8 @@ export default function SDUIRenderer() {
 
   const closeSheet = () => setSheetData(null);
 
+  const closeImageModal = () => setImageModal(null);
+
   const handleOptionSelect = async (option) => {
     try {
       const action = option.action || {};
@@ -143,6 +147,7 @@ export default function SDUIRenderer() {
       // Handle opening another sheet directly from an option
       if (action.type === "OPEN_BOTTOM_SHEET") {
         closeMenu();
+        closeImageModal();
         setSheetData({
           title: action.data?.title,
           options: action.data?.options || [],
@@ -150,9 +155,19 @@ export default function SDUIRenderer() {
         return;
       }
 
+      if (action.type === "SHOW_IMAGE_MODAL" || action.type === "SHOW_IMAGE_PREVIEW") {
+        closeMenu();
+        closeSheet();
+        setImageModal({
+          imageUrl: action.data?.imageUrl,
+        });
+        return;
+      }
+
       await executeOptionAction(option);
       closeMenu();
       closeSheet();
+      closeImageModal();
     } catch (err) {
       setError(err.message || "Action failed");
     }
@@ -228,7 +243,7 @@ export default function SDUIRenderer() {
           }}>
             {/* Screen Content Container */}
             <div style={{ backgroundColor: "#f3f3f3", height: "100%", overflowY: "auto", scrollbarWidth: "none" }}>
-              <Renderer schema={schema} deviceType={deviceView} openMenu={setMenu} openSheet={setSheetData} onNavigate={handleNavigate} />
+              <Renderer schema={schema} deviceType={deviceView} openMenu={setMenu} openSheet={setSheetData} openImageModal={setImageModal} onNavigate={handleNavigate} />
             </div>
             <ContextMenu
               data={menu}
@@ -239,6 +254,11 @@ export default function SDUIRenderer() {
               isOpen={!!sheetData}
               data={sheetData}
               onClose={closeSheet}
+              onSelect={handleOptionSelect}
+            />
+            <ImagePreviewModal
+              data={imageModal}
+              onClose={closeImageModal}
               onSelect={handleOptionSelect}
             />
           </div>
@@ -418,7 +438,7 @@ const Home = ({ children, style }) => {
 };
 
 const Page = ({ children, style }) => (
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 10px)", gap: "0px", height: "100%", padding: "10px", ...style }}>
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 10px)", gap: "0px", padding: "5px", height: "100%", ...style }}>
     {children}
   </div>
 );
@@ -501,7 +521,7 @@ const Carousel = ({ data, children, style, actions }) => {
           {React.Children.map(children, (_, idx) => (
             <div key={idx} onClick={() => setCurrentIndex(idx)} style={{
               width: currentIndex === idx ? "20px" : "8px", height: "8px", borderRadius: "4px",
-              backgroundColor: currentIndex === idx ? "#a6a2a2ff" : "rgba(255,255,255,0.5)", cursor: "pointer", transition: "width 0.3s ease"
+              backgroundColor: currentIndex === idx ? "#1b1919ff" : "rgba(100, 96, 96, 0.5)", cursor: "pointer", transition: "width 0.3s ease"
             }} />
           ))}
         </div>
@@ -529,8 +549,8 @@ const SearchBar = ({ data, style }) => {
   const [query, setQuery] = useState("");
 
   return (
-    <div style={{ padding: "10px", ...style }}>
-      <div style={{ display: "flex", alignItems: "center", backgroundColor: "#fff", borderRadius: "8px", padding: "8px 12px", border: "1px solid #ddd" }}>
+    <div style={{ padding: "5px", ...style }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <span style={{ marginRight: "8px" }}>{data?.icon || "🔍"}</span>
         <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={data?.placeholder || "Search..."} style={{ fontSize: "14px", width: "100%", border: "none", outline: "none" }} />
       </div>
@@ -732,7 +752,7 @@ const CouponCode = ({ data, style, onCopy }) => {
 const StoryRow = ({ children, style }) => {
   return (
     <div
-      style={{ display: "flex", gap: "8px", padding: "10px 4px", overflowX: "auto", backgroundColor: "#fff", scrollbarWidth: "none", borderBottom: "1px solid #efefef", borderRadius: "24px", ...style }}>
+      style={{ display: "flex", gap: "15px", padding: "10px 4px", overflowX: "auto", backgroundColor: "#fff", scrollbarWidth: "none", borderBottom: "1px solid #efefef", borderRadius: "24px", ...style }}>
       {children}
     </div>
   );
@@ -742,10 +762,12 @@ const StoryCircle = ({ data, style }) => {
   return (
     <div
       style={{
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", cursor: "grab", flexShrink: 0, ...style
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", cursor: "pointer", flexShrink: 0, transition: "transform 0.15s ease",
       }}
+      onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.06)"}
+      onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
     >
-      <div style={{ width: "60px", height: "60px", borderRadius: "50%", padding: "2px", border: "2px solid #e1306c", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#fff" }}>
+      <div style={{ width: "60px", height: "60px", borderRadius: "50%", padding: "2px", border: "2px solid #e1306c", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...style }}>
         <img src={data.imageUrl} alt={data.label} style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
       </div>
       <span style={{ fontSize: "11px", fontWeight: "500", color: "#262626" }}>{data.label}</span>
@@ -894,6 +916,49 @@ const BottomSheet = ({ data, isOpen, onClose, onSelect }) => {
   );
 };
 
+const ImagePreviewModal = ({ data, onClose }) => {
+  if (!data || !data.imageUrl) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0, 0, 0, 0.75)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", backdropFilter: "blur(4px)", cursor: "pointer" }}
+    >
+      <div onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "relative", width: "200px", height: "200px", backgroundColor: "#000", borderRadius: "16px", overflow: "hidden", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1)", animation: "imagePopup 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)", display: "flex", alignItems: "center", justifyContent: "center",
+        }}
+      >
+        {/* Sleek Floating Close Button */}
+        <button
+          onClick={onClose}
+          style={{ position: "absolute", top: "10px", right: "10px", width: "28px", height: "28px", borderRadius: "50%", backgroundColor: "rgba(0, 0, 0, 0.6)", color: "#fff", border: "1px solid rgba(255, 255, 255, 0.2)", cursor: "pointer", fontSize: "13px", fontWeight: "bold", zIndex: 10, }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.85)";
+            e.currentTarget.style.transform = "scale(1.1)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          ✕
+        </button>
+
+        {/* Full Image Only */}
+        <img src={data.imageUrl} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", }} />
+      </div>
+
+      <style>{`
+        @keyframes imagePopup {
+          from { transform: scale(0.6); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const Box = ({ children, style }) => (
   <div style={style}>{children}</div>
 );
@@ -939,7 +1004,7 @@ const ComponentMap = {
   "Button": Button,
 };
 
-const Renderer = ({ schema, deviceType, openMenu, openSheet, onNavigate }) => {
+const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onNavigate }) => {
   const debounceTimer = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -1001,6 +1066,12 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, onNavigate }) => {
           options: tapAction.data?.options || [],
           schema,
         });
+      } else if (tapAction.type === "SHOW_IMAGE_MODAL" || tapAction.type === "SHOW_IMAGE_PREVIEW") {
+        if (openImageModal) {
+          openImageModal({
+            imageUrl: tapAction.data?.imageUrl || schema.data?.imageUrl,
+          });
+        }
       } else if (tapAction.type === "NAVIGATE") {
         if (onNavigate) {
           onNavigate(tapAction.route);
@@ -1131,7 +1202,7 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, onNavigate }) => {
         <ActionWrapper actions={schema.actions}>
           <TargetComponent data={schema.data} style={schema.containerStyle} actions={schema.actions} isHovered={isHovered} onError={handleError} onExpire={handleExpire} onCopy={handleCopy} onNavigate={onNavigate}>
             {schema.children && schema.children.map((child, idx) => (
-              <Renderer key={idx} schema={child} deviceType={deviceType} openMenu={openMenu} openSheet={openSheet} onNavigate={onNavigate} />
+              <Renderer key={idx} schema={child} deviceType={deviceType} openMenu={openMenu} openSheet={openSheet} openImageModal={openImageModal} onNavigate={onNavigate} />
             ))}
           </TargetComponent>
         </ActionWrapper>
