@@ -781,6 +781,20 @@ export const fullPageJSON = {
               }
             },
             {
+              "type": "IFrame",
+              "containerStyle": {
+                "height": "220px",
+                "width": "100%",
+                "borderRadius": "16px",
+                "overflow": "hidden"
+              },
+              "data": {
+                "src": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1",
+                "title": "Campus Tech & Deals Showcase",
+                "allowFullScreen": true
+              }
+            },
+            {
               "type": "Image",
               "containerStyle": {
                 "height": "220px",
@@ -3045,6 +3059,178 @@ export const fullPageJSON = {
         //     }
         //   ]
         // },
+        // ── 10. SMALL PRODUCT CARDS (RESPONSIVE GRID) ───────────────────
+        {
+          "type": "Box",
+          "placement": {
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 174, "rowEnd": 350 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 350 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 350 }
+          },
+          "containerStyle": {
+            "display": "grid",
+            "gridTemplateColumns": "repeat(auto-fill, minmax(180px, 1fr))",
+            "gap": "12px",
+            "backgroundColor": "#F8FAFC",
+            "alignContent": "start",
+            "boxSizing": "border-box",
+            "borderRadius": "16px"
+          },
+          "children": [
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s1" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/20/400/400", "altText": "Gas Stove" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.3" } }, { "type": "ReviewCount", "data": { "text": "84" } }] },
+                { "type": "Title", "data": { "text": "BIGFLAME Power Hexa..." } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹6,632", "mrp": "₹12,800", "discount": "48%" } },
+                { "type": "OfferText", "data": { "text": "₹6,512 with Bank offer" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s2" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/10/400/400", "altText": "Men Cargos" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.1" } }, { "type": "ReviewCount", "data": { "text": "120" } }] },
+                { "type": "Title", "data": { "text": "VeBNoR Men Cargos" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹524", "mrp": "₹1,999", "discount": "73%" } },
+                { "type": "OfferText", "data": { "text": "Special discount" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s3" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", "altText": "Shoes" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.5" } }, { "type": "ReviewCount", "data": { "text": "210" } }] },
+                { "type": "Title", "data": { "text": "RED TAPE Lifestyle Sneakers" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹1,391", "mrp": "₹9,099", "discount": "84%" } },
+                { "type": "OfferText", "data": { "text": "Limited time deal" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s4" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/30/400/400", "altText": "T-Shirt" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.0" } }, { "type": "ReviewCount", "data": { "text": "56" } }] },
+                { "type": "Title", "data": { "text": "Anime Printed Cotton Tee" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹399", "mrp": "₹999", "discount": "60%" } },
+                { "type": "OfferText", "data": { "text": "Trending on campus" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s5" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/40/400/400", "altText": "Smart Watch" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.2" } }, { "type": "ReviewCount", "data": { "text": "340" } }] },
+                { "type": "Title", "data": { "text": "Noise Pulse 2 Max Display" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹1,499", "mrp": "₹5,999", "discount": "75%" } },
+                { "type": "OfferText", "data": { "text": "Lowest price ever" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s6" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/50/400/400", "altText": "Backpack" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.6" } }, { "type": "ReviewCount", "data": { "text": "1.2k" } }] },
+                { "type": "Title", "data": { "text": "Skybags 25L Campus Bag" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹899", "mrp": "₹2,100", "discount": "57%" } },
+                { "type": "OfferText", "data": { "text": "Bestseller" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s7" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/60/400/400", "altText": "Headphones" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.4" } }, { "type": "ReviewCount", "data": { "text": "800" } }] },
+                { "type": "Title", "data": { "text": "boAt Rockerz 450 Wireless" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹1,299", "mrp": "₹3,990", "discount": "67%" } },
+                { "type": "OfferText", "data": { "text": "Mega savings" } }
+              ]
+            },
+            {
+              "type": "ProductCard",
+              "containerStyle": {
+                "width": "100%",
+                "padding": "12px",
+                "backgroundColor": "#FFFFFF",
+                "borderRadius": "16px",
+                "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
+                "border": "1px solid #F1F5F9"
+              },
+              "data": { "id": "s8" },
+              "children": [
+                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/70/400/400", "altText": "Sunglasses" } },
+                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "3.9" } }, { "type": "ReviewCount", "data": { "text": "23" } }] },
+                { "type": "Title", "data": { "text": "Fastrack UV Protect Shades" } },
+                { "type": "PriceBlock", "data": { "sellingPrice": "₹599", "mrp": "₹999", "discount": "40%" } },
+                { "type": "OfferText", "data": { "text": "Hot Deal" } }
+              ]
+            }
+          ]
+        },
         {
           "type": "Footer",
           "containerStyle": {
@@ -3060,9 +3246,9 @@ export const fullPageJSON = {
             "borderTop": "1px solid rgba(255,255,255,0.08)"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 174, "rowEnd": 200 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 200 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 200 }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 352, "rowEnd": 380 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 352, "rowEnd": 380 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 352, "rowEnd": 380 }
           },
           "data": {
             "sections": [

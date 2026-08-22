@@ -49,16 +49,16 @@ const pageChildren = fullPageJSON?.children?.[0]?.children || [];
 
 const TEMPLATES = {
   "Full Page": fullPageJSON,
-  "Header": pageChildren[1],
-  "Search Bar": pageChildren[4],
+  "Header": pageChildren[0],
+  "Search Bar": pageChildren[1],
+  "StoryRow": pageChildren[2],
   "Category Grid": pageChildren[3],
-  "Carousel Only": pageChildren[1],
+  "Carousel Only": pageChildren[4],
   "HeroBanner": pageChildren[5],
-  "CountDownTimer": pageChildren[6],
-  "Product List": pageChildren[2],
-  "CouponCode": pageChildren[7],
-  "StoryRow": pageChildren[8],
-  "Share": pageChildren[9],
+  "CouponCode": pageChildren[6],
+  "CountDownTimer": pageChildren[7],
+  "Product List": pageChildren[8],
+  "Product Grid": pageChildren[9],
   "Footer": pageChildren[10],
   "Navbar": fullPageJSON?.children?.[1],
 };
@@ -816,8 +816,8 @@ const CouponCode = ({ data, style, onCopy }) => {
   const handleCopy = () => {
     if (onCopy) {
       onCopy();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -1055,6 +1055,35 @@ const Text = ({ data, style }) => (
   <span style={style}>{data?.text}</span>
 );
 
+const IFrame = ({ data, style }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  if (!data?.src) return null;
+  return (
+    <div
+      style={{ width: "100%", height: style?.height || data?.height || "220px",borderRadius: "16px", overflow: "hidden", backgroundColor: "#000000", boxSizing: "border-box", ...style, }}
+    >
+      {/* Loading Shimmer while iframe loads */}
+      {isLoading && (
+        <div style={{position: "absolute",inset: 0,display: "flex",flexDirection: "column",alignItems: "center",justifyContent: "center",gap: "8px", backgroundColor: "#18181b", color: "#ffffff",zIndex: 1,}}>
+          <div style={{width: "28px",height: "28px",border: "3px solid rgba(255, 255, 255, 0.15)",borderTopColor: "#DB2777",borderRadius: "50%",animation: "spin 0.8s linear infinite",}}/>
+          <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.7)", fontWeight: "500" }}>Loading...</span>
+        </div>
+      )}
+
+      <iframe
+        src={data.src}
+        title={data.title || "Embedded Video"}
+        width="100%"
+        height="100%"
+        loading="lazy"
+        allowFullScreen={data.allowFullScreen !== false}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        onLoad={() => setIsLoading(false)}
+      />
+    </div>
+  );
+};
+
 const ComponentMap = {
   "Home": Home,
   "Page": Page,
@@ -1069,6 +1098,7 @@ const ComponentMap = {
   "CountDownTimer": CountDownTimer,
   "Box": Box,
   "Text": Text,
+  "IFrame": IFrame,
   "CouponCode": CouponCode,
   "StoryRow": StoryRow,
   "StoryCircle": StoryCircle,

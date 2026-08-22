@@ -98,7 +98,8 @@ export enum ComponentType {
   PriceBlock = 'PriceBlock',
   OfferText = 'OfferText',
   DeliveryInfo = 'DeliveryInfo',
-  Button = 'Button'
+  Button = 'Button',
+  IFrame = 'IFrame'
 }
 
 // -----------------------------------------------------------------------------
@@ -329,9 +330,17 @@ export interface SDUIButton extends SDUIBaseComponent {
   };
 }
 
-// -----------------------------------------------------------------------------
-// Union Type for All Components
-// -----------------------------------------------------------------------------
+export interface SDUIIFrame extends SDUIBaseComponent {
+  type: 'IFrame';
+  data?: {
+    src?: string;
+    title?: string;
+    subtitle?: string;
+    badge?: string;
+    height?: string;
+    allowFullScreen?: boolean;
+  };
+}
 
 export type AnySDUIComponent =
   | SDUIHome
@@ -366,4 +375,5 @@ export type AnySDUIComponent =
   | SDUIPriceBlock
   | SDUIOfferText
   | SDUIDeliveryInfo
-  | SDUIButton;
+  | SDUIButton
+  | SDUIIFrame;
