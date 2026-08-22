@@ -1298,9 +1298,9 @@ export const fullPageJSON = {
             "boxSizing": "border-box",
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 36, "rowEnd": 53 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 56 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 56 }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 36, "rowEnd": 58 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 54 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 54 }
           },
           "data": {
             "showDots": true,
@@ -1326,7 +1326,7 @@ export const fullPageJSON = {
             {
               "type": "Image",
               "containerStyle": {
-                "height": "300px",
+                "height": "220px",
                 "objectFit": "cover",
                 "borderRadius": "16px",
               },
@@ -1338,7 +1338,7 @@ export const fullPageJSON = {
             {
               "type": "Image",
               "containerStyle": {
-                "height": "300px",
+                "height": "220px",
                 "objectFit": "cover",
                 "borderRadius": "16px",
               },
@@ -1358,9 +1358,9 @@ export const fullPageJSON = {
             "boxSizing": "border-box",
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 68, "rowEnd": 105 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 63, "rowEnd": 102 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 63, "rowEnd": 102 }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 59, "rowEnd": 99 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 55, "rowEnd": 95 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 55, "rowEnd": 95 }
           },
           "data": {
             "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80",
@@ -1412,160 +1412,365 @@ export const fullPageJSON = {
           ]
         },
         {
-          "type": "CouponCode",
-          "containerStyle": {
-            "background": "linear-gradient(180deg, #FFF3DF 0%, #FFF3DF 100%)",
-            "backgroundImage": "linear-gradient(180deg, #FFF3DF 0%, #FFF3DF 100%)",
-            "backgroundColor": "#FFF3DF",
-            "margin": "16px max(16px, calc((100% - 1180px) / 2)) 0",
-            "padding": "18px 20px",
-            "borderRadius": "16px",
-            "border": "1px dashed #E9C489",
-            "color": "#8A5209",
-            "fontSize": "14px",
-            "fontWeight": "500",
-            "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-            "boxSizing": "border-box",
-            "minWidth": "0",
-            "maxWidth": "100%",
-            "alignSelf": "start",
-            "width": "auto",
-            "overflow": "visible"
-          },
-          "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 108,
-              "rowEnd": 110
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 102,
-              "rowEnd": 104
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 103,
-              "rowEnd": 104
-            }
-          },
-          "data": {
-            "title": "Save 20% on this order",
-            "coupon": "SAVE20",
-            "description": "Applies to orders above ₹999.",
-            "copyLabel": "Copy code"
-          },
-          "actions": {
-            "onCopy": {
-              "type": "COPY_TO_CLIPBOARD",
-              "value": "SAVE20"
-            }
-          }
-        },
-        {
-          "type": "CountDownTimer",
-          "containerStyle": {
-            "background": "linear-gradient(180deg, #11404C 0%, #0A2A31 100%)",
-            "backgroundImage": "linear-gradient(180deg, #11404C 0%, #0A2A31 100%)",
-            "backgroundColor": "#0A2A31",
-            "margin": "12px max(16px, calc((100% - 1180px) / 2)) 0",
-            "padding": "18px 20px",
-            "borderRadius": "16px",
-            "border": "1px solid rgba(255,255,255,0.08)",
-            "color": "#FFFFFF",
-            "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            "fontSize": "17px",
-            "fontWeight": "600",
-            "letterSpacing": "0.06em",
-            "textAlign": "left",
-            "boxSizing": "border-box",
-            "minWidth": "0",
-            "maxWidth": "100%",
-            "alignSelf": "start",
-            "width": "auto",
-            "overflow": "visible"
-          },
-          "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 150,
-              "rowEnd": 109
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 150,
-              "rowEnd": 112
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 150,
-              "rowEnd": 112
-            }
-          },
-          "data": {
-            "label": "Deal of the day ends in",
-            "expiredText": "Deal ended",
-            "targetDate": "2026-08-13T23:59:00",
-            "showDays": "false",
-            "format": "HH:MM:SS"
-          },
-          "actions": {
-            "onExpire": {
-              "type": "API_CALL",
-              "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-              "actionName": "DEAL_OF_THE_DAY_ENDED"
-            }
-          }
-        },
-        {
-          "type": "ProductList",
+          "type": "Box",
           "containerStyle": {
             "display": "flex",
             "flexDirection": "row",
             "flexWrap": "nowrap",
-            "alignItems": "stretch",
             "gap": "14px",
-            "padding": "20px max(16px, calc((100% - 1180px) / 2)) 28px",
-            "overflow": "auto hidden",
             "overflowX": "auto",
-            "overflowY": "hidden",
+            "scrollbarWidth": "none",
             "WebkitOverflowScrolling": "touch",
-            "scrollSnapType": "x mandatory",
-            "scrollPaddingLeft": "max(16px, calc((100% - 1180px) / 2))",
-            "scrollbarWidth": "thin",
-            "width": "100%",
-            "maxWidth": "100%",
-            "minWidth": "0",
             "boxSizing": "border-box",
-            "alignSelf": "start",
-            "height": "auto",
-            "minHeight": "552px"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 109,
-              "rowEnd": 163
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 100, "rowEnd": 111 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 96, "rowEnd": 107 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 96, "rowEnd": 107 }
+          },
+          "children": [
+            {
+              "type": "CouponCode",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(180deg, #FFF3DF 0%, #FFF3DF 100%)",
+                "backgroundImage": "linear-gradient(180deg, #FFF3DF 0%, #FFF3DF 100%)",
+                "backgroundColor": "#FFF3DF",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1px dashed #E9C489",
+                "color": "#8A5209",
+                "fontSize": "14px",
+                "fontWeight": "500",
+                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "boxSizing": "border-box",
+              },
+              "data": {
+                "title": "Save 20% on this order",
+                "coupon": "SAVE20",
+                "description": "Applies to orders above ₹999.",
+                "copyLabel": "Copy code"
+              },
+              "actions": {
+                "onCopy": {
+                  "type": "COPY_TO_CLIPBOARD",
+                  "value": "SAVE20"
+                }
+              }
             },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 112,
-              "rowEnd": 166
+            {
+              "type": "CouponCode",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)",
+                "backgroundImage": "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)",
+                "backgroundColor": "#DCFCE7",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1.5px dashed #86EFAC",
+                "color": "#166534",
+                "fontSize": "14px",
+                "fontWeight": "500",
+                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(22, 101, 52, 0.06)",
+                "cursor": "pointer"
+              },
+              "data": {
+                "title": "Flat ₹500 OFF Super Saver",
+                "coupon": "FLAT500",
+                "description": "Valid on purchases above ₹2,499.",
+                "copyLabel": "Copy code"
+              },
+              "actions": {
+                "onCopy": {
+                  "type": "COPY_TO_CLIPBOARD",
+                  "value": "FLAT500"
+                }
+              }
             },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 112,
-              "rowEnd": 166
+            {
+              "type": "CouponCode",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)",
+                "backgroundImage": "linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)",
+                "backgroundColor": "#EDE9FE",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1.5px dashed #C4B5FD",
+                "color": "#5B21B6",
+                "fontSize": "14px",
+                "fontWeight": "500",
+                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(91, 33, 182, 0.06)",
+                "cursor": "pointer"
+              },
+              "data": {
+                "title": "Campus Special: 50% OFF",
+                "coupon": "CAMPUS50",
+                "description": "Max discount ₹300 for student members.",
+                "copyLabel": "Copy code"
+              },
+              "actions": {
+                "onCopy": {
+                  "type": "COPY_TO_CLIPBOARD",
+                  "value": "CAMPUS50"
+                }
+              }
+            },
+            {
+              "type": "CouponCode",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)",
+                "backgroundImage": "linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)",
+                "backgroundColor": "#FFE4E6",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1.5px dashed #FDA4AF",
+                "color": "#9F1239",
+                "fontSize": "14px",
+                "fontWeight": "500",
+                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(159, 18, 57, 0.06)",
+                "cursor": "pointer"
+              },
+              "data": {
+                "title": "Free Delivery + ₹150 OFF",
+                "coupon": "FREEDROP",
+                "description": "First campus order with instant express drop.",
+                "copyLabel": "Copy code"
+              },
+              "actions": {
+                "onCopy": {
+                  "type": "COPY_TO_CLIPBOARD",
+                  "value": "FREEDROP"
+                }
+              }
+            },
+            {
+              "type": "CouponCode",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
+                "backgroundImage": "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
+                "backgroundColor": "#DBEAFE",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1.5px dashed #93C5FD",
+                "color": "#1E40AF",
+                "fontSize": "14px",
+                "fontWeight": "500",
+                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(30, 64, 175, 0.06)",
+                "cursor": "pointer"
+              },
+              "data": {
+                "title": "30% OFF Tech & Gadgets",
+                "coupon": "TECH30",
+                "description": "Valid on chargers, earphones & cables.",
+                "copyLabel": "Copy code"
+              },
+              "actions": {
+                "onCopy": {
+                  "type": "COPY_TO_CLIPBOARD",
+                  "value": "TECH30"
+                }
+              }
             }
+          ]
+        },
+        {
+          "type": "Box",
+          "containerStyle": {
+            "display": "flex",
+            "flexDirection": "row",
+            "flexWrap": "nowrap",
+            "gap": "14px",
+            "overflowX": "auto",
+            "scrollbarWidth": "none",
+            "WebkitOverflowScrolling": "touch",
+            "boxSizing": "border-box",
+          },
+          "placement": {
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 112, "rowEnd": 120 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 108, "rowEnd": 116 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 108, "rowEnd": 116 }
+          },
+          "children": [
+            {
+              "type": "CountDownTimer",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(180deg, #11404C 0%, #0A2A31 100%)",
+                "backgroundImage": "linear-gradient(180deg, #11404C 0%, #0A2A31 100%)",
+                "backgroundColor": "#0A2A31",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1px solid rgba(255,255,255,0.12)",
+                "color": "#FFFFFF",
+                "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                "fontSize": "17px",
+                "fontWeight": "600",
+                "letterSpacing": "0.06em",
+                "textAlign": "left",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(10, 42, 49, 0.25)"
+              },
+              "data": {
+                "label": "Deal of the day ends in",
+                "expiredText": "Deal ended",
+                "targetDate": "2026-09-13T23:59:00",
+                "showDays": "false",
+                "format": "HH:MM:SS"
+              },
+              "actions": {
+                "onExpire": {
+                  "type": "API_CALL",
+                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+                  "actionName": "DEAL_OF_THE_DAY_ENDED"
+                }
+              }
+            },
+            {
+              "type": "CountDownTimer",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(180deg, #4A0E17 0%, #26050A 100%)",
+                "backgroundImage": "linear-gradient(180deg, #4A0E17 0%, #26050A 100%)",
+                "backgroundColor": "#26050A",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1px solid rgba(244,63,94,0.25)",
+                "color": "#FFE4E6",
+                "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                "fontSize": "17px",
+                "fontWeight": "600",
+                "letterSpacing": "0.06em",
+                "textAlign": "left",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(74, 14, 23, 0.25)"
+              },
+              "data": {
+                "label": "Flash sale ends in",
+                "expiredText": "Flash sale ended",
+                "targetDate": "2026-09-20T18:00:00",
+                "showDays": "true",
+                "format": "DD:HH:MM:SS"
+              },
+              "actions": {
+                "onExpire": {
+                  "type": "API_CALL",
+                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+                  "actionName": "FLASH_SALE_ENDED"
+                }
+              }
+            },
+            {
+              "type": "CountDownTimer",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(180deg, #2E1065 0%, #170738 100%)",
+                "backgroundImage": "linear-gradient(180deg, #2E1065 0%, #170738 100%)",
+                "backgroundColor": "#170738",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1px solid rgba(168,85,247,0.25)",
+                "color": "#F3E8FF",
+                "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                "fontSize": "17px",
+                "fontWeight": "600",
+                "letterSpacing": "0.06em",
+                "textAlign": "left",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(46, 16, 101, 0.25)"
+              },
+              "data": {
+                "label": "Weekend tech drop in",
+                "expiredText": "Drop live now!",
+                "targetDate": "2026-10-01T12:00:00",
+                "showDays": "true",
+                "format": "DD:HH:MM:SS"
+              },
+              "actions": {
+                "onExpire": {
+                  "type": "API_CALL",
+                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+                  "actionName": "TECH_DROP_ENDED"
+                }
+              }
+            },
+            {
+              "type": "CountDownTimer",
+              "containerStyle": {
+                "flexShrink": "0",
+                "minWidth": "280px",
+                "maxWidth": "320px",
+                "background": "linear-gradient(180deg, #451A03 0%, #210C01 100%)",
+                "backgroundImage": "linear-gradient(180deg, #451A03 0%, #210C01 100%)",
+                "backgroundColor": "#210C01",
+                "padding": "14px 16px",
+                "borderRadius": "16px",
+                "border": "1px solid rgba(245,158,11,0.25)",
+                "color": "#FEF3C7",
+                "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                "fontSize": "17px",
+                "fontWeight": "600",
+                "letterSpacing": "0.06em",
+                "textAlign": "left",
+                "boxSizing": "border-box",
+                "boxShadow": "0 4px 16px rgba(69, 26, 3, 0.25)"
+              },
+              "data": {
+                "label": "Limited stock offers in",
+                "expiredText": "Offers closed",
+                "targetDate": "2026-09-15T00:00:00",
+                "showDays": "false",
+                "format": "HH:MM:SS"
+              },
+              "actions": {
+                "onExpire": {
+                  "type": "API_CALL",
+                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
+                  "actionName": "LIMITED_STOCK_ENDED"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "ProductList",
+          "containerStyle": {
+            "gap": "14px",
+            "padding": "20px max(16px, calc((100% - 1180px) / 2)) 28px",
+            "overflowX": "auto",
+            "WebkitOverflowScrolling": "touch",
+            "boxSizing": "border-box",
+          },
+          "placement": {
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 121, "rowEnd": 173 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 117, "rowEnd": 169 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 117, "rowEnd": 169 }
           },
           "actions": {
             "onScroll": {
@@ -1588,25 +1793,19 @@ export const fullPageJSON = {
                 "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundColor": "#FFFFFF",
-                "position": "relative",
                 "flex": "0 0 auto",
-                "width": "clamp(236px, 74vw, 268px)",
                 "height": "516px",
                 "minHeight": "516px",
                 "maxHeight": "516px",
                 "alignSelf": "stretch",
                 "display": "flex",
                 "flexDirection": "column",
-                "justifyContent": "flex-start",
                 "gap": "8px",
                 "padding": "14px",
                 "border": "1px solid #E4E7E4",
                 "borderRadius": "16px",
                 "boxShadow": "0 1px 2px rgba(16,31,38,0.04)",
                 "boxSizing": "border-box",
-                "minWidth": "0",
-                "overflow": "hidden",
-                "scrollSnapAlign": "start"
               },
               "data": {
                 "id": "serenelife-001"
@@ -1661,7 +1860,6 @@ export const fullPageJSON = {
                     "objectFit": "contain",
                     "backgroundColor": "#FAFAF8",
                     "borderRadius": "10px",
-                    "display": "block",
                     "boxSizing": "border-box"
                   },
                   "data": {
@@ -3377,31 +3575,15 @@ export const fullPageJSON = {
             "padding": "20px",
             "backgroundColor": "#e0f2fe",
             "borderRadius": "12px",
-            "margin": "20px max(16px, calc((100% - 1180px) / 2))",
             "display": "flex",
             "justifyContent": "center",
             "alignItems": "center",
             "border": "2px dashed #0284c7"
           },
           "placement": {
-            "mobile": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 163,
-              "rowEnd": 169
-            },
-            "tablet": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 166,
-              "rowEnd": 172
-            },
-            "desktop": {
-              "colStart": 1,
-              "colEnd": 100,
-              "rowStart": 166,
-              "rowEnd": 172
-            }
+            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 174, "rowEnd": 180 },
+            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 172 },
+            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 172 }
           },
           "children": [
             {
@@ -3440,19 +3622,19 @@ export const fullPageJSON = {
             "mobile": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 169,
+              "rowStart": 190,
               "rowEnd": 200
             },
             "tablet": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 172,
+              "rowStart": 190,
               "rowEnd": 200
             },
             "desktop": {
               "colStart": 1,
               "colEnd": 100,
-              "rowStart": 172,
+              "rowStart": 190,
               "rowEnd": 200
             }
           },

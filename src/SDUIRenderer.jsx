@@ -728,8 +728,8 @@ const CouponCode = ({ data, style, onCopy }) => {
   const handleCopy = () => {
     if (onCopy) {
       onCopy();
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
     }
   };
 
