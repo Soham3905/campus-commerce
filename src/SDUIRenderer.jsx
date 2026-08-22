@@ -405,19 +405,69 @@ const ActionWrapper = ({ actions, children, style }) => {
         style={{ display: "flex", overflowX: "auto", scrollBehavior: "smooth", scrollbarWidth: "none", ...style }}>
         {children}
         {isFetching && (
-          <div style={{ minWidth: "50px", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", borderRadius: "10px" }}>
-            <div className="spinner"></div>
+          <div
+            style={{
+              minWidth: "220px",
+              width: "220px",
+              alignSelf: "stretch",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "12px",
+              background: "linear-gradient(180deg, #FAFAF8 0%, #F4F4F0 100%)",
+              border: "1.5px dashed #CBD5E1",
+              borderRadius: "16px",
+              padding: "24px 16px",
+              boxSizing: "border-box",
+              flexShrink: 0,
+              marginRight: "16px",
+            }}
+          >
+            <div className="campus-loader">
+              <div className="loader-ring"></div>
+              <div className="loader-sparkle">✨</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ margin: "0 0 3px 0", fontSize: "13px", fontWeight: "700", color: "#1E293B", letterSpacing: "0.01em" }}>
+                Loading more deals
+              </p>
+              <span style={{ fontSize: "11px", color: "#64748B", fontWeight: "500" }}>
+                Fetching fresh items...
+              </span>
+            </div>
           </div>
         )}
         <style>{`
-          .spinner {
-            width: 20px; height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4f46e5;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+          .campus-loader {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
-          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          .loader-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid rgba(219, 39, 119, 0.15);
+            border-top-color: #DB2777;
+            border-right-color: #9333EA;
+            animation: loaderSpin 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          }
+          .loader-sparkle {
+            font-size: 16px;
+            animation: pulseSparkle 1.2s ease-in-out infinite alternate;
+          }
+          @keyframes loaderSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes pulseSparkle {
+            0% { transform: scale(0.85); opacity: 0.7; }
+            100% { transform: scale(1.15); opacity: 1; }
+          }
         `}</style>
       </div>
     );
@@ -564,15 +614,53 @@ const ProductCard = ({ children, style, isHovered }) => {
       style={{ padding: "10px", width: "280px", borderRadius: "10px", backgroundColor: "#fff", position: "relative", overflow: "hidden", ...style }}>
       {children}
 
-      {/* Quick Add Overlay */}
-      <div style={{ position: "absolute", bottom: isHovered ? "200px" : "-50px", right: isHovered ? "12px" : "-50px", transition: "right 0.6s ease-in-out", width: "90%", }}>
+      {/* Modern Floating Quick Add Pill over Image */}
+      <div
+        style={{
+          position: "absolute",
+          top: "145px",
+          left: "14px",
+          right: "14px",
+          zIndex: 10,
+          opacity: isHovered ? 1 : 0,
+          transform: isHovered ? "translateY(0) scale(1)" : "translateY(8px) scale(0.96)",
+          transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
         <button
           onClick={(e) => {
             e.stopPropagation();
-            alert("Added to cart!");
           }}
-          style={{ width: "100%", padding: "8px", backgroundColor: "#fadb61ff", color: "#000", borderRadius: "20px", fontWeight: "600", cursor: "pointer", }}>
-          Quick Add
+          style={{
+            width: "100%",
+            padding: "9px 14px",
+            backgroundColor: "rgba(17, 24, 39, 0.92)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            color: "#ffffff",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            borderRadius: "12px",
+            fontWeight: "600",
+            fontSize: "13px",
+            letterSpacing: "0.02em",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "7px",
+            boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.1)",
+            transition: "all 0.2s ease",
+            fontFamily: "'Inter Tight', Inter, sans-serif",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#000000";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(17, 24, 39, 0.92)";
+          }}
+        >
+          <span style={{ fontSize: "13px" }}>⚡</span>
+          <span>Quick Add</span>
         </button>
       </div>
     </div>
