@@ -1,0 +1,46 @@
+:root {
+  /* Dark/Neutral CMS Theme Tokens */
+  --cms-bg-canvas: #0f111a;
+  --cms-bg-panel: #161824;
+  --cms-bg-panel-header: #1c1e2e;
+  --cms-bg-card: #202334;
+  --cms-bg-card-hover: #292c42;
+  --cms-bg-input: #12141f;
+  --cms-border-subtle: #272a3e;
+  --cms-border-medium: #363a54;
+  
+  /* Accents */
+  --cms-accent-primary: #6366f1;
+  --cms-accent-primary-hover: #4f46e5;
+  --cms-accent-primary-light: rgba(99, 102, 241, 0.15);
+  --cms-accent-secondary: #ec4899;
+  
+  /* Text */
+  --cms-text-primary: #f1f5f9;
+  --cms-text-secondary: #94a3b8;
+  --cms-text-muted: #64748b;
+  --cms-text-accent: #818cf8;
+  
+  /* Status */
+  --cms-success: #10b981;
+  --cms-success-bg: rgba(16, 185, 129, 0.15);
+  --cms-warning: #f59e0b;
+  --cms-warning-bg: rgba(245, 158, 11, 0.15);
+  --cms-danger: #ef4444;
+  --cms-danger-bg: rgba(239, 68, 68, 0.15);
+  
+  /* Radius & Spacing */
+  --cms-radius-sm: 6px;
+  --cms-radius-md: 10px;
+  --cms-radius-lg: 14px;
+  --cms-radius-full: 9999px;
+  
+  /* Shadows */
+  --cms-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --cms-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --cms-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  
+  /* Font */
+  --cms-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cms-font-mono: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+}

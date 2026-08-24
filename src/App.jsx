@@ -1,13 +1,8 @@
-import SDUIRenderer from './SDUIRenderer';
-// import { Provider } from "react-redux";
-// import { store } from "./store/store";
+import React from "react";
+import { CmsLayout } from "./cms/components/layout/CmsLayout";
+
 function App() {
-    // return (
-    //     <Provider store={store}>
-    //         <SDUIRenderer />
-    //     </Provider>
-    // )
-    return <SDUIRenderer />;
+  return <CmsLayout />;
 }
 
 export default App;
