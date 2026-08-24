@@ -8,6 +8,7 @@ import { Inspector } from "../inspector/Inspector";
 import { PageManagerModal } from "../dialogs/PageManagerModal";
 import { InterfaceManagerModal } from "../dialogs/InterfaceManagerModal";
 import { JsonEditorModal } from "../dialogs/JsonEditorModal";
+import { ComponentRegistry } from "../../../registry/componentRegistry";
 
 export const CmsLayout = () => {
   const {
@@ -38,6 +39,7 @@ export const CmsLayout = () => {
   } = useCmsState();
 
   const [leftTab, setLeftTab] = useState("library"); // 'library' | 'layers'
+  const [mobileTab, setMobileTab] = useState("canvas"); // 'canvas' | 'library' | 'layers' | 'inspector'
   const [isPagesOpen, setIsPagesOpen] = useState(false);
   const [isInterfacesOpen, setIsInterfacesOpen] = useState(false);
   const [isJsonOpen, setIsJsonOpen] = useState(false);
@@ -70,6 +72,16 @@ export const CmsLayout = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [undo, redo, saveCurrentPage, clearSelection]);
 
+  // Handle adding a component: on mobile, auto-switch to canvas to show result
+  const handleAddComponent = (type) => {
+    addComponent(type);
+    if (window.innerWidth <= 1024) {
+      setMobileTab("canvas");
+    }
+  };
+
+  const selectedDef = selectedNode ? ComponentRegistry[selectedNode.type] : null;
+
   return (
     <div className="cms-root">
       {/* Top Header */}
@@ -90,20 +102,26 @@ export const CmsLayout = () => {
         onOpenJson={() => setIsJsonOpen(true)}
       />
 
-      {/* Main Studio Body */}
-      <div className="cms-body">
+      {/* Main Studio Body with Responsive Mobile Classes */}
+      <div className={`cms-body mobile-view-${mobileTab}`}>
         {/* Left Sidebar: Library & Layers */}
         <aside className="cms-sidebar-left">
           <div className="cms-tabs-strip">
             <button
               className={`cms-tab-btn ${leftTab === "library" ? "active" : ""}`}
-              onClick={() => setLeftTab("library")}
+              onClick={() => {
+                setLeftTab("library");
+                setMobileTab("library");
+              }}
             >
               🧩 Components
             </button>
             <button
               className={`cms-tab-btn ${leftTab === "layers" ? "active" : ""}`}
-              onClick={() => setLeftTab("layers")}
+              onClick={() => {
+                setLeftTab("layers");
+                setMobileTab("layers");
+              }}
             >
               📑 Layers Tree
             </button>
@@ -112,14 +130,19 @@ export const CmsLayout = () => {
           <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
             {leftTab === "library" ? (
               <ComponentLibrary
-                onAddComponent={(type) => addComponent(type)}
+                onAddComponent={handleAddComponent}
                 selectedNode={selectedNode}
               />
             ) : (
               <LayersPanel
                 schema={schema}
                 selectedId={selectedComponentId}
-                onSelectComponent={selectComponent}
+                onSelectComponent={(id) => {
+                  selectComponent(id);
+                  if (window.innerWidth <= 1024) {
+                    // On mobile, keep layer selected or allow viewing
+                  }
+                }}
                 onDeleteComponent={deleteComponent}
                 onMoveComponent={moveComponent}
               />
@@ -138,6 +161,7 @@ export const CmsLayout = () => {
             onDuplicateComponent={duplicateComponent}
             onDeleteComponent={deleteComponent}
             onMoveComponent={moveComponent}
+            onOpenInspector={() => setMobileTab("inspector")}
             onNavigate={(route) => {
               console.log(`[CMS Navigation] Navigating to route: ${route}`);
             }}
@@ -155,6 +179,54 @@ export const CmsLayout = () => {
           />
         </aside>
       </div>
+
+      {/* Responsive Mobile Bottom Navigation Bar (< 1024px) */}
+      <nav className="cms-mobile-nav" aria-label="Mobile Navigation">
+        <div className="cms-mobile-nav-items">
+          <button
+            className={`cms-mobile-nav-btn ${mobileTab === "canvas" ? "active" : ""}`}
+            onClick={() => setMobileTab("canvas")}
+          >
+            <span className="cms-mobile-nav-icon">🎨</span>
+            <span>Canvas</span>
+          </button>
+
+          <button
+            className={`cms-mobile-nav-btn ${mobileTab === "library" ? "active" : ""}`}
+            onClick={() => {
+              setLeftTab("library");
+              setMobileTab("library");
+            }}
+          >
+            <span className="cms-mobile-nav-icon">🧩</span>
+            <span>Library</span>
+          </button>
+
+          <button
+            className={`cms-mobile-nav-btn ${mobileTab === "layers" ? "active" : ""}`}
+            onClick={() => {
+              setLeftTab("layers");
+              setMobileTab("layers");
+            }}
+          >
+            <span className="cms-mobile-nav-icon">📑</span>
+            <span>Layers</span>
+          </button>
+
+          <button
+            className={`cms-mobile-nav-btn ${mobileTab === "inspector" ? "active" : ""}`}
+            onClick={() => setMobileTab("inspector")}
+          >
+            <span className="cms-mobile-nav-icon">⚙️</span>
+            <span>Inspector</span>
+            {selectedNode && (
+              <span className="cms-nav-badge" title={selectedNode.type}>
+                ●
+              </span>
+            )}
+          </button>
+        </div>
+      </nav>
 
       {/* Modals & Dialogs */}
       <PageManagerModal

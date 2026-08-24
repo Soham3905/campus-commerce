@@ -19,7 +19,8 @@
 .cms-canvas-viewport .cms-device-frame > div:first-child,
 .cms-tabs-strip,
 .cms-context-toolbar,
-.cms-layer-item {
+.cms-layer-item,
+.cms-mobile-nav {
   user-select: none;
 }
 
@@ -33,6 +34,8 @@
   justify-content: space-between;
   padding: 0 16px;
   z-index: 50;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .cms-header-left,
@@ -40,7 +43,7 @@
 .cms-header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .cms-logo-badge {
@@ -48,12 +51,13 @@
   align-items: center;
   gap: 8px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   color: #fff;
   padding: 4px 10px;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   border-radius: var(--cms-radius-sm);
+  white-space: nowrap;
 }
 
 .cms-page-pill {
@@ -62,13 +66,21 @@
   gap: 6px;
   background: var(--cms-bg-card);
   border: 1px solid var(--cms-border-medium);
-  padding: 4px 12px;
+  padding: 4px 10px;
   border-radius: var(--cms-radius-sm);
   font-size: 12px;
   font-weight: 600;
   color: var(--cms-text-primary);
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+.cms-page-pill span:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cms-page-pill:hover {
@@ -92,6 +104,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, width 0.25s ease;
 }
 
 .cms-sidebar-right {
@@ -101,6 +115,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, width 0.25s ease;
 }
 
 .cms-panel-header {
@@ -113,6 +129,7 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--cms-text-primary);
+  flex-shrink: 0;
 }
 
 /* Canvas Area */
@@ -123,6 +140,7 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .cms-canvas-viewport {
@@ -132,6 +150,7 @@
   align-items: flex-start;
   padding: 24px;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .cms-device-frame {
@@ -183,6 +202,7 @@
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .cms-btn-primary {
@@ -219,6 +239,7 @@
   cursor: pointer;
   font-size: 14px;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .cms-btn-icon:hover {
@@ -238,7 +259,14 @@
   display: flex;
   background: var(--cms-bg-panel);
   border-bottom: 1px solid var(--cms-border-subtle);
-  padding: 0 8px;
+  padding: 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.cms-tabs-strip::-webkit-scrollbar {
+  display: none;
 }
 
 .cms-tab-btn {
@@ -253,6 +281,8 @@
   cursor: pointer;
   text-align: center;
   transition: all 0.15s ease;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
 .cms-tab-btn:hover {
@@ -288,7 +318,7 @@
   color: var(--cms-text-primary);
   padding: 7px 10px;
   border-radius: var(--cms-radius-sm);
-  font-size: 12px;
+  font-size: 13px;
   font-family: inherit;
   box-sizing: border-box;
   outline: none;
@@ -327,6 +357,252 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* MOBILE BOTTOM NAVIGATION BAR                                              */
+/* ────────────────────────────────────────────────────────────────────────── */
+.cms-mobile-nav {
+  display: none;
+  height: 56px;
+  background-color: var(--cms-bg-panel);
+  border-top: 1px solid var(--cms-border-subtle);
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.cms-mobile-nav-items {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: stretch;
+}
+
+.cms-mobile-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  color: var(--cms-text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  padding: 4px 0;
+}
+
+.cms-mobile-nav-btn.active {
+  color: var(--cms-accent-primary);
+  background: var(--cms-accent-primary-light);
+}
+
+.cms-mobile-nav-btn.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--cms-accent-primary);
+  border-radius: 0 0 4px 4px;
+}
+
+.cms-mobile-nav-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.cms-nav-badge {
+  position: absolute;
+  top: 6px;
+  right: 20%;
+  background: var(--cms-accent-primary);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 10px;
+  min-width: 14px;
+  text-align: center;
+}
+
+/* Floating button on canvas for mobile */
+.cms-mobile-edit-fab {
+  display: none;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, var(--cms-accent-primary), #4f46e5);
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+  cursor: pointer;
+  z-index: 15;
+  align-items: center;
+  gap: 6px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* RESPONSIVE MEDIA QUERIES                                                   */
+/* ────────────────────────────────────────────────────────────────────────── */
+
+/* Tablet & Mobile Screens (<= 1024px) */
+@media (max-width: 1024px) {
+  .cms-mobile-nav {
+    display: block;
+  }
+
+  .cms-mobile-edit-fab {
+    display: flex;
+  }
+
+  /* In mobile view, sidebars and canvas become tabbed full screens */
+  .cms-body {
+    flex-direction: column;
+  }
+
+  .cms-sidebar-left,
+  .cms-sidebar-right,
+  .cms-canvas-container {
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+  }
+
+  /* Hide panels that are not currently active on mobile */
+  .cms-body.mobile-view-canvas .cms-sidebar-left,
+  .cms-body.mobile-view-canvas .cms-sidebar-right {
+    display: none !important;
+  }
+  .cms-body.mobile-view-canvas .cms-canvas-container {
+    display: flex !important;
+  }
+
+  .cms-body.mobile-view-library .cms-canvas-container,
+  .cms-body.mobile-view-library .cms-sidebar-right {
+    display: none !important;
+  }
+  .cms-body.mobile-view-library .cms-sidebar-left {
+    display: flex !important;
+  }
+
+  .cms-body.mobile-view-layers .cms-canvas-container,
+  .cms-body.mobile-view-layers .cms-sidebar-right {
+    display: none !important;
+  }
+  .cms-body.mobile-view-layers .cms-sidebar-left {
+    display: flex !important;
+  }
+
+  .cms-body.mobile-view-inspector .cms-canvas-container,
+  .cms-body.mobile-view-inspector .cms-sidebar-left {
+    display: none !important;
+  }
+  .cms-body.mobile-view-inspector .cms-sidebar-right {
+    display: flex !important;
+  }
+
+  .cms-canvas-viewport {
+    padding: 12px 8px;
+  }
+}
+
+/* Mobile Screens (<= 768px) */
+@media (max-width: 768px) {
+  .cms-header {
+    height: auto;
+    min-height: 48px;
+    padding: 6px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .cms-header-left {
+    gap: 6px;
+  }
+
+  .cms-logo-badge {
+    padding: 3px 6px;
+    font-size: 12px;
+  }
+
+  .cms-logo-badge span:nth-child(2) {
+    display: none;
+  }
+
+  .cms-page-pill {
+    max-width: 130px;
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  .cms-header-center {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    padding-top: 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .cms-header-right {
+    gap: 6px;
+  }
+
+  .cms-btn {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+
+  .cms-btn-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  .cms-modal-backdrop {
+    padding: 8px;
+  }
+
+  .cms-modal-box {
+    max-height: 94vh;
+    border-radius: var(--cms-radius-md);
+  }
+
+  /* Prevent auto zoom on iOS Safari */
+  .cms-input,
+  .cms-select,
+  .cms-textarea {
+    font-size: 15px;
+  }
+}
+
+/* Extra Small Screens (<= 480px) */
+@media (max-width: 480px) {
+  .cms-header-left .cms-page-pill:nth-child(3) {
+    display: none; /* Hide secondary blueprint button in tight header */
+  }
+
+  .cms-header-right button span:nth-child(2) {
+    display: none; /* Icon-only for JSON and Save on small mobile */
+  }
+
+  .cms-header-right .cms-btn {
+    padding: 5px 8px;
+  }
+
+  .cms-canvas-viewport {
+    padding: 8px 4px;
+  }
 }
 
 @keyframes fadeIn {

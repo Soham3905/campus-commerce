@@ -23,7 +23,7 @@ export const CmsHeader = ({
     <header className="cms-header">
       {/* Left: Brand & Page Selector */}
       <div className="cms-header-left">
-        <div className="cms-logo-badge">
+        <div className="cms-logo-badge" title="SDUI Visual Component CMS">
           <span>⚡</span>
           <span>SDUI CMS</span>
         </div>
@@ -35,14 +35,14 @@ export const CmsHeader = ({
         >
           <span>📄</span>
           <span>{activePage?.name || "Select Page"}</span>
-          <span style={{ fontSize: "10px", opacity: 0.7 }}>▾</span>
+          <span style={{ fontSize: "9px", opacity: 0.7 }}>▾</span>
         </button>
 
         {currentInterface && (
           <button
             className="cms-page-pill"
             onClick={onOpenInterfaces}
-            title="Interface Blueprint"
+            title={`Blueprint: ${currentInterface.name}`}
             style={{ opacity: 0.9, borderColor: "var(--cms-border-subtle)" }}
           >
             <span>{currentInterface.icon || "📐"}</span>
@@ -53,13 +53,22 @@ export const CmsHeader = ({
 
       {/* Center: Device Viewport Controls & Undo/Redo */}
       <div className="cms-header-center">
-        <div style={{ display: "flex", gap: "4px", background: "var(--cms-bg-card)", padding: "3px", borderRadius: "8px", border: "1px solid var(--cms-border-subtle)" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "2px",
+            background: "var(--cms-bg-card)",
+            padding: "2px",
+            borderRadius: "8px",
+            border: "1px solid var(--cms-border-subtle)",
+          }}
+        >
           <button
             className={`cms-btn-icon ${canUndo ? "" : "disabled"}`}
             onClick={onUndo}
             disabled={!canUndo}
             title="Undo (Ctrl+Z)"
-            style={{ opacity: canUndo ? 1 : 0.4 }}
+            style={{ opacity: canUndo ? 1 : 0.35 }}
           >
             ↩
           </button>
@@ -68,13 +77,22 @@ export const CmsHeader = ({
             onClick={onRedo}
             disabled={!canRedo}
             title="Redo (Ctrl+Y)"
-            style={{ opacity: canRedo ? 1 : 0.4 }}
+            style={{ opacity: canRedo ? 1 : 0.35 }}
           >
             ↪
           </button>
         </div>
 
-        <div style={{ display: "flex", gap: "4px", background: "var(--cms-bg-card)", padding: "3px", borderRadius: "8px", border: "1px solid var(--cms-border-subtle)" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "2px",
+            background: "var(--cms-bg-card)",
+            padding: "2px",
+            borderRadius: "8px",
+            border: "1px solid var(--cms-border-subtle)",
+          }}
+        >
           <button
             className={`cms-btn-icon ${activeDevice === "mobile" ? "active" : ""}`}
             onClick={() => onDeviceChange("mobile")}
@@ -102,7 +120,7 @@ export const CmsHeader = ({
       {/* Right: Actions & Save State */}
       <div className="cms-header-right">
         {/* Status indicator */}
-        <div style={{ fontSize: "11px", fontWeight: "600", marginRight: "6px" }}>
+        <div style={{ fontSize: "11px", fontWeight: "600", whiteSpace: "nowrap" }}>
           {saveStatus === "saving" && (
             <span style={{ color: "var(--cms-warning)" }}>⏳ Saving...</span>
           )}

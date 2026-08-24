@@ -24,7 +24,7 @@ export const InterfaceManagerModal = ({
     <div className="cms-modal-backdrop" onClick={onClose}>
       <div className="cms-modal-box" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="cms-panel-header" style={{ padding: "14px 20px" }}>
+        <div className="cms-panel-header" style={{ padding: "12px 16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}>
             <span>📐</span>
             <span>Interface Blueprints</span>
@@ -39,7 +39,7 @@ export const InterfaceManagerModal = ({
         </div>
 
         {/* Body */}
-        <div style={{ padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ padding: "16px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
           <div style={{ fontSize: "12px", color: "var(--cms-text-muted)" }}>
             An Interface is a reusable structural blueprint for building SDUI pages. Selecting an interface applies its component hierarchy to the current canvas.
           </div>
@@ -56,38 +56,39 @@ export const InterfaceManagerModal = ({
                     border: "1px solid",
                     borderColor: isSelected ? "var(--cms-accent-primary)" : "var(--cms-border-subtle)",
                     borderRadius: "var(--cms-radius-md)",
-                    padding: "14px 16px",
+                    padding: "12px 14px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    gap: "12px",
+                    gap: "10px",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", flex: 1 }}>
-                    <span style={{ fontSize: "24px", marginTop: "2px" }}>{item.icon || "📄"}</span>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", flex: 1, minWidth: "200px" }}>
+                    <span style={{ fontSize: "22px", marginTop: "2px", flexShrink: 0 }}>{item.icon || "📄"}</span>
                     <div>
                       <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--cms-text-primary)" }}>
                         {item.name}
                         <span
                           style={{
-                            marginLeft: "8px",
+                            marginLeft: "6px",
                             fontSize: "10px",
                             background: "var(--cms-bg-panel)",
                             color: "var(--cms-text-muted)",
-                            padding: "2px 6px",
+                            padding: "1px 6px",
                             borderRadius: "10px",
                           }}
                         >
                           {item.category || "Blueprint"}
                         </span>
                       </div>
-                      <div style={{ fontSize: "11px", color: "var(--cms-text-muted)", marginTop: "4px", lineHeight: "1.4" }}>
+                      <div style={{ fontSize: "11px", color: "var(--cms-text-muted)", marginTop: "3px", lineHeight: "1.4" }}>
                         {item.description}
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", gap: "6px" }}>
+                  <div style={{ display: "flex", gap: "6px", marginLeft: "auto" }}>
                     <button
                       className="cms-btn cms-btn-icon"
                       onClick={() => handleDuplicate(item.id)}
@@ -103,7 +104,7 @@ export const InterfaceManagerModal = ({
                           onClose();
                         }
                       }}
-                      style={{ padding: "6px 12px", fontSize: "11px" }}
+                      style={{ padding: "5px 10px", fontSize: "11px" }}
                     >
                       Use Blueprint
                     </button>

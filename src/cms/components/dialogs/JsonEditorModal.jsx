@@ -64,35 +64,35 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
     <div className="cms-modal-backdrop" onClick={onClose}>
       <div
         className="cms-modal-box"
-        style={{ maxWidth: "800px", height: "80vh" }}
+        style={{ maxWidth: "800px", height: "85vh" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="cms-panel-header" style={{ padding: "12px 20px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}>
+        <div className="cms-panel-header" style={{ padding: "10px 14px", flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px" }}>
             <span>{`{ }`}</span>
-            <span>Advanced SDUI JSON Schema Editor</span>
+            <span>JSON Schema Editor</span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <button className="cms-btn cms-btn-secondary" onClick={handleFormat} style={{ fontSize: "11px", padding: "4px 10px" }}>
-              Format JSON
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginLeft: "auto", flexWrap: "wrap" }}>
+            <button className="cms-btn cms-btn-secondary" onClick={handleFormat} style={{ fontSize: "11px", padding: "4px 8px" }}>
+              Format
             </button>
-            <button className="cms-btn cms-btn-secondary" onClick={handleCopy} style={{ fontSize: "11px", padding: "4px 10px" }}>
+            <button className="cms-btn cms-btn-secondary" onClick={handleCopy} style={{ fontSize: "11px", padding: "4px 8px" }}>
               Copy
             </button>
             <button
               className="cms-btn cms-btn-primary"
               onClick={handleApply}
               disabled={!isValid}
-              style={{ fontSize: "11px", padding: "4px 14px", opacity: isValid ? 1 : 0.5 }}
+              style={{ fontSize: "11px", padding: "4px 12px", opacity: isValid ? 1 : 0.5 }}
             >
-              Apply Schema
+              Apply
             </button>
             <button
               className="cms-btn-icon"
               onClick={onClose}
-              style={{ width: "28px", height: "28px", fontSize: "16px", marginLeft: "6px" }}
+              style={{ width: "26px", height: "26px", fontSize: "15px" }}
             >
               ✕
             </button>
@@ -105,15 +105,15 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
             style={{
               background: "var(--cms-danger-bg)",
               borderBottom: "1px solid var(--cms-danger)",
-              padding: "10px 16px",
+              padding: "8px 14px",
               color: "#fca5a5",
-              fontSize: "12px",
-              maxHeight: "100px",
+              fontSize: "11px",
+              maxHeight: "90px",
               overflowY: "auto",
             }}
           >
-            <div style={{ fontWeight: "700", marginBottom: "4px" }}>⚠️ Schema Validation Issues:</div>
-            <ul style={{ margin: 0, paddingLeft: "18px" }}>
+            <div style={{ fontWeight: "700", marginBottom: "3px" }}>⚠️ Validation Issues:</div>
+            <ul style={{ margin: 0, paddingLeft: "16px" }}>
               {errors.map((err, idx) => (
                 <li key={idx}>{err}</li>
               ))}
@@ -122,7 +122,7 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
         )}
 
         {/* JSON Editor Textarea */}
-        <div style={{ flex: 1, padding: "12px", display: "flex", overflow: "hidden" }}>
+        <div style={{ flex: 1, padding: "10px", display: "flex", overflow: "hidden" }}>
           <textarea
             className="cms-textarea"
             value={jsonText}
@@ -133,10 +133,10 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
               resize: "none",
               fontFamily: "var(--cms-font-mono)",
               fontSize: "12px",
-              lineHeight: "1.5",
+              lineHeight: "1.45",
               color: "#89dceb",
               background: "var(--cms-bg-input)",
-              padding: "12px",
+              padding: "10px",
             }}
             spellCheck="false"
           />

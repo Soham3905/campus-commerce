@@ -87,7 +87,7 @@ export const PageManagerModal = ({
     <div className="cms-modal-backdrop" onClick={onClose}>
       <div className="cms-modal-box" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
-        <div className="cms-panel-header" style={{ padding: "14px 20px" }}>
+        <div className="cms-panel-header" style={{ padding: "12px 16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}>
             <span>📄</span>
             <span>Page Management</span>
@@ -102,7 +102,7 @@ export const PageManagerModal = ({
         </div>
 
         {/* Modal Body */}
-        <div style={{ padding: "20px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ padding: "16px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "14px" }}>
           {/* Create New Page Section */}
           {isCreating ? (
             <form
@@ -111,7 +111,7 @@ export const PageManagerModal = ({
                 background: "var(--cms-bg-card)",
                 border: "1px solid var(--cms-accent-primary)",
                 borderRadius: "var(--cms-radius-md)",
-                padding: "16px",
+                padding: "14px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "12px",
@@ -162,9 +162,9 @@ export const PageManagerModal = ({
               </div>
             </form>
           ) : (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
               <span style={{ fontSize: "12px", color: "var(--cms-text-muted)" }}>
-                {pages.length} saved pages available
+                {pages.length} saved pages
               </span>
               <button
                 className="cms-btn cms-btn-primary"
@@ -189,15 +189,16 @@ export const PageManagerModal = ({
                     border: "1px solid",
                     borderColor: isActive ? "var(--cms-accent-primary)" : "var(--cms-border-subtle)",
                     borderRadius: "var(--cms-radius-sm)",
-                    padding: "12px 16px",
+                    padding: "10px 14px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    gap: "12px",
+                    gap: "10px",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1, minWidth: 0 }}>
-                    <span style={{ fontSize: "20px" }}>{iface?.icon || "📄"}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1, minWidth: "180px" }}>
+                    <span style={{ fontSize: "20px", flexShrink: 0 }}>{iface?.icon || "📄"}</span>
                     <div style={{ minWidth: 0 }}>
                       {editingId === page.id ? (
                         <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
@@ -224,11 +225,11 @@ export const PageManagerModal = ({
                             {isActive && (
                               <span
                                 style={{
-                                  marginLeft: "8px",
+                                  marginLeft: "6px",
                                   fontSize: "10px",
                                   background: "var(--cms-accent-primary)",
                                   color: "#fff",
-                                  padding: "2px 6px",
+                                  padding: "1px 6px",
                                   borderRadius: "10px",
                                 }}
                               >
@@ -237,7 +238,7 @@ export const PageManagerModal = ({
                             )}
                           </div>
                           <div style={{ fontSize: "11px", color: "var(--cms-text-muted)", marginTop: "2px" }}>
-                            Route: <code style={{ color: "var(--cms-text-accent)" }}>/{page.route || "page"}</code> • Blueprint: {iface?.name || page.interfaceId}
+                            Route: <code style={{ color: "var(--cms-text-accent)" }}>/{page.route || "page"}</code> • {iface?.name || page.interfaceId}
                           </div>
                         </>
                       )}
@@ -245,7 +246,7 @@ export const PageManagerModal = ({
                   </div>
 
                   {/* Actions */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", marginLeft: "auto" }}>
                     {!isActive && (
                       <button
                         className="cms-btn cms-btn-primary"

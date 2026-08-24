@@ -5,18 +5,11 @@ import { BottomSheet } from "../../../sdui/components/overlays/BottomSheet";
 import { ImagePreviewModal } from "../../../sdui/components/overlays/ImagePreviewModal";
 import { executeOptionAction } from "../../../sdui/actions/actionExecutor";
 import { ComponentRegistry } from "../../../registry/componentRegistry";
-import { findNodeById, findParentById } from "../../../cms/utils/treeUtils";
+import { findParentById } from "../../../cms/utils/treeUtils";
 
 /**
- * VisualCanvas — renders the SDUI page inside a device frame.
- *
- * CMS Edit Mode (isInteractive=false):
- *   Clicking any rendered component selects it in the CMS.
- *   Drag-and-drop reordering is enabled via a transparent overlay.
- *
- * Live Preview Mode (isInteractive=true):
- *   Clicking fires the SDUI component's own onTap/longPress actions.
- *   CMS selection is disabled.
+ * VisualCanvas — renders the SDUI page inside a responsive device frame.
+ * Supports Edit Mode (click to select, drag/drop reordering) and Live Preview mode.
  */
 export const VisualCanvas = ({
   schema,
@@ -28,11 +21,12 @@ export const VisualCanvas = ({
   onDeleteComponent,
   onMoveComponent,
   onNavigate,
+  onOpenInspector,
 }) => {
   const [menu, setMenu] = useState(null);
   const [sheetData, setSheetData] = useState(null);
   const [imageModal, setImageModal] = useState(null);
-  const [isInteractive, setIsInteractive] = useState(false); // default: CMS edit mode
+  const [isInteractive, setIsInteractive] = useState(false); // default: Edit Mode
   const [dragOverId, setDragOverId] = useState(null);
   const [draggingId, setDraggingId] = useState(null);
   const dragNodeRef = useRef(null);
@@ -71,13 +65,10 @@ export const VisualCanvas = ({
   };
 
   // ─── CMS Click Intercept ─────────────────────────────────────────────────
-  // In edit mode, we capture clicks on the canvas overlay and translate them
-  // to component selections using data-sdui-id attributes.
   const handleCanvasOverlayClick = useCallback(
     (e) => {
-      if (isInteractive) return; // live mode: let events pass through
+      if (isInteractive) return;
 
-      // Walk up from click target to find the nearest data-sdui-id
       let el = e.target;
       while (el && el !== e.currentTarget) {
         const id = el.getAttribute("data-sdui-id");
@@ -87,65 +78,9 @@ export const VisualCanvas = ({
         }
         el = el.parentElement;
       }
-      // Clicked empty canvas — deselect
       onSelectComponent(null);
     },
     [isInteractive, onSelectComponent]
-  );
-
-  // ─── Drag & Drop (HTML5 native, no external lib) ─────────────────────────
-  const handleDragStart = useCallback((e, id) => {
-    setDraggingId(id);
-    dragNodeRef.current = id;
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", id);
-  }, []);
-
-  const handleDragEnd = useCallback(() => {
-    setDraggingId(null);
-    setDragOverId(null);
-    dragNodeRef.current = null;
-  }, []);
-
-  const handleDragOver = useCallback(
-    (e, id) => {
-      e.preventDefault();
-      if (id !== draggingId) {
-        setDragOverId(id);
-      }
-    },
-    [draggingId]
-  );
-
-  const handleDrop = useCallback(
-    (e, targetId) => {
-      e.preventDefault();
-      const sourceId = dragNodeRef.current || e.dataTransfer.getData("text/plain");
-      if (!sourceId || sourceId === targetId) {
-        setDragOverId(null);
-        return;
-      }
-
-      // Check if source and target share the same parent (sibling reorder)
-      const sourceParent = findParentById(schema, sourceId);
-      const targetParent = findParentById(schema, targetId);
-
-      if (sourceParent && targetParent && sourceParent.parent.id === targetParent.parent.id) {
-        // Same parent → reorder. Move source before/after target based on index.
-        const sourceIndex = sourceParent.index;
-        const targetIndex = targetParent.index;
-        const direction = targetIndex > sourceIndex ? "down" : "up";
-        // Move step by step
-        const steps = Math.abs(targetIndex - sourceIndex);
-        for (let i = 0; i < steps; i++) {
-          onMoveComponent(sourceId, direction);
-        }
-      }
-
-      setDragOverId(null);
-      setDraggingId(null);
-    },
-    [schema, onMoveComponent]
   );
 
   const selectedDef = selectedNode ? ComponentRegistry[selectedNode.type] : null;
@@ -155,7 +90,7 @@ export const VisualCanvas = ({
       {/* Canvas Top Bar */}
       <div
         style={{
-          padding: "8px 16px",
+          padding: "8px 12px",
           background: "var(--cms-bg-panel)",
           borderBottom: "1px solid var(--cms-border-subtle)",
           display: "flex",
@@ -163,9 +98,11 @@ export const VisualCanvas = ({
           justifyContent: "space-between",
           fontSize: "12px",
           flexShrink: 0,
+          gap: "8px",
+          flexWrap: "wrap",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span style={{ color: "var(--cms-text-muted)" }}>Viewport:</span>
           <span style={{ fontWeight: "700", color: "var(--cms-text-primary)", textTransform: "capitalize" }}>
             {activeDevice} ({getDeviceWidth()})
@@ -173,7 +110,7 @@ export const VisualCanvas = ({
         </div>
 
         {/* Mode Toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <button
             onClick={() => setIsInteractive(false)}
             style={{
@@ -221,28 +158,31 @@ export const VisualCanvas = ({
             background: "rgba(22, 24, 36, 0.97)",
             backdropFilter: "blur(8px)",
             borderBottom: "2px solid var(--cms-accent-primary)",
-            padding: "6px 16px",
+            padding: "6px 12px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             flexShrink: 0,
             zIndex: 999,
+            gap: "8px",
+            flexWrap: "wrap",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
             <span
               style={{
                 background: "var(--cms-accent-primary)",
                 color: "#fff",
-                padding: "2px 10px",
+                padding: "2px 8px",
                 borderRadius: "4px",
                 fontSize: "11px",
                 fontWeight: "700",
+                whiteSpace: "nowrap",
               }}
             >
               {selectedDef?.icon} {selectedDef?.label || selectedNode.type}
             </span>
-            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)", fontFamily: "monospace" }}>
+            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               #{selectedNode.id}
             </span>
           </div>
@@ -252,7 +192,7 @@ export const VisualCanvas = ({
               className="cms-btn-icon"
               onClick={() => onMoveComponent(selectedNode.id, "up")}
               title="Move Up"
-              style={{ width: "26px", height: "26px", fontSize: "14px" }}
+              style={{ width: "26px", height: "26px", fontSize: "13px" }}
             >
               ↑
             </button>
@@ -260,11 +200,10 @@ export const VisualCanvas = ({
               className="cms-btn-icon"
               onClick={() => onMoveComponent(selectedNode.id, "down")}
               title="Move Down"
-              style={{ width: "26px", height: "26px", fontSize: "14px" }}
+              style={{ width: "26px", height: "26px", fontSize: "13px" }}
             >
               ↓
             </button>
-            <div style={{ width: "1px", height: "20px", background: "var(--cms-border-subtle)", margin: "0 4px" }} />
             <button
               className="cms-btn-icon"
               onClick={() => onDuplicateComponent(selectedNode.id)}
@@ -281,6 +220,15 @@ export const VisualCanvas = ({
             >
               🗑️
             </button>
+            {onOpenInspector && (
+              <button
+                className="cms-btn cms-btn-primary"
+                onClick={onOpenInspector}
+                style={{ padding: "3px 8px", fontSize: "11px", marginLeft: "4px" }}
+              >
+                ⚙️ Configure
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -318,7 +266,7 @@ export const VisualCanvas = ({
               openImageModal={isInteractive ? setImageModal : undefined}
               onNavigate={onNavigate}
               selectedId={isInteractive ? undefined : selectedId}
-              onSelect={undefined} // selection handled by overlay above
+              onSelect={undefined}
             />
           </div>
 
@@ -329,25 +277,16 @@ export const VisualCanvas = ({
         </div>
       </div>
 
-      {/* Drag & Drop Layer Hint (shows when dragging) */}
-      {!isInteractive && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "12px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontSize: "11px",
-            color: "var(--cms-text-muted)",
-            background: "rgba(22,24,36,0.8)",
-            padding: "4px 12px",
-            borderRadius: "20px",
-            pointerEvents: "none",
-            opacity: 0.8,
-          }}
+      {/* Mobile Floating Action Button to configure selected component */}
+      {selectedNode && onOpenInspector && !isInteractive && (
+        <button
+          className="cms-mobile-edit-fab"
+          onClick={onOpenInspector}
+          title={`Configure ${selectedDef?.label || selectedNode.type}`}
         >
-          ✏️ Edit Mode — Click to select · Layers tree supports drag-to-reorder
-        </div>
+          <span>⚙️</span>
+          <span>Edit {selectedDef?.label || selectedNode.type} →</span>
+        </button>
       )}
     </div>
   );
