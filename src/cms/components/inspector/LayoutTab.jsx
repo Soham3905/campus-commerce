@@ -1,4 +1,5 @@
 import React from "react";
+import { colors, commonStyles } from "../../theme";
 
 export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
   if (!node) return null;
@@ -42,9 +43,9 @@ export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
       {/* Device Indicator Banner */}
       <div
         style={{
-          background: "var(--cms-bg-card)",
-          border: "1px solid var(--cms-border-medium)",
-          borderRadius: "var(--cms-radius-sm)",
+          background: colors.bgCard,
+          border: `1px solid ${colors.borderMedium}`,
+          borderRadius: "6px",
           padding: "8px 12px",
           display: "flex",
           alignItems: "center",
@@ -52,21 +53,21 @@ export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
           fontSize: "12px",
         }}
       >
-        <span style={{ color: "var(--cms-text-muted)" }}>Editing Coordinates for:</span>
-        <span style={{ fontWeight: "700", color: "var(--cms-accent-primary)", textTransform: "capitalize" }}>
+        <span style={{ color: colors.textMuted }}>Editing Coordinates for:</span>
+        <span style={{ fontWeight: "700", color: colors.accentPrimary, textTransform: "capitalize" }}>
           {activeDevice} View
         </span>
       </div>
 
       {/* Grid Coordinates Inputs */}
       <div>
-        <label className="cms-label">Columns (1 to 100)</label>
+        <label style={commonStyles.label}>Columns (1 to 100)</label>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
           <div>
-            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)" }}>Col Start</span>
+            <span style={{ fontSize: "10px", color: colors.textMuted }}>Col Start</span>
             <input
               type="number"
-              className="cms-input"
+              style={commonStyles.input}
               min={1}
               max={100}
               value={currentPlacement.colStart ?? 1}
@@ -74,10 +75,10 @@ export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
             />
           </div>
           <div>
-            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)" }}>Col End</span>
+            <span style={{ fontSize: "10px", color: colors.textMuted }}>Col End</span>
             <input
               type="number"
-              className="cms-input"
+              style={commonStyles.input}
               min={2}
               max={101}
               value={currentPlacement.colEnd ?? 100}
@@ -89,33 +90,29 @@ export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
 
       {/* Column Width Presets */}
       <div>
-        <label className="cms-label">Quick Column Presets</label>
+        <label style={commonStyles.label}>Quick Column Presets</label>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "4px" }}>
           <button
-            className="cms-btn cms-btn-secondary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "10px", padding: "4px 2px" }}
             onClick={() => applyPreset(1, 100)}
-            style={{ fontSize: "10px", padding: "4px 2px" }}
           >
             Full (100)
           </button>
           <button
-            className="cms-btn cms-btn-secondary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "10px", padding: "4px 2px" }}
             onClick={() => applyPreset(1, 50)}
-            style={{ fontSize: "10px", padding: "4px 2px" }}
           >
             Left 50%
           </button>
           <button
-            className="cms-btn cms-btn-secondary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "10px", padding: "4px 2px" }}
             onClick={() => applyPreset(51, 100)}
-            style={{ fontSize: "10px", padding: "4px 2px" }}
           >
             Right 50%
           </button>
           <button
-            className="cms-btn cms-btn-secondary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "10px", padding: "4px 2px" }}
             onClick={() => applyPreset(15, 85)}
-            style={{ fontSize: "10px", padding: "4px 2px" }}
           >
             Center 70%
           </button>
@@ -124,13 +121,13 @@ export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
 
       {/* Rows Coordinates */}
       <div>
-        <label className="cms-label">Rows (Grid Heights: 10px / unit)</label>
+        <label style={commonStyles.label}>Rows (Grid Heights: 10px / unit)</label>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
           <div>
-            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)" }}>Row Start</span>
+            <span style={{ fontSize: "10px", color: colors.textMuted }}>Row Start</span>
             <input
               type="number"
-              className="cms-input"
+              style={commonStyles.input}
               min={1}
               max={200}
               value={currentPlacement.rowStart ?? 1}
@@ -138,10 +135,10 @@ export const LayoutTab = ({ node, activeDevice, onUpdate }) => {
             />
           </div>
           <div>
-            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)" }}>Row End</span>
+            <span style={{ fontSize: "10px", color: colors.textMuted }}>Row End</span>
             <input
               type="number"
-              className="cms-input"
+              style={commonStyles.input}
               min={2}
               max={200}
               value={currentPlacement.rowEnd ?? 10}

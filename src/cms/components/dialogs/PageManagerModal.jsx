@@ -3,6 +3,7 @@ import { PageRepository } from "../../services/pageRepository";
 import { defaultInterfaces } from "../../../schema/defaultInterfaces";
 import { ensureStableIds } from "../../utils/idUtils";
 import { cloneTree } from "../../utils/treeUtils";
+import { colors, commonStyles } from "../../theme";
 
 export const PageManagerModal = ({
   isOpen,
@@ -84,18 +85,30 @@ export const PageManagerModal = ({
   };
 
   return (
-    <div className="cms-modal-backdrop" onClick={onClose}>
-      <div className="cms-modal-box" onClick={(e) => e.stopPropagation()}>
+    <div style={commonStyles.modalBackdrop} onClick={onClose}>
+      <div style={commonStyles.modalBox} onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
-        <div className="cms-panel-header" style={{ padding: "12px 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}>
+        <div
+          style={{
+            padding: "12px 16px",
+            backgroundColor: colors.bgPanelHeader,
+            borderBottom: `1px solid ${colors.borderSubtle}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: colors.textPrimary,
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span>📄</span>
             <span>Page Management</span>
           </div>
           <button
-            className="cms-btn-icon"
+            style={{ ...commonStyles.btnIcon, width: "28px", height: "28px", fontSize: "16px" }}
             onClick={onClose}
-            style={{ width: "28px", height: "28px", fontSize: "16px" }}
           >
             ✕
           </button>
@@ -108,24 +121,24 @@ export const PageManagerModal = ({
             <form
               onSubmit={handleCreate}
               style={{
-                background: "var(--cms-bg-card)",
-                border: "1px solid var(--cms-accent-primary)",
-                borderRadius: "var(--cms-radius-md)",
+                background: colors.bgCard,
+                border: `1px solid ${colors.accentPrimary}`,
+                borderRadius: "10px",
                 padding: "14px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "12px",
               }}
             >
-              <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--cms-text-primary)" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700", color: colors.textPrimary }}>
                 Create New SDUI Page
               </div>
 
-              <div className="cms-form-group">
-                <label className="cms-label">Page Name</label>
+              <div>
+                <label style={commonStyles.label}>Page Name</label>
                 <input
                   type="text"
-                  className="cms-input"
+                  style={commonStyles.input}
                   placeholder="e.g. Flash Deals Page"
                   autoFocus
                   value={newPageName}
@@ -133,10 +146,10 @@ export const PageManagerModal = ({
                 />
               </div>
 
-              <div className="cms-form-group">
-                <label className="cms-label">Starting Interface Blueprint</label>
+              <div>
+                <label style={commonStyles.label}>Starting Interface Blueprint</label>
                 <select
-                  className="cms-select"
+                  style={commonStyles.input}
                   value={selectedInterfaceId}
                   onChange={(e) => setSelectedInterfaceId(e.target.value)}
                 >
@@ -151,23 +164,23 @@ export const PageManagerModal = ({
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
                 <button
                   type="button"
-                  className="cms-btn cms-btn-secondary"
+                  style={{ ...commonStyles.btn, ...commonStyles.btnSecondary }}
                   onClick={() => setIsCreating(false)}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="cms-btn cms-btn-primary">
+                <button type="submit" style={{ ...commonStyles.btn, ...commonStyles.btnPrimary }}>
                   Create Page
                 </button>
               </div>
             </form>
           ) : (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-              <span style={{ fontSize: "12px", color: "var(--cms-text-muted)" }}>
+              <span style={{ fontSize: "12px", color: colors.textMuted }}>
                 {pages.length} saved pages
               </span>
               <button
-                className="cms-btn cms-btn-primary"
+                style={{ ...commonStyles.btn, ...commonStyles.btnPrimary }}
                 onClick={() => setIsCreating(true)}
               >
                 + New Page
@@ -185,10 +198,10 @@ export const PageManagerModal = ({
                 <div
                   key={page.id}
                   style={{
-                    background: isActive ? "var(--cms-accent-primary-light)" : "var(--cms-bg-card)",
+                    background: isActive ? colors.accentPrimaryLight : colors.bgCard,
                     border: "1px solid",
-                    borderColor: isActive ? "var(--cms-accent-primary)" : "var(--cms-border-subtle)",
-                    borderRadius: "var(--cms-radius-sm)",
+                    borderColor: isActive ? colors.accentPrimary : colors.borderSubtle,
+                    borderRadius: "6px",
                     padding: "10px 14px",
                     display: "flex",
                     alignItems: "center",
@@ -204,30 +217,28 @@ export const PageManagerModal = ({
                         <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                           <input
                             type="text"
-                            className="cms-input"
+                            style={{ ...commonStyles.input, padding: "4px 8px", fontSize: "12px" }}
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
-                            style={{ padding: "4px 8px", fontSize: "12px" }}
                             autoFocus
                           />
                           <button
-                            className="cms-btn cms-btn-primary"
+                            style={{ ...commonStyles.btn, ...commonStyles.btnPrimary, padding: "4px 8px", fontSize: "11px" }}
                             onClick={() => handleSaveRename(page.id)}
-                            style={{ padding: "4px 8px", fontSize: "11px" }}
                           >
                             Save
                           </button>
                         </div>
                       ) : (
                         <>
-                          <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--cms-text-primary)" }}>
+                          <div style={{ fontSize: "13px", fontWeight: "700", color: colors.textPrimary }}>
                             {page.name}
                             {isActive && (
                               <span
                                 style={{
                                   marginLeft: "6px",
                                   fontSize: "10px",
-                                  background: "var(--cms-accent-primary)",
+                                  background: colors.accentPrimary,
                                   color: "#fff",
                                   padding: "1px 6px",
                                   borderRadius: "10px",
@@ -237,8 +248,8 @@ export const PageManagerModal = ({
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: "11px", color: "var(--cms-text-muted)", marginTop: "2px" }}>
-                            Route: <code style={{ color: "var(--cms-text-accent)" }}>/{page.route || "page"}</code> • {iface?.name || page.interfaceId}
+                          <div style={{ fontSize: "11px", color: colors.textMuted, marginTop: "2px" }}>
+                            Route: <code style={{ color: colors.textAccent }}>/{page.route || "page"}</code> • {iface?.name || page.interfaceId}
                           </div>
                         </>
                       )}
@@ -249,37 +260,33 @@ export const PageManagerModal = ({
                   <div style={{ display: "flex", alignItems: "center", gap: "4px", marginLeft: "auto" }}>
                     {!isActive && (
                       <button
-                        className="cms-btn cms-btn-primary"
+                        style={{ ...commonStyles.btn, ...commonStyles.btnPrimary, padding: "4px 10px", fontSize: "11px" }}
                         onClick={() => {
                           onSwitchPage(page.id);
                           onClose();
                         }}
-                        style={{ padding: "4px 10px", fontSize: "11px" }}
                       >
                         Open
                       </button>
                     )}
                     <button
-                      className="cms-btn-icon"
+                      style={{ ...commonStyles.btnIcon, width: "28px", height: "28px" }}
                       onClick={() => handleStartRename(page)}
                       title="Rename"
-                      style={{ width: "28px", height: "28px" }}
                     >
                       ✏️
                     </button>
                     <button
-                      className="cms-btn-icon"
+                      style={{ ...commonStyles.btnIcon, width: "28px", height: "28px" }}
                       onClick={() => handleDuplicate(page.id)}
                       title="Duplicate"
-                      style={{ width: "28px", height: "28px" }}
                     >
                       ⧉
                     </button>
                     <button
-                      className="cms-btn-icon"
+                      style={{ ...commonStyles.btnIcon, width: "28px", height: "28px", color: colors.danger }}
                       onClick={() => handleDelete(page.id)}
                       title="Delete"
-                      style={{ width: "28px", height: "28px", color: "var(--cms-danger)" }}
                     >
                       🗑️
                     </button>

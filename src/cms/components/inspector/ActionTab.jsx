@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ActionRegistry, SUPPORTED_EVENTS } from "../../../registry/actionRegistry";
+import { colors, commonStyles } from "../../theme";
 
 export const ActionTab = ({ node, definition, onUpdate }) => {
   if (!node) return null;
@@ -55,10 +56,10 @@ export const ActionTab = ({ node, definition, onUpdate }) => {
   return (
     <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "14px" }}>
       {/* Event Selector */}
-      <div className="cms-form-group">
-        <label className="cms-label">Trigger Event</label>
+      <div>
+        <label style={commonStyles.label}>Trigger Event</label>
         <select
-          className="cms-select"
+          style={commonStyles.input}
           value={selectedEventKey}
           onChange={(e) => setSelectedEventKey(e.target.value)}
         >
@@ -75,10 +76,10 @@ export const ActionTab = ({ node, definition, onUpdate }) => {
       </div>
 
       {/* Action Type Selector */}
-      <div className="cms-form-group">
-        <label className="cms-label">Action Behavior</label>
+      <div>
+        <label style={commonStyles.label}>Action Behavior</label>
         <select
-          className="cms-select"
+          style={commonStyles.input}
           value={currentAction?.type || ""}
           onChange={(e) => handleActionTypeChange(e.target.value)}
         >
@@ -95,16 +96,16 @@ export const ActionTab = ({ node, definition, onUpdate }) => {
       {currentAction?.type && ActionRegistry[currentAction.type] && (
         <div
           style={{
-            background: "var(--cms-bg-card)",
-            border: "1px solid var(--cms-border-subtle)",
-            borderRadius: "var(--cms-radius-sm)",
+            background: colors.bgCard,
+            border: `1px solid ${colors.borderSubtle}`,
+            borderRadius: "6px",
             padding: "12px",
             display: "flex",
             flexDirection: "column",
             gap: "10px",
           }}
         >
-          <div style={{ fontSize: "11px", fontWeight: "700", color: "var(--cms-text-accent)", marginBottom: "4px" }}>
+          <div style={{ fontSize: "11px", fontWeight: "700", color: colors.textAccent, marginBottom: "4px" }}>
             Configure {ActionRegistry[currentAction.type].label}
           </div>
 
@@ -112,12 +113,12 @@ export const ActionTab = ({ node, definition, onUpdate }) => {
             const val = currentAction[f.name] !== undefined ? currentAction[f.name] : f.defaultValue ?? "";
 
             return (
-              <div key={f.name} className="cms-form-group" style={{ marginBottom: "6px" }}>
-                <label className="cms-label">{f.label}</label>
+              <div key={f.name} style={{ marginBottom: "6px" }}>
+                <label style={commonStyles.label}>{f.label}</label>
 
                 {f.type === "select" ? (
                   <select
-                    className="cms-select"
+                    style={commonStyles.input}
                     value={val}
                     onChange={(e) => handleParamChange(f.name, e.target.value)}
                   >
@@ -130,7 +131,7 @@ export const ActionTab = ({ node, definition, onUpdate }) => {
                 ) : (
                   <input
                     type={f.type === "number" ? "number" : "text"}
-                    className="cms-input"
+                    style={commonStyles.input}
                     value={val}
                     onChange={(e) =>
                       handleParamChange(

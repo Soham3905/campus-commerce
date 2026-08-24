@@ -1,16 +1,12 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { SDUIRenderer } from "../../../sdui/SDUIRenderer";
 import { ContextMenu } from "../../../sdui/components/overlays/ContextMenu";
 import { BottomSheet } from "../../../sdui/components/overlays/BottomSheet";
 import { ImagePreviewModal } from "../../../sdui/components/overlays/ImagePreviewModal";
 import { executeOptionAction } from "../../../sdui/actions/actionExecutor";
 import { ComponentRegistry } from "../../../registry/componentRegistry";
-import { findParentById } from "../../../cms/utils/treeUtils";
+import { colors, commonStyles } from "../../theme";
 
-/**
- * VisualCanvas — renders the SDUI page inside a responsive device frame.
- * Supports Edit Mode (click to select, drag/drop reordering) and Live Preview mode.
- */
 export const VisualCanvas = ({
   schema,
   activeDevice,
@@ -27,9 +23,6 @@ export const VisualCanvas = ({
   const [sheetData, setSheetData] = useState(null);
   const [imageModal, setImageModal] = useState(null);
   const [isInteractive, setIsInteractive] = useState(false); // default: Edit Mode
-  const [dragOverId, setDragOverId] = useState(null);
-  const [draggingId, setDraggingId] = useState(null);
-  const dragNodeRef = useRef(null);
 
   const getDeviceWidth = () => {
     if (activeDevice === "mobile") return "375px";
@@ -64,7 +57,7 @@ export const VisualCanvas = ({
     }
   };
 
-  // ─── CMS Click Intercept ─────────────────────────────────────────────────
+  // Click intercept for selecting components on the visual canvas
   const handleCanvasOverlayClick = useCallback(
     (e) => {
       if (isInteractive) return;
@@ -86,13 +79,23 @@ export const VisualCanvas = ({
   const selectedDef = selectedNode ? ComponentRegistry[selectedNode.type] : null;
 
   return (
-    <div className="cms-canvas-container">
+    <div
+      style={{
+        flex: 1,
+        background: `radial-gradient(circle at center, #1b1d2d 0%, ${colors.bgCanvas} 100%)`,
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+        overflow: "hidden",
+        minWidth: 0,
+      }}
+    >
       {/* Canvas Top Bar */}
       <div
         style={{
           padding: "8px 12px",
-          background: "var(--cms-bg-panel)",
-          borderBottom: "1px solid var(--cms-border-subtle)",
+          background: colors.bgPanel,
+          borderBottom: `1px solid ${colors.borderSubtle}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -103,8 +106,8 @@ export const VisualCanvas = ({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <span style={{ color: "var(--cms-text-muted)" }}>Viewport:</span>
-          <span style={{ fontWeight: "700", color: "var(--cms-text-primary)", textTransform: "capitalize" }}>
+          <span style={{ color: colors.textMuted }}>Viewport:</span>
+          <span style={{ fontWeight: "700", color: colors.textPrimary, textTransform: "capitalize" }}>
             {activeDevice} ({getDeviceWidth()})
           </span>
         </div>
@@ -117,13 +120,14 @@ export const VisualCanvas = ({
               padding: "4px 10px",
               fontSize: "11px",
               fontWeight: "600",
-              background: !isInteractive ? "var(--cms-accent-primary)" : "var(--cms-bg-card)",
-              color: !isInteractive ? "#fff" : "var(--cms-text-muted)",
+              background: !isInteractive ? colors.accentPrimary : colors.bgCard,
+              color: !isInteractive ? "#fff" : colors.textMuted,
               border: "1px solid",
-              borderColor: !isInteractive ? "var(--cms-accent-primary)" : "var(--cms-border-medium)",
+              borderColor: !isInteractive ? colors.accentPrimary : colors.borderMedium,
               borderRadius: "5px 0 0 5px",
               cursor: "pointer",
               transition: "all 0.15s",
+              outline: "none",
             }}
             title="Edit Mode: click to select components"
           >
@@ -135,14 +139,15 @@ export const VisualCanvas = ({
               padding: "4px 10px",
               fontSize: "11px",
               fontWeight: "600",
-              background: isInteractive ? "var(--cms-success)" : "var(--cms-bg-card)",
-              color: isInteractive ? "#fff" : "var(--cms-text-muted)",
+              background: isInteractive ? colors.success : colors.bgCard,
+              color: isInteractive ? "#fff" : colors.textMuted,
               border: "1px solid",
-              borderColor: isInteractive ? "var(--cms-success)" : "var(--cms-border-medium)",
+              borderColor: isInteractive ? colors.success : colors.borderMedium,
               borderRadius: "0 5px 5px 0",
               cursor: "pointer",
               transition: "all 0.15s",
               marginLeft: "-1px",
+              outline: "none",
             }}
             title="Live Preview: component actions & gestures active"
           >
@@ -157,7 +162,7 @@ export const VisualCanvas = ({
           style={{
             background: "rgba(22, 24, 36, 0.97)",
             backdropFilter: "blur(8px)",
-            borderBottom: "2px solid var(--cms-accent-primary)",
+            borderBottom: `2px solid ${colors.accentPrimary}`,
             padding: "6px 12px",
             display: "flex",
             alignItems: "center",
@@ -171,7 +176,7 @@ export const VisualCanvas = ({
           <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
             <span
               style={{
-                background: "var(--cms-accent-primary)",
+                background: colors.accentPrimary,
                 color: "#fff",
                 padding: "2px 8px",
                 borderRadius: "4px",
@@ -182,49 +187,59 @@ export const VisualCanvas = ({
             >
               {selectedDef?.icon} {selectedDef?.label || selectedNode.type}
             </span>
-            <span style={{ fontSize: "10px", color: "var(--cms-text-muted)", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <span
+              style={{
+                fontSize: "10px",
+                color: colors.textMuted,
+                fontFamily: "monospace",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
               #{selectedNode.id}
             </span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             <button
-              className="cms-btn-icon"
+              style={{ ...commonStyles.btnIcon, width: "26px", height: "26px", fontSize: "13px" }}
               onClick={() => onMoveComponent(selectedNode.id, "up")}
               title="Move Up"
-              style={{ width: "26px", height: "26px", fontSize: "13px" }}
             >
               ↑
             </button>
             <button
-              className="cms-btn-icon"
+              style={{ ...commonStyles.btnIcon, width: "26px", height: "26px", fontSize: "13px" }}
               onClick={() => onMoveComponent(selectedNode.id, "down")}
               title="Move Down"
-              style={{ width: "26px", height: "26px", fontSize: "13px" }}
             >
               ↓
             </button>
             <button
-              className="cms-btn-icon"
+              style={{ ...commonStyles.btnIcon, width: "26px", height: "26px" }}
               onClick={() => onDuplicateComponent(selectedNode.id)}
               title="Duplicate"
-              style={{ width: "26px", height: "26px" }}
             >
               ⧉
             </button>
             <button
-              className="cms-btn-icon"
+              style={{ ...commonStyles.btnIcon, width: "26px", height: "26px", color: colors.danger }}
               onClick={() => onDeleteComponent(selectedNode.id)}
               title="Delete"
-              style={{ width: "26px", height: "26px", color: "var(--cms-danger)" }}
             >
               🗑️
             </button>
             {onOpenInspector && (
               <button
-                className="cms-btn cms-btn-primary"
+                style={{
+                  ...commonStyles.btn,
+                  ...commonStyles.btnPrimary,
+                  padding: "3px 8px",
+                  fontSize: "11px",
+                  marginLeft: "4px",
+                }}
                 onClick={onOpenInspector}
-                style={{ padding: "3px 8px", fontSize: "11px", marginLeft: "4px" }}
               >
                 ⚙️ Configure
               </button>
@@ -234,13 +249,28 @@ export const VisualCanvas = ({
       )}
 
       {/* Viewport Canvas Frame */}
-      <div className="cms-canvas-viewport">
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          padding: "16px",
+          overflow: "auto",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
         <div
-          className="cms-device-frame"
           style={{
             width: getDeviceWidth(),
             maxWidth: "100%",
             position: "relative",
+            background: "#ffffff",
+            boxShadow: "0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px #363a54",
+            borderRadius: "10px",
+            overflow: "hidden",
+            transition: "width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            minHeight: "100%",
           }}
         >
           {/* Transparent click-intercept overlay for Edit Mode */}
@@ -280,7 +310,25 @@ export const VisualCanvas = ({
       {/* Mobile Floating Action Button to configure selected component */}
       {selectedNode && onOpenInspector && !isInteractive && (
         <button
-          className="cms-mobile-edit-fab"
+          style={{
+            position: "absolute",
+            bottom: "16px",
+            right: "16px",
+            background: `linear-gradient(135deg, ${colors.accentPrimary}, #4f46e5)`,
+            color: "#ffffff",
+            padding: "8px 14px",
+            borderRadius: "24px",
+            fontSize: "12px",
+            fontWeight: 700,
+            border: "none",
+            boxShadow: "0 6px 18px rgba(99, 102, 241, 0.45)",
+            cursor: "pointer",
+            zIndex: 15,
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            outline: "none",
+          }}
           onClick={onOpenInspector}
           title={`Configure ${selectedDef?.label || selectedNode.type}`}
         >

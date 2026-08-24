@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { ComponentRegistry, ComponentCategories } from "../../../registry/componentRegistry";
+import { colors, commonStyles } from "../../theme";
 
 export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,12 +28,25 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       {/* Panel Header */}
-      <div className="cms-panel-header">
+      <div
+        style={{
+          padding: "12px 16px",
+          backgroundColor: colors.bgPanelHeader,
+          borderBottom: `1px solid ${colors.borderSubtle}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontSize: "13px",
+          fontWeight: "600",
+          color: colors.textPrimary,
+          flexShrink: 0,
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span>🧩</span>
           <span>Component Library</span>
         </div>
-        <span style={{ fontSize: "11px", color: "var(--cms-text-muted)" }}>
+        <span style={{ fontSize: "11px", color: colors.textMuted }}>
           {filteredComponents.length} items
         </span>
       </div>
@@ -41,11 +55,10 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
       <div style={{ padding: "10px 12px 6px" }}>
         <input
           type="text"
-          className="cms-input"
           placeholder="Search components..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ fontSize: "12px" }}
+          style={{ ...commonStyles.input, fontSize: "12px" }}
         />
       </div>
 
@@ -57,7 +70,7 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
           padding: "4px 12px 10px",
           overflowX: "auto",
           scrollbarWidth: "none",
-          borderBottom: "1px solid var(--cms-border-subtle)",
+          borderBottom: `1px solid ${colors.borderSubtle}`,
         }}
       >
         {categories.map((cat) => (
@@ -66,16 +79,17 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
             onClick={() => setActiveCategory(cat)}
             style={{
               padding: "3px 8px",
-              background: activeCategory === cat ? "var(--cms-accent-primary)" : "var(--cms-bg-card)",
-              color: activeCategory === cat ? "#fff" : "var(--cms-text-secondary)",
+              background: activeCategory === cat ? colors.accentPrimary : colors.bgCard,
+              color: activeCategory === cat ? "#fff" : colors.textSecondary,
               border: "1px solid",
-              borderColor: activeCategory === cat ? "var(--cms-accent-primary)" : "var(--cms-border-medium)",
+              borderColor: activeCategory === cat ? colors.accentPrimary : colors.borderMedium,
               borderRadius: "12px",
               fontSize: "11px",
               fontWeight: "600",
               cursor: "pointer",
               whiteSpace: "nowrap",
               transition: "all 0.15s ease",
+              outline: "none",
             }}
           >
             {cat}
@@ -99,23 +113,15 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
             <div
               key={comp.type}
               style={{
-                background: "var(--cms-bg-card)",
-                border: "1px solid var(--cms-border-subtle)",
-                borderRadius: "var(--cms-radius-sm)",
+                background: colors.bgCard,
+                border: `1px solid ${colors.borderSubtle}`,
+                borderRadius: "6px",
                 padding: "10px 12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: "10px",
                 transition: "all 0.15s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--cms-border-medium)";
-                e.currentTarget.style.background = "var(--cms-bg-card-hover)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "var(--cms-border-subtle)";
-                e.currentTarget.style.background = "var(--cms-bg-card)";
               }}
             >
               <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", flex: 1, minWidth: 0 }}>
@@ -124,7 +130,7 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
                     fontSize: "20px",
                     width: "32px",
                     height: "32px",
-                    background: "var(--cms-bg-panel)",
+                    background: colors.bgPanel,
                     borderRadius: "6px",
                     display: "flex",
                     alignItems: "center",
@@ -135,13 +141,13 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
                   {comp.icon}
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: "12px", fontWeight: "700", color: "var(--cms-text-primary)" }}>
+                  <div style={{ fontSize: "12px", fontWeight: "700", color: colors.textPrimary }}>
                     {comp.label}
                   </div>
                   <div
                     style={{
                       fontSize: "11px",
-                      color: "var(--cms-text-muted)",
+                      color: colors.textMuted,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -154,9 +160,13 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
               </div>
 
               <button
-                className="cms-btn cms-btn-secondary"
+                style={{
+                  ...commonStyles.btn,
+                  ...commonStyles.btnSecondary,
+                  padding: "4px 8px",
+                  fontSize: "11px",
+                }}
                 onClick={() => onAddComponent(comp.type)}
-                style={{ padding: "4px 8px", fontSize: "11px" }}
                 title={`Add ${comp.label}`}
               >
                 + Add
@@ -170,7 +180,7 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode }) => {
             style={{
               textAlign: "center",
               padding: "30px 10px",
-              color: "var(--cms-text-muted)",
+              color: colors.textMuted,
               fontSize: "12px",
             }}
           >

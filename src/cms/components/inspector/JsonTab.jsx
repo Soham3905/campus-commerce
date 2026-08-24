@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { colors, commonStyles } from "../../theme";
 
 /**
  * JsonTab — allows direct JSON editing of the selected component node.
@@ -21,8 +22,6 @@ export const JsonTab = ({ node, onUpdate }) => {
       const parsed = JSON.parse(text);
       // Always preserve the original ID to avoid breaking the tree
       parsed.id = node.id;
-      // Call onUpdate with the full parsed node — useCmsState.updateComponent
-      // detects a complete node object and does a full replacement.
       onUpdate(node.id, parsed);
       setErr("");
     } catch (e) {
@@ -53,26 +52,23 @@ export const JsonTab = ({ node, onUpdate }) => {
     <div style={{ padding: "12px", display: "flex", flexDirection: "column", height: "100%", gap: "8px", boxSizing: "border-box" }}>
       {/* Toolbar */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: "11px", color: "var(--cms-text-muted)" }}>Node JSON — edit &amp; Apply</span>
+        <span style={{ fontSize: "11px", color: colors.textMuted }}>Node JSON — edit &amp; Apply</span>
         <div style={{ display: "flex", gap: "6px" }}>
           <button
-            className="cms-btn cms-btn-secondary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "11px", padding: "3px 8px" }}
             onClick={handleFormat}
-            style={{ fontSize: "11px", padding: "3px 8px" }}
           >
             Format
           </button>
           <button
-            className="cms-btn cms-btn-secondary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "11px", padding: "3px 8px" }}
             onClick={handleCopy}
-            style={{ fontSize: "11px", padding: "3px 8px" }}
           >
             {copied ? "✓ Copied" : "Copy"}
           </button>
           <button
-            className="cms-btn cms-btn-primary"
+            style={{ ...commonStyles.btn, ...commonStyles.btnPrimary, fontSize: "11px", padding: "3px 10px" }}
             onClick={handleApply}
-            style={{ fontSize: "11px", padding: "3px 10px" }}
           >
             Apply
           </button>
@@ -82,7 +78,7 @@ export const JsonTab = ({ node, onUpdate }) => {
       {err && (
         <div
           style={{
-            background: "var(--cms-danger-bg)",
+            background: colors.dangerBg,
             color: "#fca5a5",
             padding: "6px 10px",
             borderRadius: "4px",
@@ -95,13 +91,13 @@ export const JsonTab = ({ node, onUpdate }) => {
       )}
 
       <textarea
-        className="cms-textarea"
         value={text}
         onChange={(e) => setText(e.target.value)}
         style={{
+          ...commonStyles.input,
           flex: 1,
           minHeight: "260px",
-          fontFamily: "var(--cms-font-mono)",
+          fontFamily: colors.fontMono,
           fontSize: "11px",
           lineHeight: "1.5",
           color: "#89dceb",
@@ -110,7 +106,7 @@ export const JsonTab = ({ node, onUpdate }) => {
         spellCheck="false"
       />
 
-      <div style={{ fontSize: "10px", color: "var(--cms-text-muted)", lineHeight: "1.4" }}>
+      <div style={{ fontSize: "10px", color: colors.textMuted, lineHeight: "1.4" }}>
         ⚠️ The <code>id</code> field is protected and will not change.
       </div>
     </div>

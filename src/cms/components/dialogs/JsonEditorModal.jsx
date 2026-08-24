@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { validateSchema } from "../../utils/validation";
+import { colors, commonStyles } from "../../theme";
 
 export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
   const [jsonText, setJsonText] = useState("");
@@ -61,38 +62,58 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
   };
 
   return (
-    <div className="cms-modal-backdrop" onClick={onClose}>
+    <div style={commonStyles.modalBackdrop} onClick={onClose}>
       <div
-        className="cms-modal-box"
-        style={{ maxWidth: "800px", height: "85vh" }}
+        style={{ ...commonStyles.modalBox, maxWidth: "800px", height: "85vh" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="cms-panel-header" style={{ padding: "10px 14px", flexWrap: "wrap", gap: "8px" }}>
+        <div
+          style={{
+            padding: "10px 14px",
+            backgroundColor: colors.bgPanelHeader,
+            borderBottom: `1px solid ${colors.borderSubtle}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "8px",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px" }}>
             <span>{`{ }`}</span>
             <span>JSON Schema Editor</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "6px", marginLeft: "auto", flexWrap: "wrap" }}>
-            <button className="cms-btn cms-btn-secondary" onClick={handleFormat} style={{ fontSize: "11px", padding: "4px 8px" }}>
+            <button
+              style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "11px", padding: "4px 8px" }}
+              onClick={handleFormat}
+            >
               Format
             </button>
-            <button className="cms-btn cms-btn-secondary" onClick={handleCopy} style={{ fontSize: "11px", padding: "4px 8px" }}>
+            <button
+              style={{ ...commonStyles.btn, ...commonStyles.btnSecondary, fontSize: "11px", padding: "4px 8px" }}
+              onClick={handleCopy}
+            >
               Copy
             </button>
             <button
-              className="cms-btn cms-btn-primary"
+              style={{
+                ...commonStyles.btn,
+                ...commonStyles.btnPrimary,
+                fontSize: "11px",
+                padding: "4px 12px",
+                opacity: isValid ? 1 : 0.5,
+              }}
               onClick={handleApply}
               disabled={!isValid}
-              style={{ fontSize: "11px", padding: "4px 12px", opacity: isValid ? 1 : 0.5 }}
             >
               Apply
             </button>
             <button
-              className="cms-btn-icon"
+              style={{ ...commonStyles.btnIcon, width: "26px", height: "26px", fontSize: "15px" }}
               onClick={onClose}
-              style={{ width: "26px", height: "26px", fontSize: "15px" }}
             >
               ✕
             </button>
@@ -103,8 +124,8 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
         {errors.length > 0 && (
           <div
             style={{
-              background: "var(--cms-danger-bg)",
-              borderBottom: "1px solid var(--cms-danger)",
+              background: colors.dangerBg,
+              borderBottom: `1px solid ${colors.danger}`,
               padding: "8px 14px",
               color: "#fca5a5",
               fontSize: "11px",
@@ -124,18 +145,17 @@ export const JsonEditorModal = ({ isOpen, onClose, schema, onApplyJson }) => {
         {/* JSON Editor Textarea */}
         <div style={{ flex: 1, padding: "10px", display: "flex", overflow: "hidden" }}>
           <textarea
-            className="cms-textarea"
             value={jsonText}
             onChange={handleTextChange}
             style={{
+              ...commonStyles.input,
               flex: 1,
               height: "100%",
               resize: "none",
-              fontFamily: "var(--cms-font-mono)",
+              fontFamily: colors.fontMono,
               fontSize: "12px",
               lineHeight: "1.45",
               color: "#89dceb",
-              background: "var(--cms-bg-input)",
               padding: "10px",
             }}
             spellCheck="false"

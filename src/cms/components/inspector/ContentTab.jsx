@@ -1,4 +1,5 @@
 import React from "react";
+import { colors, commonStyles } from "../../theme";
 
 export const ContentTab = ({ node, definition, onUpdate }) => {
   if (!node) return null;
@@ -17,7 +18,7 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
 
   if (fields.length === 0) {
     return (
-      <div style={{ padding: "20px 10px", textAlign: "center", color: "var(--cms-text-muted)", fontSize: "12px" }}>
+      <div style={{ padding: "20px 10px", textAlign: "center", color: colors.textMuted, fontSize: "12px" }}>
         This component ({node.type}) has no configurable content fields. It manages children or layout.
       </div>
     );
@@ -29,13 +30,13 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
         const val = data[field.name] !== undefined ? data[field.name] : field.defaultValue ?? "";
 
         return (
-          <div key={field.name} className="cms-form-group">
-            <label className="cms-label">{field.label}</label>
+          <div key={field.name} style={{ marginBottom: "12px" }}>
+            <label style={commonStyles.label}>{field.label}</label>
 
             {field.type === "text" && (
               <input
                 type="text"
-                className="cms-input"
+                style={commonStyles.input}
                 value={val}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
               />
@@ -44,7 +45,7 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
             {field.type === "number" && (
               <input
                 type="number"
-                className="cms-input"
+                style={commonStyles.input}
                 value={val}
                 onChange={(e) => handleFieldChange(field.name, e.target.value === "" ? "" : Number(e.target.value))}
               />
@@ -52,7 +53,7 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
 
             {field.type === "textarea" && (
               <textarea
-                className="cms-textarea"
+                style={{ ...commonStyles.input, resize: "vertical" }}
                 rows={3}
                 value={val}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
@@ -63,13 +64,23 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
               <div>
                 <input
                   type="text"
-                  className="cms-input"
+                  style={commonStyles.input}
                   placeholder="https://..."
                   value={val}
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                 />
                 {val && (
-                  <div style={{ marginTop: "6px", width: "100%", height: "80px", borderRadius: "6px", overflow: "hidden", background: "var(--cms-bg-input)", border: "1px solid var(--cms-border-subtle)" }}>
+                  <div
+                    style={{
+                      marginTop: "6px",
+                      width: "100%",
+                      height: "80px",
+                      borderRadius: "6px",
+                      overflow: "hidden",
+                      background: colors.bgInput,
+                      border: `1px solid ${colors.borderSubtle}`,
+                    }}
+                  >
                     <img src={val} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                   </div>
                 )}
@@ -79,7 +90,7 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
             {field.type === "url" && (
               <input
                 type="url"
-                className="cms-input"
+                style={commonStyles.input}
                 value={val}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
               />
@@ -91,7 +102,7 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
                   type="checkbox"
                   checked={Boolean(val)}
                   onChange={(e) => handleFieldChange(field.name, e.target.checked)}
-                  style={{ accentColor: "var(--cms-accent-primary)" }}
+                  style={{ accentColor: colors.accentPrimary }}
                 />
                 <span>Enable {field.label}</span>
               </label>
@@ -99,7 +110,7 @@ export const ContentTab = ({ node, definition, onUpdate }) => {
 
             {field.type === "select" && (
               <select
-                className="cms-select"
+                style={commonStyles.input}
                 value={val}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
               >

@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 import { ComponentRegistry } from "../../../registry/componentRegistry";
 import { findParentById } from "../../../cms/utils/treeUtils";
+import { colors, commonStyles } from "../../theme";
 
 /**
  * LayerTreeNode — a single draggable row in the layers tree.
- * Drag-and-drop: drag a node row and drop it onto another node row
- * to reorder siblings (calls onMove up/down by computed steps).
  */
 const LayerTreeNode = ({
   node,
@@ -22,6 +21,7 @@ const LayerTreeNode = ({
   onDrop,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
   const isSelected = selectedId === node.id;
   const hasChildren = Array.isArray(node.children) && node.children.length > 0;
   const def = ComponentRegistry[node.type];
@@ -31,33 +31,40 @@ const LayerTreeNode = ({
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div
-        draggable={depth > 0} // root Home node is not draggable
-        className="cms-layer-item"
+        draggable={depth > 0}
         onDragStart={(e) => depth > 0 && onDragStart(e, node.id)}
         onDragEnd={onDragEnd}
-        onDragOver={(e) => { e.preventDefault(); onDragOver(e, node.id); }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          onDragOver(e, node.id);
+        }}
         onDrop={(e) => onDrop(e, node.id)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{
           display: "flex",
           alignItems: "center",
           padding: "5px 8px",
           paddingLeft: `${depth * 14 + 8}px`,
           background: isDragOver
-            ? "var(--cms-accent-primary-light)"
+            ? colors.accentPrimaryLight
             : isSelected
             ? "rgba(99, 102, 241, 0.12)"
+            : isHovered
+            ? colors.bgCard
             : "transparent",
           borderLeft: isSelected
-            ? "3px solid var(--cms-accent-primary)"
+            ? `3px solid ${colors.accentPrimary}`
             : isDragOver
-            ? "3px solid var(--cms-accent-primary)"
+            ? `3px solid ${colors.accentPrimary}`
             : "3px solid transparent",
           cursor: depth > 0 ? "grab" : "default",
           borderRadius: "4px",
           gap: "6px",
           opacity: isDragging ? 0.4 : 1,
           transition: "background 0.12s ease, opacity 0.12s ease",
-          outline: isDragOver ? "1px dashed var(--cms-accent-primary)" : "none",
+          outline: isDragOver ? `1px dashed ${colors.accentPrimary}` : "none",
+          userSelect: "none",
         }}
         onClick={(e) => {
           e.stopPropagation();
@@ -74,12 +81,13 @@ const LayerTreeNode = ({
             style={{
               background: "transparent",
               border: "none",
-              color: "var(--cms-text-muted)",
+              color: colors.textMuted,
               fontSize: "9px",
               cursor: "pointer",
               padding: "0 2px",
               width: "14px",
               textAlign: "center",
+              outline: "none",
             }}
           >
             {isExpanded ? "▼" : "▶"}
@@ -93,7 +101,7 @@ const LayerTreeNode = ({
           <span
             style={{
               fontSize: "10px",
-              color: "var(--cms-text-muted)",
+              color: colors.textMuted,
               opacity: 0.5,
               cursor: "grab",
             }}
@@ -112,7 +120,7 @@ const LayerTreeNode = ({
             style={{
               fontSize: "12px",
               fontWeight: isSelected ? "700" : "500",
-              color: isSelected ? "var(--cms-text-accent)" : "var(--cms-text-primary)",
+              color: isSelected ? colors.textAccent : colors.textPrimary,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -124,7 +132,7 @@ const LayerTreeNode = ({
             <span
               style={{
                 fontSize: "10px",
-                color: "var(--cms-text-muted)",
+                color: colors.textMuted,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -141,8 +149,8 @@ const LayerTreeNode = ({
           <span
             style={{
               fontSize: "10px",
-              background: "var(--cms-bg-panel)",
-              color: "var(--cms-text-muted)",
+              background: colors.bgPanel,
+              color: colors.textMuted,
               padding: "1px 5px",
               borderRadius: "10px",
               flexShrink: 0,
@@ -152,10 +160,9 @@ const LayerTreeNode = ({
           </span>
         )}
 
-        {/* Delete Button (only show on hover via CSS) */}
-        {depth > 0 && (
+        {/* Delete Button (visible on hover) */}
+        {depth > 0 && isHovered && (
           <button
-            className="cms-btn-icon layer-delete-btn"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(node.id);
@@ -164,11 +171,14 @@ const LayerTreeNode = ({
             style={{
               width: "20px",
               height: "20px",
+              padding: 0,
               fontSize: "11px",
-              opacity: 0,
               flexShrink: 0,
-              color: "var(--cms-danger)",
-              transition: "opacity 0.15s",
+              color: colors.danger,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              outline: "none",
             }}
           >
             ✕
@@ -247,7 +257,6 @@ export const LayersPanel = ({
       targetParent &&
       sourceParent.parent.id === targetParent.parent.id
     ) {
-      // Same parent — reorder
       const sourceIndex = sourceParent.index;
       const targetIndex = targetParent.index;
       const diff = targetIndex - sourceIndex;
@@ -264,21 +273,28 @@ export const LayersPanel = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
-      <div className="cms-panel-header">
+      <div
+        style={{
+          padding: "12px 16px",
+          backgroundColor: colors.bgPanelHeader,
+          borderBottom: `1px solid ${colors.borderSubtle}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontSize: "13px",
+          fontWeight: "600",
+          color: colors.textPrimary,
+          flexShrink: 0,
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span>📑</span>
           <span>Layers Tree</span>
         </div>
-        <span style={{ fontSize: "10px", color: "var(--cms-text-muted)" }}>
+        <span style={{ fontSize: "10px", color: colors.textMuted }}>
           Drag rows to reorder
         </span>
       </div>
-
-      <style>{`
-        .cms-layer-item:hover .layer-delete-btn {
-          opacity: 1 !important;
-        }
-      `}</style>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "6px 4px" }}>
         {schema ? (
@@ -301,7 +317,7 @@ export const LayersPanel = ({
             style={{
               padding: "24px 16px",
               textAlign: "center",
-              color: "var(--cms-text-muted)",
+              color: colors.textMuted,
               fontSize: "12px",
             }}
           >

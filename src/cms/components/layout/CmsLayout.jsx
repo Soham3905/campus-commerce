@@ -8,7 +8,7 @@ import { Inspector } from "../inspector/Inspector";
 import { PageManagerModal } from "../dialogs/PageManagerModal";
 import { InterfaceManagerModal } from "../dialogs/InterfaceManagerModal";
 import { JsonEditorModal } from "../dialogs/JsonEditorModal";
-import { ComponentRegistry } from "../../../registry/componentRegistry";
+import { colors } from "../../theme";
 
 export const CmsLayout = () => {
   const {
@@ -40,9 +40,19 @@ export const CmsLayout = () => {
 
   const [leftTab, setLeftTab] = useState("library"); // 'library' | 'layers'
   const [mobileTab, setMobileTab] = useState("canvas"); // 'canvas' | 'library' | 'layers' | 'inspector'
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth <= 1024);
   const [isPagesOpen, setIsPagesOpen] = useState(false);
   const [isInterfacesOpen, setIsInterfacesOpen] = useState(false);
   const [isJsonOpen, setIsJsonOpen] = useState(false);
+
+  // Responsive window resize listener
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -72,18 +82,31 @@ export const CmsLayout = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [undo, redo, saveCurrentPage, clearSelection]);
 
-  // Handle adding a component: on mobile, auto-switch to canvas to show result
   const handleAddComponent = (type) => {
     addComponent(type);
-    if (window.innerWidth <= 1024) {
+    if (isMobile) {
       setMobileTab("canvas");
     }
   };
 
-  const selectedDef = selectedNode ? ComponentRegistry[selectedNode.type] : null;
+  // Helper for responsive panel display
+  const showLeftPanel = !isMobile || mobileTab === "library" || mobileTab === "layers";
+  const showCanvas = !isMobile || mobileTab === "canvas";
+  const showRightPanel = !isMobile || mobileTab === "inspector";
 
   return (
-    <div className="cms-root">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+        backgroundColor: colors.bgCanvas,
+        color: colors.textPrimary,
+        fontFamily: colors.fontSans,
+      }}
+    >
       {/* Top Header */}
       <CmsHeader
         activePage={activePage}
@@ -102,131 +125,299 @@ export const CmsLayout = () => {
         onOpenJson={() => setIsJsonOpen(true)}
       />
 
-      {/* Main Studio Body with Responsive Mobile Classes */}
-      <div className={`cms-body mobile-view-${mobileTab}`}>
+      {/* Main Studio Body */}
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          overflow: "hidden",
+          position: "relative",
+          flexDirection: isMobile ? "column" : "row",
+        }}
+      >
         {/* Left Sidebar: Library & Layers */}
-        <aside className="cms-sidebar-left">
-          <div className="cms-tabs-strip">
-            <button
-              className={`cms-tab-btn ${leftTab === "library" ? "active" : ""}`}
-              onClick={() => {
-                setLeftTab("library");
-                setMobileTab("library");
+        {showLeftPanel && (
+          <aside
+            style={{
+              width: isMobile ? "100%" : "320px",
+              height: "100%",
+              backgroundColor: colors.bgPanel,
+              borderRight: isMobile ? "none" : `1px solid ${colors.borderSubtle}`,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              flexShrink: 0,
+            }}
+          >
+            {/* Tabs Strip */}
+            <div
+              style={{
+                display: "flex",
+                backgroundColor: colors.bgPanel,
+                borderBottom: `1px solid ${colors.borderSubtle}`,
+                padding: "0 4px",
+                overflowX: "auto",
+                flexShrink: 0,
               }}
             >
-              🧩 Components
-            </button>
-            <button
-              className={`cms-tab-btn ${leftTab === "layers" ? "active" : ""}`}
-              onClick={() => {
-                setLeftTab("layers");
-                setMobileTab("layers");
-              }}
-            >
-              📑 Layers Tree
-            </button>
-          </div>
-
-          <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            {leftTab === "library" ? (
-              <ComponentLibrary
-                onAddComponent={handleAddComponent}
-                selectedNode={selectedNode}
-              />
-            ) : (
-              <LayersPanel
-                schema={schema}
-                selectedId={selectedComponentId}
-                onSelectComponent={(id) => {
-                  selectComponent(id);
-                  if (window.innerWidth <= 1024) {
-                    // On mobile, keep layer selected or allow viewing
-                  }
+              <button
+                style={{
+                  flex: 1,
+                  padding: "10px 8px",
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: leftTab === "library" ? `2px solid ${colors.accentPrimary}` : "2px solid transparent",
+                  color: leftTab === "library" ? colors.accentPrimary : colors.textMuted,
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  outline: "none",
                 }}
-                onDeleteComponent={deleteComponent}
-                onMoveComponent={moveComponent}
-              />
-            )}
-          </div>
-        </aside>
+                onClick={() => {
+                  setLeftTab("library");
+                  setMobileTab("library");
+                }}
+              >
+                🧩 Components
+              </button>
+              <button
+                style={{
+                  flex: 1,
+                  padding: "10px 8px",
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: leftTab === "layers" ? `2px solid ${colors.accentPrimary}` : "2px solid transparent",
+                  color: leftTab === "layers" ? colors.accentPrimary : colors.textMuted,
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  outline: "none",
+                }}
+                onClick={() => {
+                  setLeftTab("layers");
+                  setMobileTab("layers");
+                }}
+              >
+                📑 Layers Tree
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              {leftTab === "library" ? (
+                <ComponentLibrary
+                  onAddComponent={handleAddComponent}
+                  selectedNode={selectedNode}
+                />
+              ) : (
+                <LayersPanel
+                  schema={schema}
+                  selectedId={selectedComponentId}
+                  onSelectComponent={selectComponent}
+                  onDeleteComponent={deleteComponent}
+                  onMoveComponent={moveComponent}
+                />
+              )}
+            </div>
+          </aside>
+        )}
 
         {/* Center: Visual Canvas */}
-        <main className="cms-canvas-container">
-          <VisualCanvas
-            schema={schema}
-            activeDevice={activeDevice}
-            selectedId={selectedComponentId}
-            selectedNode={selectedNode}
-            onSelectComponent={selectComponent}
-            onDuplicateComponent={duplicateComponent}
-            onDeleteComponent={deleteComponent}
-            onMoveComponent={moveComponent}
-            onOpenInspector={() => setMobileTab("inspector")}
-            onNavigate={(route) => {
-              console.log(`[CMS Navigation] Navigating to route: ${route}`);
+        {showCanvas && (
+          <main
+            style={{
+              flex: 1,
+              width: isMobile ? "100%" : "auto",
+              height: "100%",
+              backgroundColor: colors.bgCanvas,
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              overflow: "hidden",
+              minWidth: 0,
             }}
-          />
-        </main>
+          >
+            <VisualCanvas
+              schema={schema}
+              activeDevice={activeDevice}
+              selectedId={selectedComponentId}
+              selectedNode={selectedNode}
+              onSelectComponent={selectComponent}
+              onDuplicateComponent={duplicateComponent}
+              onDeleteComponent={deleteComponent}
+              onMoveComponent={moveComponent}
+              onOpenInspector={() => setMobileTab("inspector")}
+              onNavigate={(route) => {
+                console.log(`[CMS Navigation] Navigating to route: ${route}`);
+              }}
+            />
+          </main>
+        )}
 
         {/* Right Sidebar: Dynamic Inspector */}
-        <aside className="cms-sidebar-right">
-          <Inspector
-            selectedNode={selectedNode}
-            activeDevice={activeDevice}
-            onUpdateComponent={updateComponent}
-            onDeleteComponent={deleteComponent}
-            onDuplicateComponent={duplicateComponent}
-          />
-        </aside>
+        {showRightPanel && (
+          <aside
+            style={{
+              width: isMobile ? "100%" : "350px",
+              height: "100%",
+              backgroundColor: colors.bgPanel,
+              borderLeft: isMobile ? "none" : `1px solid ${colors.borderSubtle}`,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              flexShrink: 0,
+            }}
+          >
+            <Inspector
+              selectedNode={selectedNode}
+              activeDevice={activeDevice}
+              onUpdateComponent={updateComponent}
+              onDeleteComponent={deleteComponent}
+              onDuplicateComponent={duplicateComponent}
+            />
+          </aside>
+        )}
       </div>
 
-      {/* Responsive Mobile Bottom Navigation Bar (< 1024px) */}
-      <nav className="cms-mobile-nav" aria-label="Mobile Navigation">
-        <div className="cms-mobile-nav-items">
+      {/* Responsive Mobile Bottom Navigation Bar (Shown on <= 1024px) */}
+      {isMobile && (
+        <nav
+          style={{
+            height: "56px",
+            backgroundColor: colors.bgPanel,
+            borderTop: `1px solid ${colors.borderSubtle}`,
+            zIndex: 100,
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "stretch",
+          }}
+          aria-label="Mobile Navigation"
+        >
           <button
-            className={`cms-mobile-nav-btn ${mobileTab === "canvas" ? "active" : ""}`}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "3px",
+              background: mobileTab === "canvas" ? colors.accentPrimaryLight : "transparent",
+              border: "none",
+              color: mobileTab === "canvas" ? colors.accentPrimary : colors.textMuted,
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              position: "relative",
+              padding: "4px 0",
+              outline: "none",
+            }}
             onClick={() => setMobileTab("canvas")}
           >
-            <span className="cms-mobile-nav-icon">🎨</span>
+            <span style={{ fontSize: "16px", lineHeight: 1 }}>🎨</span>
             <span>Canvas</span>
           </button>
 
           <button
-            className={`cms-mobile-nav-btn ${mobileTab === "library" ? "active" : ""}`}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "3px",
+              background: mobileTab === "library" ? colors.accentPrimaryLight : "transparent",
+              border: "none",
+              color: mobileTab === "library" ? colors.accentPrimary : colors.textMuted,
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              position: "relative",
+              padding: "4px 0",
+              outline: "none",
+            }}
             onClick={() => {
               setLeftTab("library");
               setMobileTab("library");
             }}
           >
-            <span className="cms-mobile-nav-icon">🧩</span>
+            <span style={{ fontSize: "16px", lineHeight: 1 }}>🧩</span>
             <span>Library</span>
           </button>
 
           <button
-            className={`cms-mobile-nav-btn ${mobileTab === "layers" ? "active" : ""}`}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "3px",
+              background: mobileTab === "layers" ? colors.accentPrimaryLight : "transparent",
+              border: "none",
+              color: mobileTab === "layers" ? colors.accentPrimary : colors.textMuted,
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              position: "relative",
+              padding: "4px 0",
+              outline: "none",
+            }}
             onClick={() => {
               setLeftTab("layers");
               setMobileTab("layers");
             }}
           >
-            <span className="cms-mobile-nav-icon">📑</span>
+            <span style={{ fontSize: "16px", lineHeight: 1 }}>📑</span>
             <span>Layers</span>
           </button>
 
           <button
-            className={`cms-mobile-nav-btn ${mobileTab === "inspector" ? "active" : ""}`}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "3px",
+              background: mobileTab === "inspector" ? colors.accentPrimaryLight : "transparent",
+              border: "none",
+              color: mobileTab === "inspector" ? colors.accentPrimary : colors.textMuted,
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              position: "relative",
+              padding: "4px 0",
+              outline: "none",
+            }}
             onClick={() => setMobileTab("inspector")}
           >
-            <span className="cms-mobile-nav-icon">⚙️</span>
+            <span style={{ fontSize: "16px", lineHeight: 1 }}>⚙️</span>
             <span>Inspector</span>
             {selectedNode && (
-              <span className="cms-nav-badge" title={selectedNode.type}>
+              <span
+                style={{
+                  position: "absolute",
+                  top: "6px",
+                  right: "20%",
+                  background: colors.accentPrimary,
+                  color: "#fff",
+                  fontSize: "9px",
+                  fontWeight: "700",
+                  padding: "1px 4px",
+                  borderRadius: "10px",
+                  minWidth: "14px",
+                  textAlign: "center",
+                }}
+              >
                 ●
               </span>
             )}
           </button>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Modals & Dialogs */}
       <PageManagerModal

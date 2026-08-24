@@ -1,4 +1,5 @@
 import React from "react";
+import { colors, commonStyles } from "../../theme";
 
 export const StyleTab = ({ node, onUpdate }) => {
   if (!node) return null;
@@ -17,8 +18,8 @@ export const StyleTab = ({ node, onUpdate }) => {
   return (
     <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "12px" }}>
       {/* Background Color */}
-      <div className="cms-form-group">
-        <label className="cms-label">Background Color</label>
+      <div>
+        <label style={commonStyles.label}>Background Color</label>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <input
             type="color"
@@ -28,7 +29,7 @@ export const StyleTab = ({ node, onUpdate }) => {
           />
           <input
             type="text"
-            className="cms-input"
+            style={commonStyles.input}
             placeholder="#ffffff or transparent"
             value={style.backgroundColor || ""}
             onChange={(e) => handleStyleChange("backgroundColor", e.target.value)}
@@ -37,8 +38,8 @@ export const StyleTab = ({ node, onUpdate }) => {
       </div>
 
       {/* Text Color */}
-      <div className="cms-form-group">
-        <label className="cms-label">Text Color</label>
+      <div>
+        <label style={commonStyles.label}>Text Color</label>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <input
             type="color"
@@ -48,7 +49,7 @@ export const StyleTab = ({ node, onUpdate }) => {
           />
           <input
             type="text"
-            className="cms-input"
+            style={commonStyles.input}
             placeholder="#111827"
             value={style.color || ""}
             onChange={(e) => handleStyleChange("color", e.target.value)}
@@ -58,21 +59,21 @@ export const StyleTab = ({ node, onUpdate }) => {
 
       {/* Padding & Border Radius */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-        <div className="cms-form-group">
-          <label className="cms-label">Padding</label>
+        <div>
+          <label style={commonStyles.label}>Padding</label>
           <input
             type="text"
-            className="cms-input"
+            style={commonStyles.input}
             placeholder="12px"
             value={style.padding || ""}
             onChange={(e) => handleStyleChange("padding", e.target.value)}
           />
         </div>
-        <div className="cms-form-group">
-          <label className="cms-label">Border Radius</label>
+        <div>
+          <label style={commonStyles.label}>Border Radius</label>
           <input
             type="text"
-            className="cms-input"
+            style={commonStyles.input}
             placeholder="12px"
             value={style.borderRadius || ""}
             onChange={(e) => handleStyleChange("borderRadius", e.target.value)}
@@ -81,8 +82,8 @@ export const StyleTab = ({ node, onUpdate }) => {
       </div>
 
       {/* Sticky Header Positioning */}
-      <div className="cms-form-group">
-        <label className="cms-label">Positioning</label>
+      <div>
+        <label style={commonStyles.label}>Positioning</label>
         <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "12px" }}>
           <input
             type="checkbox"
@@ -100,7 +101,7 @@ export const StyleTab = ({ node, onUpdate }) => {
                 onUpdate(node.id, { containerStyle: updatedStyle });
               }
             }}
-            style={{ accentColor: "var(--cms-accent-primary)" }}
+            style={{ accentColor: colors.accentPrimary }}
           />
           <span>Sticky (Stick to top during scroll)</span>
         </label>
