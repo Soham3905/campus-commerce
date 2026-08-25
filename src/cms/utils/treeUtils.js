@@ -1,4 +1,6 @@
-import { generateId, ensureStableIds } from "./idUtils";
+import { ensureStableIds } from "./idUtils";
+import { GridEngine } from "../layout/gridEngine";
+import { canAddChild } from "./validation";
 
 /**
  * Deep clones any JSON-serializable schema tree
@@ -97,7 +99,7 @@ export function updateNode(tree, id, updater) {
 }
 
 /**
- * Immutably inserts a new node relative to a target node.
+ * Immutably inserts a new node relative to a target node with automatic grid reflow.
  * @param {Object} tree - Root SDUI component node
  * @param {string} targetId - ID of reference node
  * @param {Object} newNode - Node to insert
@@ -111,9 +113,10 @@ export function insertNode(tree, targetId, newNode, position = "inside") {
 
   // If inserting into root or target matches directly
   if (position === "inside" && tree.id === targetId) {
+    const newChildren = [...(tree.children || []), preparedNode];
     return {
       ...tree,
-      children: [...(tree.children || []), preparedNode],
+      children: GridEngine.reflowChildren(newChildren, "all", { parentType: tree.type }),
     };
   }
 
@@ -121,9 +124,10 @@ export function insertNode(tree, targetId, newNode, position = "inside") {
   if (!parentInfo) {
     // If target not found and tree is root, append to root children
     if (position === "inside") {
+      const newChildren = [...(tree.children || []), preparedNode];
       return {
         ...tree,
-        children: [...(tree.children || []), preparedNode],
+        children: GridEngine.reflowChildren(newChildren, "all", { parentType: tree.type }),
       };
     }
     return tree;
@@ -132,24 +136,115 @@ export function insertNode(tree, targetId, newNode, position = "inside") {
   const { parent, index } = parentInfo;
 
   return updateNode(tree, parent.id, (parentNode) => {
-    const children = [...(parentNode.children || [])];
+    let children = [...(parentNode.children || [])];
     if (position === "before") {
       children.splice(index, 0, preparedNode);
     } else if (position === "after") {
       children.splice(index + 1, 0, preparedNode);
     } else if (position === "inside") {
       const targetChild = children[index];
+      const nestedChildren = [...(targetChild.children || []), preparedNode];
       children[index] = {
         ...targetChild,
-        children: [...(targetChild.children || []), preparedNode],
+        children: GridEngine.reflowChildren(nestedChildren, "all", { parentType: targetChild.type }),
       };
+      return { ...parentNode, children };
     }
-    return { ...parentNode, children };
+    const reflowed = GridEngine.reflowChildren(children, "all", { parentType: parentNode.type });
+    return { ...parentNode, children: reflowed };
   });
 }
 
 /**
- * Immutably removes a node by ID from the schema tree.
+ * Inserts a node into a specific parent at a specific child index.
+ * @param {Object} tree
+ * @param {string} parentId
+ * @param {Object} newNode
+ * @param {number} insertIndex
+ * @returns {Object}
+ */
+export function insertNodeAtIndex(tree, parentId, newNode, insertIndex = 0) {
+  if (!tree || !newNode) return tree;
+
+  const preparedNode = ensureStableIds(cloneTree(newNode));
+  const resolvedParentId = parentId || tree.id;
+
+  return updateNode(tree, resolvedParentId, (parentNode) => {
+    const children = [...(parentNode.children || [])];
+    const safeIndex = Math.max(0, Math.min(Number(insertIndex) || 0, children.length));
+    children.splice(safeIndex, 0, preparedNode);
+    return {
+      ...parentNode,
+      children: GridEngine.reflowChildren(children, "all", { parentType: parentNode.type }),
+    };
+  });
+}
+
+/**
+ * Checks whether a node can be moved into a target parent while preserving tree integrity.
+ * @param {Object} tree
+ * @param {string} nodeId
+ * @param {string} targetParentId
+ * @returns {{ valid: boolean, reason?: string }}
+ */
+export function canMoveNodeToSlot(tree, nodeId, targetParentId) {
+  if (!tree || !nodeId || !targetParentId) {
+    return { valid: false, reason: "Source node and target parent must be valid." };
+  }
+
+  const sourceNode = findNodeById(tree, nodeId);
+  const targetParent = findNodeById(tree, targetParentId);
+
+  if (!sourceNode) {
+    return { valid: false, reason: `Unable to find component "${nodeId}".` };
+  }
+  if (!targetParent) {
+    return { valid: false, reason: `Unable to find drop target "${targetParentId}".` };
+  }
+  if (sourceNode.id === targetParent.id) {
+    return { valid: false, reason: "A component cannot be dropped inside itself." };
+  }
+  if (findNodeById(sourceNode, targetParentId)) {
+    return { valid: false, reason: "A component cannot be dropped into one of its own children." };
+  }
+
+  return canAddChild(targetParent, sourceNode);
+}
+
+/**
+ * Moves an existing node into a specific parent at a specific child index.
+ * @param {Object} tree
+ * @param {string} nodeId
+ * @param {string} targetParentId
+ * @param {number} insertIndex
+ * @returns {Object}
+ */
+export function moveNodeToSlot(tree, nodeId, targetParentId, insertIndex = 0) {
+  if (!tree || !nodeId || !targetParentId) return tree;
+
+  const sourceNode = findNodeById(tree, nodeId);
+  const sourceInfo = findParentById(tree, nodeId);
+  if (!sourceNode || !sourceInfo) return tree;
+
+  if (sourceNode.id === targetParentId) return tree;
+  if (findNodeById(sourceNode, targetParentId)) return tree;
+
+  const targetValidation = canMoveNodeToSlot(tree, nodeId, targetParentId);
+  if (!targetValidation.valid) return tree;
+
+  let workingTree = removeNode(tree, nodeId);
+  if (!workingTree) return tree;
+
+  let resolvedIndex = Number(insertIndex) || 0;
+  if (sourceInfo.parent.id === targetParentId && sourceInfo.index < resolvedIndex) {
+    resolvedIndex -= 1;
+  }
+
+  return insertNodeAtIndex(workingTree, targetParentId, sourceNode, resolvedIndex);
+}
+
+/**
+ * Immutably removes a node by ID from the schema tree with automatic grid reflow.
  * @param {Object} tree - Root SDUI component node
  * @param {string} id - Target component ID to delete
  * @returns {Object} New tree with the node removed
@@ -161,15 +256,16 @@ export function removeNode(tree, id) {
     const newChildren = tree.children
       .filter((child) => child.id !== id)
       .map((child) => removeNode(child, id))
-      .filter(Boolean); // remove any nulls from deeper recursion
-    return { ...tree, children: newChildren };
+      .filter(Boolean);
+    const reflowed = GridEngine.reflowChildren(newChildren, "all", { parentType: tree.type });
+    return { ...tree, children: reflowed };
   }
 
   return tree;
 }
 
 /**
- * Immutably moves a node up or down among its siblings.
+ * Immutably moves a node up or down among its siblings with automatic grid reflow.
  * @param {Object} tree - Root SDUI component node
  * @param {string} id - Target component ID
  * @param {'up'|'down'} direction - Move direction
@@ -190,7 +286,8 @@ export function moveNode(tree, id, direction) {
     const children = [...parentNode.children];
     const [moved] = children.splice(index, 1);
     children.splice(newIndex, 0, moved);
-    return { ...parentNode, children };
+    const reflowed = GridEngine.reflowChildren(children, "all", { parentType: parentNode.type });
+    return { ...parentNode, children: reflowed };
   });
 }
 

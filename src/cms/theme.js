@@ -1,37 +1,38 @@
 /**
- * CMS Theme & Style Constants
- * Direct JS style objects for inline styling across all CMS components.
+ * CMS Theme & Style Constants — Clean White / Light Professional Studio System
+ * Tailored for high clarity, subtle gray borders, dark readable typography, and calm indigo accents.
  */
 
 export const colors = {
-  bgCanvas: "#0f111a",
-  bgPanel: "#161824",
-  bgPanelHeader: "#1c1e2e",
-  bgCard: "#202334",
-  bgCardHover: "#292c42",
-  bgInput: "#12141f",
-  borderSubtle: "#272a3e",
-  borderMedium: "#363a54",
+  // Surfaces
+  bgCanvas: "#f8fafc",
+  bgPanel: "#ffffff",
+  bgPanelHeader: "#ffffff",
+  bgCard: "#ffffff",
+  bgCardHover: "#f1f5f9",
+  bgInput: "#ffffff",
+  borderSubtle: "#e2e8f0",
+  borderMedium: "#cbd5e1",
 
   // Accents
-  accentPrimary: "#6366f1",
-  accentPrimaryHover: "#4f46e5",
-  accentPrimaryLight: "rgba(99, 102, 241, 0.15)",
-  accentSecondary: "#ec4899",
+  accentPrimary: "#4f46e5",
+  accentPrimaryHover: "#4338ca",
+  accentPrimaryLight: "rgba(79, 70, 229, 0.08)",
+  accentSecondary: "#0ea5e9",
 
-  // Text
-  textPrimary: "#f1f5f9",
-  textSecondary: "#94a3b8",
+  // Typography
+  textPrimary: "#0f172a",
+  textSecondary: "#475569",
   textMuted: "#64748b",
-  textAccent: "#818cf8",
+  textAccent: "#4f46e5",
 
-  // Status
+  // Status Colors
   success: "#10b981",
-  successBg: "rgba(16, 185, 129, 0.15)",
+  successBg: "rgba(16, 185, 129, 0.1)",
   warning: "#f59e0b",
-  warningBg: "rgba(245, 158, 11, 0.15)",
+  warningBg: "rgba(245, 158, 11, 0.1)",
   danger: "#ef4444",
-  dangerBg: "rgba(239, 68, 68, 0.15)",
+  dangerBg: "rgba(239, 68, 68, 0.1)",
 
   fontSans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   fontMono: "'JetBrains Mono', 'Fira Code', Menlo, monospace",
@@ -54,35 +55,35 @@ export const commonStyles = {
     outline: "none",
   },
   btnPrimary: {
-    background: "linear-gradient(135deg, #6366f1, #4f46e5)",
+    background: "#4f46e5",
     color: "#ffffff",
     border: "1px solid transparent",
   },
   btnSecondary: {
-    background: colors.bgCard,
-    borderColor: colors.borderMedium,
-    color: colors.textPrimary,
+    background: "#ffffff",
+    borderColor: "#cbd5e1",
+    color: "#334155",
   },
   btnIcon: {
     width: "30px",
     height: "30px",
     padding: "0",
     background: "transparent",
-    border: "1px solid transparent",
-    color: colors.textSecondary,
+    border: "1px solid #e2e8f0",
+    color: "#64748b",
     borderRadius: "6px",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    fontSize: "14px",
+    fontSize: "13px",
     transition: "all 0.15s ease",
     flexShrink: 0,
     outline: "none",
   },
   input: {
     width: "100%",
-    background: colors.bgInput,
+    background: "#ffffff",
     border: `1px solid ${colors.borderMedium}`,
     color: colors.textPrimary,
     padding: "7px 10px",
@@ -104,7 +105,7 @@ export const commonStyles = {
   modalBackdrop: {
     position: "fixed",
     inset: 0,
-    background: "rgba(0, 0, 0, 0.75)",
+    background: "rgba(15, 23, 42, 0.6)",
     backdropFilter: "blur(4px)",
     zIndex: 2000,
     display: "flex",
@@ -114,10 +115,10 @@ export const commonStyles = {
     animation: "fadeIn 0.2s ease-out",
   },
   modalBox: {
-    background: colors.bgPanel,
-    border: `1px solid ${colors.borderMedium}`,
+    background: "#ffffff",
+    border: `1px solid ${colors.borderSubtle}`,
     borderRadius: "14px",
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04)",
     width: "100%",
     maxWidth: "680px",
     maxHeight: "85vh",
@@ -125,4 +126,9 @@ export const commonStyles = {
     flexDirection: "column",
     overflow: "hidden",
   },
+};
+
+export default {
+  colors,
+  commonStyles,
 };

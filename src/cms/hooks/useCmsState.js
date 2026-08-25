@@ -1,23 +1,34 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useHistory } from "./useHistory";
 import { PageRepository } from "../services/pageRepository";
 import { InterfaceRepository } from "../services/interfaceRepository";
+import { JourneyRepository } from "../services/journeyRepository";
+import { BranchRepository } from "../services/branchRepository";
 import {
   findNodeById,
-  findParentById,
   updateNode,
   insertNode,
+  insertNodeAtIndex,
   removeNode,
   moveNode,
   duplicateNode,
   cloneTree,
+  canMoveNodeToSlot,
+  moveNodeToSlot,
 } from "../utils/treeUtils";
 import { createComponent } from "../utils/componentFactory";
-import { validateSchema } from "../utils/validation";
+import { validateSchema, canAddChild } from "../utils/validation";
 import { ensureStableIds } from "../utils/idUtils";
 import { ComponentRegistry } from "../../registry/componentRegistry";
 
 export function useCmsState() {
+  const journeys = JourneyRepository.getAll();
+  const initialJourney = journeys[0] || null;
+
+  const [activeJourney, setActiveJourney] = useState(initialJourney);
+  const [activeBranch, setActiveBranch] = useState("main");
+  const [editingContext, setEditingContext] = useState(null); // null (Page) | string (e.g. 'ProductCard')
+
   const initialPages = PageRepository.getAll();
   const initialPage = initialPages[0] || null;
 
@@ -29,12 +40,10 @@ export function useCmsState() {
   const [activeDevice, setActiveDevice] = useState("desktop");
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle"); // 'idle' | 'saving' | 'saved' | 'error'
-  const [activeTab, setActiveTab] = useState("inspector"); // 'inspector' | 'layers' | 'library' | 'json'
 
   const {
     state: schema,
     setState: setSchemaWithHistory,
-    setDirectState: setDirectSchema,
     undo,
     redo,
     canUndo,
@@ -65,9 +74,6 @@ export function useCmsState() {
   const updateComponent = useCallback(
     (id, updater) => {
       if (!id) return;
-      // Support full-node replacement (from JsonTab)
-      // If updater is a complete node object with an `id` field and no function signature,
-      // we replace the entire node instead of merging.
       if (typeof updater === "object" && updater !== null && updater.id && updater.type) {
         const replaced = updateNode(schema, id, () => updater);
         setSchema(replaced);
@@ -84,7 +90,7 @@ export function useCmsState() {
       const newNode = createComponent(type);
       const effectiveTargetId = targetId || selectedComponentId;
 
-      // Find selected node to decide insertion strategy
+      // Find target node to decide insertion strategy
       const targetNode = effectiveTargetId ? findNodeById(schema, effectiveTargetId) : null;
       const targetDef = targetNode ? ComponentRegistry[targetNode.type] : null;
 
@@ -92,19 +98,28 @@ export function useCmsState() {
       let insertPosition;
 
       if (!effectiveTargetId || !targetNode) {
-        // No selection — insert at root Page level
+        // No selection — insert into root Page level
         const rootChildren = schema.children || [];
         const pageNode = rootChildren.find((c) => c.type === "Page");
         insertTargetId = pageNode?.id || schema.id;
         insertPosition = "inside";
       } else if (targetDef && targetDef.canHaveChildren !== false) {
-        // Selected node can have children — insert inside it
-        insertTargetId = effectiveTargetId;
-        insertPosition = "inside";
+        // Check if allowed child
+        const check = canAddChild(targetNode.type, type);
+        if (check.valid) {
+          insertTargetId = effectiveTargetId;
+          insertPosition = "inside";
+        } else {
+          insertTargetId = effectiveTargetId;
+          insertPosition = "after";
+        }
       } else {
-        // Selected node is a leaf — insert after it (as a sibling)
         insertTargetId = effectiveTargetId;
         insertPosition = "after";
+      }
+
+      if (position === "inside" || position === "before" || position === "after") {
+        insertPosition = position;
       }
 
       const updated = insertNode(schema, insertTargetId, newNode, insertPosition);
@@ -115,11 +130,61 @@ export function useCmsState() {
     [schema, selectedComponentId, setSchema]
   );
 
+  const addComponentAtSlot = useCallback(
+    (type, slot) => {
+      if (!slot?.parentId) {
+        return { ok: false, reason: "Drop target is missing." };
+      }
+
+      const parentNode = findNodeById(schema, slot.parentId);
+      if (!parentNode) {
+        return { ok: false, reason: "Unable to find the target container." };
+      }
+
+      const check = canAddChild(parentNode, type);
+      if (!check.valid) {
+        return { ok: false, reason: check.reason };
+      }
+
+      const insertIndex = slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0;
+      const newNode = createComponent(type);
+      const updated = insertNodeAtIndex(schema, slot.parentId, newNode, insertIndex);
+      setSchema(updated);
+      setSelectedComponentId(newNode.id);
+      return { ok: true, node: newNode };
+    },
+    [schema, setSchema]
+  );
+
+  const moveComponentToSlot = useCallback(
+    (id, slot) => {
+      if (!id || !slot?.parentId) {
+        return { ok: false, reason: "Drop target is missing." };
+      }
+
+      const check = canMoveNodeToSlot(schema, id, slot.parentId);
+      if (!check.valid) {
+        return { ok: false, reason: check.reason };
+      }
+
+      const insertIndex = slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0;
+      const updated = moveNodeToSlot(schema, id, slot.parentId, insertIndex);
+      if (updated === schema) {
+        return { ok: true, moved: false };
+      }
+
+      setSchema(updated);
+      setSelectedComponentId(id);
+      return { ok: true, moved: true };
+    },
+    [schema, setSchema]
+  );
+
   const deleteComponent = useCallback(
     (id) => {
       const targetId = id || selectedComponentId;
       if (!targetId || targetId === schema.id) {
-        console.warn("Cannot delete the root Home container");
+        console.warn("Cannot delete root container");
         return;
       }
       const updated = removeNode(schema, targetId);
@@ -153,7 +218,7 @@ export function useCmsState() {
     [schema, selectedComponentId, setSchema]
   );
 
-  // Apply JSON Schema
+  // Apply JSON Schema with validation
   const applyJsonSchema = useCallback(
     (jsonInput) => {
       const validation = validateSchema(jsonInput);
@@ -173,6 +238,7 @@ export function useCmsState() {
       const page = PageRepository.getById(pageId);
       if (page) {
         setActivePage(page);
+        setEditingContext(null);
         setActiveInterfaceId(page.interfaceId || "ecommerce-home");
         const normalized = ensureStableIds(cloneTree(page.schema));
         resetHistory(normalized);
@@ -184,15 +250,63 @@ export function useCmsState() {
     [resetHistory]
   );
 
+  // Switch to component-only editing mode
+  const openComponentEditor = useCallback(
+    (compType) => {
+      setEditingContext(compType);
+
+      // Create a standalone component instance inside a clean wrapper for visual editing
+      const sampleComponent = createComponent(compType);
+      const standaloneSchema = ensureStableIds({
+        id: `editor_root_${compType}`,
+        type: "Home",
+        containerStyle: {
+          backgroundColor: "#f8fafc",
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "24px",
+        },
+        children: [
+          {
+            id: `editor_page_${compType}`,
+            type: "Page",
+            children: [sampleComponent],
+          },
+        ],
+      });
+
+      resetHistory(standaloneSchema);
+      setSelectedComponentId(sampleComponent.id);
+      setIsDirty(false);
+      setSaveStatus("idle");
+    },
+    [resetHistory]
+  );
+
   const saveCurrentPage = useCallback(() => {
     if (!activePage) return;
     setSaveStatus("saving");
     try {
+      if (editingContext) {
+        // Component-only save feedback
+        setTimeout(() => {
+          setIsDirty(false);
+          setSaveStatus("saved");
+          setTimeout(() => setSaveStatus("idle"), 2500);
+        }, 300);
+        return;
+      }
+
       const updatedPage = {
         ...activePage,
         schema: cloneTree(schema),
       };
       PageRepository.save(updatedPage);
+      if (activeBranch !== "main") {
+        BranchRepository.updateBranchSnapshot(activeBranch, activePage.id, schema);
+      }
       setActivePage(updatedPage);
       setIsDirty(false);
       setSaveStatus("saved");
@@ -201,7 +315,28 @@ export function useCmsState() {
       console.error("[useCmsState] Failed to save page:", e);
       setSaveStatus("error");
     }
-  }, [activePage, schema]);
+  }, [activePage, activeBranch, editingContext, schema]);
+
+  // Branch switcher
+  const switchBranch = useCallback(
+    (branchName) => {
+      setActiveBranch(branchName);
+      const branches = BranchRepository.getAll();
+      const branch = branches.find((b) => b.name === branchName);
+
+      if (branch && branch.pageSnapshots?.[activePage?.id]) {
+        const snapshot = ensureStableIds(cloneTree(branch.pageSnapshots[activePage.id]));
+        resetHistory(snapshot);
+      } else if (activePage?.schema) {
+        const normalized = ensureStableIds(cloneTree(activePage.schema));
+        resetHistory(normalized);
+      }
+
+      setIsDirty(false);
+      setSaveStatus("idle");
+    },
+    [activePage, resetHistory]
+  );
 
   // Interface management
   const loadInterface = useCallback(
@@ -217,7 +352,6 @@ export function useCmsState() {
     [setSchema]
   );
 
-  // Get currently selected node object
   const selectedNode = selectedComponentId
     ? findNodeById(schema, selectedComponentId)
     : null;
@@ -228,23 +362,31 @@ export function useCmsState() {
     selectedNode,
     activeDevice,
     activePage,
+    activeJourney,
+    activeBranch,
+    editingContext,
     activeInterfaceId,
     isDirty,
     saveStatus,
-    activeTab,
     canUndo,
     canRedo,
     setActiveDevice,
-    setActiveTab,
+    setActiveJourney,
+    setActiveBranch,
+    setEditingContext,
     selectComponent,
     clearSelection,
     updateComponent,
     addComponent,
+    addComponentAtSlot,
     deleteComponent,
     duplicateComponent: duplicateCurrentComponent,
     moveComponent: moveCurrentComponent,
+    moveComponentToSlot,
     applyJsonSchema,
     switchPage,
+    openComponentEditor,
+    switchBranch,
     saveCurrentPage,
     loadInterface,
     undo,
