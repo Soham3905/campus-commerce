@@ -1,0 +1,25 @@
+[
+  {
+    "journeyId": "journey-campus-commerce",
+    "sourceBranchId": "branch-1787735671258",
+    "sourceBranchName": "test-redesign-branch",
+    "targetBranchId": "main",
+    "title": "Merge test redesign branch",
+    "description": "Adding testTag styling changes to home page",
+    "changes": [
+      {
+        "type": "MODIFIED",
+        "componentType": "Home",
+        "summary": "Modified Home (home_9iwngp67c)",
+        "details": "Styling updated"
+      }
+    ],
+    "status": "merged",
+    "id": "pr-1787735671333",
+    "createdAt": "2026-08-26T09:14:31.333Z",
+    "updatedAt": "2026-08-26T09:14:31.457Z",
+    "isApproved": true,
+    "approvedAt": "2026-08-26T09:14:31.350Z",
+    "mergedAt": "2026-08-26T09:14:31.456Z"
+  }
+]

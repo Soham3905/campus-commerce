@@ -1,35 +1,47 @@
 import React, { useState } from "react";
-import { BranchRepository } from "../services/branchRepository";
+import { useDispatch, useSelector } from "react-redux";
+import { createBranch } from "../../store/slices/branchSlice";
 
-export const BranchModal = ({ isOpen, onClose, journeyId, onBranchCreated }) => {
-  const branches = BranchRepository.getAll();
+export const BranchModal = ({ isOpen, onClose, journeyId = "journey-campus-commerce", onBranchCreated }) => {
+  const dispatch = useDispatch();
+  const branches = useSelector((state) => state.branches.list);
+
   const [sourceBranchId, setSourceBranchId] = useState("main");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim()) {
       setError("Branch name is required.");
       return;
     }
 
+    setIsSubmitting(true);
+    setError("");
+
     try {
-      const created = BranchRepository.createBranch({
-        journeyId,
-        sourceBranchId,
-        name,
-        description,
-      });
+      const resultAction = await dispatch(
+        createBranch({
+          journeyId,
+          sourceBranchId,
+          name,
+          description,
+        })
+      ).unwrap();
+
       if (onBranchCreated) {
-        onBranchCreated(created);
+        onBranchCreated(resultAction);
       }
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to create branch.");
+      setError(err?.message || err || "Failed to create branch.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -166,6 +178,7 @@ export const BranchModal = ({ isOpen, onClose, journeyId, onBranchCreated }) => 
             <button
               type="button"
               onClick={onClose}
+              disabled={isSubmitting}
               style={{
                 padding: "8px 14px",
                 borderRadius: "6px",
@@ -181,6 +194,7 @@ export const BranchModal = ({ isOpen, onClose, journeyId, onBranchCreated }) => 
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               style={{
                 padding: "8px 16px",
                 borderRadius: "6px",
@@ -189,10 +203,11 @@ export const BranchModal = ({ isOpen, onClose, journeyId, onBranchCreated }) => 
                 color: "#ffffff",
                 fontSize: "12px",
                 fontWeight: "600",
-                cursor: "pointer",
+                cursor: isSubmitting ? "wait" : "pointer",
+                opacity: isSubmitting ? 0.7 : 1,
               }}
             >
-              Create Branch
+              {isSubmitting ? "Creating..." : "Create Branch"}
             </button>
           </div>
         </form>

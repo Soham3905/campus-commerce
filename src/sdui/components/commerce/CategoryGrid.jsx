@@ -3,14 +3,17 @@ import React from "react";
 export const CategoryGrid = ({ children, style }) => (
   <div
     style={{
-      display: "grid",
-      gridAutoFlow: "column",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-around",
       gap: "12px",
-      padding: "10px",
-      backgroundColor: "#fff",
-      borderRadius: "12px",
+      padding: "12px 16px",
+      backgroundColor: "#ffffff",
+      borderRadius: "14px",
       overflowX: "auto",
       scrollbarWidth: "none",
+      width: "100%",
+      boxSizing: "border-box",
       ...style,
     }}
   >

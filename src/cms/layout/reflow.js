@@ -1,35 +1,38 @@
 /**
  * Reflow Engine for SDUI Components
- * Deterministically recalculates row start/end coordinates to ensure collision-free vertical layout.
+ * Deterministically recalculates 2D grid coordinates (column packing & row heights)
+ * to support responsive side-by-side multi-column layouts without accidental overlaps.
  */
 
 import { getDefaultRowSpan, getDefaultColSpan, allowsOverlayLayout } from "./layoutRules";
 
 const DEVICES = ["mobile", "tablet", "desktop"];
 const DEFAULT_ROW_GAP = 1;
+const MAX_GRID_COLUMNS = 100;
 
 /**
  * Reflows an array of children sequentially for a specific device view or all devices.
- * Ensures that visual order matches logical order and no accidental overlap occurs.
+ * Uses 2D Grid Row Band packing: items whose column spans fit horizontally in the 100-col grid
+ * share the same row band with matched row heights.
  *
  * @param {Array<Object>} children - Child component nodes
- * @param {string} [targetDevice] - 'mobile' | 'tablet' | 'desktop' | 'all'
- * @param {Object} [options] - Options (gap, parentType)
- * @returns {Array<Object>} Children with clean, non-overlapping placement coordinates
+ * @param {string} [targetDevice='all'] - 'mobile' | 'tablet' | 'desktop' | 'all'
+ * @param {Object} [options={}] - Options (gap, parentType)
+ * @returns {Array<Object>} Children with clean, non-overlapping 2D grid coordinates
  */
 export function reflowChildren(children, targetDevice = "all", options = {}) {
   if (!Array.isArray(children) || children.length === 0) return children || [];
 
   const { gap = DEFAULT_ROW_GAP, parentType = "Page" } = options;
 
-  // If parent intentionally allows overlays, don't force vertical stacking
+  // If parent intentionally allows overlays (e.g. HeroBanner), preserve exact coordinates
   if (allowsOverlayLayout(parentType)) {
     return children;
   }
 
   const devicesToProcess = targetDevice === "all" ? DEVICES : [targetDevice];
 
-  // Deep clone children so mutation is isolated
+  // Deep clone children
   let updatedChildren = children.map((c) => ({
     ...c,
     placement: {
@@ -38,16 +41,51 @@ export function reflowChildren(children, targetDevice = "all", options = {}) {
   }));
 
   devicesToProcess.forEach((device) => {
-    let currentRow = 1;
+    let currentRowStart = 1;
+    let currentBand = []; // Array of { index, colStart, colEnd, rowSpan }
 
-    updatedChildren = updatedChildren.map((child) => {
+    const commitBand = () => {
+      if (currentBand.length === 0) return;
+
+      const maxSpanInBand = Math.max(...currentBand.map((item) => item.rowSpan), 1);
+      const rowEnd = currentRowStart + maxSpanInBand;
+
+      currentBand.forEach((item) => {
+        const child = updatedChildren[item.index];
+        updatedChildren[item.index] = {
+          ...child,
+          placement: {
+            ...child.placement,
+            [device]: {
+              colStart: item.colStart,
+              colEnd: item.colEnd,
+              rowStart: currentRowStart,
+              rowEnd: rowEnd,
+            },
+          },
+        };
+      });
+
+      currentRowStart = rowEnd + gap;
+      currentBand = [];
+    };
+
+    updatedChildren.forEach((child, index) => {
       const existingPlacement = child.placement?.[device] || {};
-      const colStart = Number(existingPlacement.colStart) || 1;
-      const colEnd =
-        Number(existingPlacement.colEnd) ||
-        Math.min(101, colStart + getDefaultColSpan(child.type));
+      let colStart = Number(existingPlacement.colStart);
+      let colEnd = Number(existingPlacement.colEnd);
 
-      // Calculate existing row height or fallback to default span
+      if (isNaN(colStart) || colStart < 1) colStart = 1;
+      if (isNaN(colEnd) || colEnd <= colStart) {
+        const defaultColSpan = getDefaultColSpan(child.type);
+        colEnd = Math.min(MAX_GRID_COLUMNS + 1, colStart + defaultColSpan);
+      }
+
+      // Clamp columns to 1..101 range
+      colStart = Math.max(1, Math.min(MAX_GRID_COLUMNS, colStart));
+      colEnd = Math.max(colStart + 1, Math.min(MAX_GRID_COLUMNS + 1, colEnd));
+
+      // Calculate rowSpan
       let rowSpan = getDefaultRowSpan(child.type);
       if (
         typeof existingPlacement.rowStart === "number" &&
@@ -56,26 +94,31 @@ export function reflowChildren(children, targetDevice = "all", options = {}) {
       ) {
         rowSpan = existingPlacement.rowEnd - existingPlacement.rowStart;
       }
+      rowSpan = Math.max(1, rowSpan);
 
-      const rowStart = currentRow;
-      const rowEnd = rowStart + rowSpan;
+      // Check if this child can fit in the current row band without horizontal overlap
+      const hasHorizontalOverlap = currentBand.some(
+        (bandItem) => colStart < bandItem.colEnd && colEnd > bandItem.colStart
+      );
 
-      // Advance currentRow for next sibling
-      currentRow = rowEnd + gap;
+      // On mobile, full-width components (colStart 1, colEnd 100) automatically get their own row
+      const isMobileFullWidth = device === "mobile" && colStart === 1 && colEnd >= 100;
 
-      return {
-        ...child,
-        placement: {
-          ...child.placement,
-          [device]: {
-            colStart,
-            colEnd,
-            rowStart,
-            rowEnd,
-          },
-        },
-      };
+      if (currentBand.length > 0 && (hasHorizontalOverlap || isMobileFullWidth)) {
+        // Must start a new row band
+        commitBand();
+      }
+
+      currentBand.push({
+        index,
+        colStart,
+        colEnd,
+        rowSpan,
+      });
     });
+
+    // Commit any trailing band
+    commitBand();
   });
 
   return updatedChildren;
@@ -94,10 +137,7 @@ export function insertAndReflow(children, insertIndex, newNode, deviceType = "al
   const currentList = Array.isArray(children) ? [...children] : [];
   const safeIndex = Math.max(0, Math.min(insertIndex, currentList.length));
 
-  // Insert the newNode into the list
   currentList.splice(safeIndex, 0, newNode);
-
-  // Run reflow on all or specified device view
   return reflowChildren(currentList, deviceType, options);
 }
 

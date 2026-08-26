@@ -4,6 +4,7 @@ import { executeOptionAction } from "./actionExecutor";
 /**
  * ActionWrapper handles scroll listeners, debounced onScroll triggers,
  * and near-end detection for infinite loading indicators.
+ * When no scroll actions are defined, it renders children directly via Fragment without DOM wrappers.
  */
 export const ActionWrapper = ({ actions, children, style }) => {
   const [isFetching, setIsFetching] = useState(false);
@@ -44,10 +45,8 @@ export const ActionWrapper = ({ actions, children, style }) => {
       <div
         onScroll={handleScroll}
         style={{
-          display: "flex",
-          overflowX: "auto",
-          scrollBehavior: "smooth",
-          scrollbarWidth: "none",
+          width: "100%",
+          boxSizing: "border-box",
           ...style,
         }}
       >
@@ -134,5 +133,6 @@ export const ActionWrapper = ({ actions, children, style }) => {
       </div>
     );
   }
-  return <div style={style}>{children}</div>;
+
+  return <>{children}</>;
 };

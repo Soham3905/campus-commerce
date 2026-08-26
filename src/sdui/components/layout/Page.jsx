@@ -5,10 +5,13 @@ export const Page = ({ children, style }) => (
     style={{
       display: "grid",
       gridTemplateColumns: "repeat(100, 1fr)",
-      gridTemplateRows: "repeat(200, 10px)",
+      gridTemplateRows: "repeat(500, 10px)",
+      gridAutoRows: "10px",
       gap: "0px",
-      padding: "5px",
-      height: "100%",
+      padding: "0px",
+      margin: "0px",
+      width: "100%",
+      boxSizing: "border-box",
       ...style,
     }}
   >

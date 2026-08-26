@@ -1,6 +1,12 @@
 import React, { useState } from "react";
-import { PullRequestRepository } from "../services/pullRequestRepository";
-import { BranchRepository } from "../services/branchRepository";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createPullRequest,
+  mergePullRequest,
+  fetchPullRequests,
+} from "../../store/slices/pullRequestSlice";
+import { fetchPages } from "../../store/slices/pageSlice";
+import { fetchBranches } from "../../store/slices/branchSlice";
 
 export const PullRequestModal = ({
   isOpen,
@@ -11,7 +17,10 @@ export const PullRequestModal = ({
   onPrCreated,
   onPrMerged,
 }) => {
-  const branches = BranchRepository.getAll().filter((b) => b.id !== "main");
+  const dispatch = useDispatch();
+  const allBranches = useSelector((state) => state.branches.list);
+  const branches = allBranches.filter((b) => b.id !== "main" && b.name !== "main");
+
   const [activeTab, setActiveTab] = useState("diff"); // 'diff' | 'raw'
   const [sourceBranchId, setSourceBranchId] = useState(
     activeBranchId !== "main" ? activeBranchId : branches[0]?.id || ""
@@ -19,46 +28,67 @@ export const PullRequestModal = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [mergeStatus, setMergeStatus] = useState(null);
 
   if (!isOpen) return null;
 
   const isReviewMode = !!selectedPr;
 
-  const handleCreatePR = (e) => {
+  const handleCreatePR = async (e) => {
     e.preventDefault();
     if (!sourceBranchId) {
       setError("Please select a source branch.");
       return;
     }
 
+    setIsSubmitting(true);
+    setError("");
+
     try {
-      const created = PullRequestRepository.createPullRequest({
-        journeyId,
-        sourceBranchId,
-        targetBranchId: "main",
-        title: title || `Merge ${sourceBranchId} into main`,
-        description,
-      });
+      const created = await dispatch(
+        createPullRequest({
+          journeyId,
+          sourceBranchId,
+          targetBranchId: "main",
+          title: title || `Merge ${sourceBranchId} into main`,
+          description,
+        })
+      ).unwrap();
+
       if (onPrCreated) onPrCreated(created);
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to create PR.");
+      setError(err?.message || err || "Failed to create PR.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleMerge = () => {
+  const handleMerge = async () => {
     if (!selectedPr) return;
-    const result = PullRequestRepository.mergePullRequest(selectedPr.id);
-    if (result.success) {
-      setMergeStatus("success");
-      if (onPrMerged) onPrMerged(selectedPr);
-      setTimeout(() => {
-        onClose();
-      }, 1200);
-    } else {
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const result = await dispatch(mergePullRequest(selectedPr.id)).unwrap();
+      if (result.success) {
+        setMergeStatus("success");
+        // Re-fetch pages & branches to immediately sync new mainline data from backend
+        dispatch(fetchPages(journeyId));
+        dispatch(fetchBranches(journeyId));
+        dispatch(fetchPullRequests(journeyId));
+
+        if (onPrMerged) onPrMerged(selectedPr);
+        setTimeout(() => {
+          onClose();
+        }, 1200);
+      }
+    } catch (err) {
       setMergeStatus("error");
-      setError(result.reason || "Merge blocked.");
+      setError(err?.message || err || "Merge blocked due to validation errors.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -183,16 +213,27 @@ export const PullRequestModal = ({
                 <button
                   type="button"
                   onClick={onClose}
+                  disabled={isSubmitting}
                   style={{ padding: "8px 14px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", color: "#475569", fontSize: "12px", fontWeight: "600" }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={branches.length === 0}
-                  style={{ padding: "8px 16px", borderRadius: "6px", border: "none", backgroundColor: "#4f46e5", color: "#ffffff", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}
+                  disabled={branches.length === 0 || isSubmitting}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    border: "none",
+                    backgroundColor: "#4f46e5",
+                    color: "#ffffff",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    cursor: isSubmitting ? "wait" : "pointer",
+                    opacity: isSubmitting ? 0.7 : 1,
+                  }}
                 >
-                  Open Pull Request
+                  {isSubmitting ? "Opening..." : "Open Pull Request"}
                 </button>
               </div>
             </form>
@@ -239,7 +280,7 @@ export const PullRequestModal = ({
                         tagColor = "#059669";
                         tagBg = "#d1fae5";
                         icon = "+";
-                      } else if (ch.type === "REMOVED") {
+                      } else if (ch.type === "DELETED" || ch.type === "REMOVED") {
                         tagColor = "#dc2626";
                         tagBg = "#fee2e2";
                         icon = "-";
@@ -306,15 +347,30 @@ export const PullRequestModal = ({
                   <>
                     <button
                       onClick={onClose}
+                      disabled={isSubmitting}
                       style={{ padding: "8px 14px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", color: "#475569", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}
                     >
                       Close
                     </button>
                     <button
                       onClick={handleMerge}
-                      style={{ padding: "8px 18px", borderRadius: "6px", border: "none", backgroundColor: "#10b981", color: "#ffffff", fontSize: "12px", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
+                      disabled={isSubmitting}
+                      style={{
+                        padding: "8px 18px",
+                        borderRadius: "6px",
+                        border: "none",
+                        backgroundColor: "#10b981",
+                        color: "#ffffff",
+                        fontSize: "12px",
+                        fontWeight: "700",
+                        cursor: isSubmitting ? "wait" : "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        opacity: isSubmitting ? 0.7 : 1,
+                      }}
                     >
-                      <span>✓ Approve & Merge into Main</span>
+                      <span>{isSubmitting ? "Merging..." : "✓ Approve & Merge into Main"}</span>
                     </button>
                   </>
                 ) : (

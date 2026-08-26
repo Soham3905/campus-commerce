@@ -5,14 +5,17 @@ import { executeOptionAction } from "./actions/actionExecutor";
 import { useSwipe } from "./hooks/useSwipe";
 import { useLongPress } from "./hooks/useLongPress";
 import { ComponentRegistry } from "../registry/componentRegistry";
+import { canAddChild, getDropMode } from "../cms/utils/validation";
 
 /**
- * SDUI Renderer
- * Interprets JSON schemas, attaches responsive grid styles, executes declarative actions,
- * and renders nested component trees.
+ * SDUI Renderer — Clean, Direct Visual Drag & Drop Grid Renderer
  *
- * Supports `isEditable` mode for visual drag-and-drop, selection outline, floating action pills,
- * and drop target detection directly on the live CSS Grid layout.
+ * Provides:
+ *  1. Direct drag-and-drop of any component across the responsive 2D CSS grid
+ *  2. Real-time dynamic grid reflow and auto-adjustments
+ *  3. Minimalist selection outlines and interactive resize handles
+ *  4. Drop target markers for before, after, and inside container insertion
+ *  5. Live ghost component rendering with realistic footprints
  */
 export const SDUIRenderer = ({
   schema,
@@ -31,13 +34,22 @@ export const SDUIRenderer = ({
   onDropAtNode,
   onDragStartNode,
   onDragEndNode,
+  onApplyWidthPreset,
+  onWrapInContainer,
+  onResizePlacement,
+  onOpenQuickInserter,
   isDragging = false,
   dragSource = null,
+  dropSlot = null,
+  onUpdateDropSlot,
+  onClearDropSlot,
+  isDirectGridChild = true,
 }) => {
-  const debounceTimer = useRef(null);
   const nodeRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [dragOverHalf, setDragOverHalf] = useState(null); // 'top' | 'bottom' | null
+  const [dragZone, setDragZone] = useState(null); // 'before' | 'inside' | 'after' | null
+  const [dragValidation, setDragValidation] = useState({ isValid: true, reason: null });
+  const [resizeState, setResizeState] = useState(null);
 
   useEffect(() => {
     if (schema?.actions?.onMount) {
@@ -49,6 +61,72 @@ export const SDUIRenderer = ({
       }
     };
   }, [schema?.actions?.onMount, schema?.actions?.onUnmount]);
+
+  // Window mouse move / up listener for smooth live on-canvas resizing
+  useEffect(() => {
+    if (!resizeState) return;
+
+    const handleMouseMove = (e) => {
+      const { type, startX, startY, initialCoords } = resizeState;
+      const parentWidth = nodeRef.current?.parentElement?.getBoundingClientRect().width || 400;
+
+      if (type === "width") {
+        const deltaPx = e.clientX - startX;
+        const deltaCol = Math.round((deltaPx / parentWidth) * 100);
+        const newColEnd = Math.max(
+          initialCoords.colStart + 10,
+          Math.min(101, initialCoords.colEnd + deltaCol)
+        );
+        const colSpan = newColEnd - initialCoords.colStart;
+        const percent = Math.min(100, Math.round(colSpan));
+
+        setResizeState((prev) => ({
+          ...prev,
+          preview: {
+            colEnd: newColEnd,
+            span: colSpan,
+            percent,
+            label: `📐 ${percent}% (Col ${initialCoords.colStart}-${newColEnd})`,
+          },
+        }));
+      } else if (type === "height") {
+        const deltaPx = e.clientY - startY;
+        const deltaRow = Math.round(deltaPx / 10);
+        const newRowEnd = Math.max(initialCoords.rowStart + 2, initialCoords.rowEnd + deltaRow);
+        const rowSpan = newRowEnd - initialCoords.rowStart;
+
+        setResizeState((prev) => ({
+          ...prev,
+          preview: {
+            rowEnd: newRowEnd,
+            span: rowSpan,
+            label: `↕ ${rowSpan * 10}px (${rowSpan} rows)`,
+          },
+        }));
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (resizeState?.preview) {
+        const { type, initialCoords, preview } = resizeState;
+        if (type === "width" && preview.colEnd !== initialCoords.colEnd) {
+          const deltaCol = preview.colEnd - initialCoords.colEnd;
+          onResizePlacement?.(schema.id, { deltaCol, deltaRow: 0, activeDevice: deviceType });
+        } else if (type === "height" && preview.rowEnd !== initialCoords.rowEnd) {
+          const deltaRow = preview.rowEnd - initialCoords.rowEnd;
+          onResizePlacement?.(schema.id, { deltaCol: 0, deltaRow, activeDevice: deviceType });
+        }
+      }
+      setResizeState(null);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [resizeState, schema?.id, deviceType, onResizePlacement]);
 
   if (!schema) return null;
 
@@ -71,19 +149,7 @@ export const SDUIRenderer = ({
     );
   }
 
-  // Handle Long Press
-  const longPressHandlers = useLongPress(() => {
-    const lp = schema.actions?.onLongPress;
-    if (lp?.type === "SHOW_CONTEXT_MENU" && openMenu) {
-      openMenu({
-        title: lp.data?.title || "Actions",
-        options: lp.data?.options || [],
-        schema,
-      });
-    }
-  });
-
-  // Handle Tap / Click
+  // Tap / Click Handler
   const handleTap = (e) => {
     if (isEditable) {
       e.stopPropagation();
@@ -131,202 +197,281 @@ export const SDUIRenderer = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setDragOverHalf(null);
+    setDragZone(null);
     if (!isEditable && schema.actions?.onHoverOut) {
       executeOptionAction({ action: schema.actions.onHoverOut });
     }
   };
 
-  // Drag & Drop handlers in Edit Mode
-  const handleEditableDragStart = (e) => {
+  // Direct Drag & Drop handlers on the Component
+  const handleDragStart = (e) => {
+    if (!isEditable || schema.type === "Home" || schema.type === "Page") return;
     e.stopPropagation();
-    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.effectAllowed = "all";
+    e.dataTransfer.setData("application/sdui-type", schema.type);
+    e.dataTransfer.setData("application/sdui-id", schema.id);
     e.dataTransfer.setData("text/plain", schema.id);
     onDragStartNode?.(schema);
   };
 
-  const handleEditableDragOver = (e) => {
-    if (!isEditable || !isDragging) return;
+  const handleDragEnd = (e) => {
+    if (!isEditable) return;
+    e.stopPropagation();
+    onDragEndNode?.();
+  };
+
+  const handleDragOver = (e) => {
+    if (!isEditable) return;
     if (dragSource?.nodeId === schema.id) return;
     if (schema.type === "Home" || schema.type === "Page") return;
 
     e.preventDefault();
     e.stopPropagation();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = "copy";
 
     const rect = nodeRef.current?.getBoundingClientRect();
-    if (rect) {
-      const midY = rect.top + rect.height / 2;
-      const isTop = e.clientY < midY;
-      setDragOverHalf(isTop ? "top" : "bottom");
+    if (!rect) return;
+
+    const draggedType = e.dataTransfer.getData("application/sdui-type") || dragSource?.type;
+    const mode = getDropMode(e.clientY, rect, schema.type, draggedType);
+
+    let check = { valid: true };
+    if (mode === "inside") {
+      check = canAddChild(schema.type, draggedType);
     }
+
+    setDragZone(mode);
+    setDragValidation(check);
+
+    onUpdateDropSlot?.({
+      targetNode: schema,
+      dropMode: mode,
+      draggedType,
+      rect,
+      clientY: e.clientY,
+      isValid: check.valid,
+      reason: check.reason,
+    });
   };
 
-  const handleEditableDragLeave = (e) => {
+  const handleDragLeave = (e) => {
     if (!isEditable) return;
-    setDragOverHalf(null);
+    setDragZone(null);
+    onClearDropSlot?.();
   };
 
-  const handleEditableDrop = (e) => {
-    if (!isEditable || !isDragging) return;
+  const handleDrop = (e) => {
+    if (!isEditable) return;
     if (dragSource?.nodeId === schema.id) return;
 
     e.preventDefault();
     e.stopPropagation();
 
-    const position = dragOverHalf === "top" ? "before" : "after";
-    setDragOverHalf(null);
-    onDropAtNode?.({ targetNode: schema, position });
+    const draggedType = e.dataTransfer.getData("application/sdui-type") || dragSource?.type;
+    const draggedId = e.dataTransfer.getData("application/sdui-id") || dragSource?.nodeId;
+    const position = dragZone || "inside";
+    setDragZone(null);
+
+    onDropAtNode?.({
+      targetNode: schema,
+      position,
+      draggedType,
+      draggedId,
+    });
   };
 
-  // Pure Runtime Action Handlers
-  const handleFocus = () => {
-    if (!isEditable && schema.actions?.onFocus) {
-      executeOptionAction({ action: schema.actions.onFocus });
-    }
+  // Start resize handlers
+  const handleStartWidthResize = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const currentCoords = schema.placement?.[deviceType] || {
+      colStart: 1,
+      colEnd: 101,
+      rowStart: 1,
+      rowEnd: 10,
+    };
+    setResizeState({
+      type: "width",
+      startX: e.clientX,
+      startY: e.clientY,
+      initialCoords: currentCoords,
+      preview: null,
+    });
   };
 
-  const handleBlur = () => {
-    if (!isEditable && schema.actions?.onBlur) {
-      executeOptionAction({ action: schema.actions.onBlur });
-    }
+  const handleStartHeightResize = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const currentCoords = schema.placement?.[deviceType] || {
+      colStart: 1,
+      colEnd: 101,
+      rowStart: 1,
+      rowEnd: 10,
+    };
+    setResizeState({
+      type: "height",
+      startX: e.clientX,
+      startY: e.clientY,
+      initialCoords: currentCoords,
+      preview: null,
+    });
   };
 
-  const handleKeyDown = (e) => {
-    if (!isEditable && e.key === "Enter" && schema.actions?.onSubmit) {
-      executeOptionAction({ action: schema.actions.onSubmit });
-    }
-  };
-
-  const handleChange = (e) => {
-    if (!isEditable && schema.actions?.onChange) {
-      clearTimeout(debounceTimer.current);
-      const debounceDuration = schema.actions.onChange.debounceDuration || 500;
-      const value = e.target.value;
-      debounceTimer.current = setTimeout(() => {
-        executeOptionAction({ action: schema.actions.onChange });
-      }, debounceDuration);
-    }
-  };
-
-  const minSwipeDistance =
-    schema.actions?.onSwipeLeft?.minSwipeDistance ||
-    schema.actions?.onSwipeRight?.minSwipeDistance ||
-    schema.actions?.onSwipeUp?.minSwipeDistance ||
-    schema.actions?.onSwipeDown?.minSwipeDistance ||
-    50;
-
-  const swipeHandlers = useSwipe({
-    onSwipeLeft: schema.actions?.onSwipeLeft
-      ? () => executeOptionAction({ action: schema.actions.onSwipeLeft })
-      : null,
-    onSwipeRight: schema.actions?.onSwipeRight
-      ? () => executeOptionAction({ action: schema.actions.onSwipeRight })
-      : null,
-    onSwipeUp: schema.actions?.onSwipeUp
-      ? () => executeOptionAction({ action: schema.actions.onSwipeUp })
-      : null,
-    onSwipeDown: schema.actions?.onSwipeDown
-      ? () => executeOptionAction({ action: schema.actions.onSwipeDown })
-      : null,
-    minSwipeDistance,
-  });
-
-  const hasSwipe =
-    schema.actions?.onSwipeLeft ||
-    schema.actions?.onSwipeRight ||
-    schema.actions?.onSwipeUp ||
-    schema.actions?.onSwipeDown;
-
-  const interactionProps = {
-    onMouseEnter: handleMouseEnter,
-    onMouseLeave: handleMouseLeave,
-    ...(schema.actions?.onLongPress && !isEditable ? longPressHandlers : {}),
-    ...(schema.actions?.onTap || onSelect || isEditable ? { onClick: handleTap } : {}),
-    ...(schema.actions?.onFocus && !isEditable ? { onFocus: handleFocus } : {}),
-    ...(schema.actions?.onBlur && !isEditable ? { onBlur: handleBlur } : {}),
-    ...(schema.actions?.onSubmit && !isEditable ? { onKeyDown: handleKeyDown } : {}),
-    ...(schema.actions?.onChange && !isEditable ? { onChange: handleChange } : {}),
-    ...(hasSwipe && !isEditable ? swipeHandlers : {}),
-    ...(isEditable
-      ? {
-          onDragOver: handleEditableDragOver,
-          onDragLeave: handleEditableDragLeave,
-          onDrop: handleEditableDrop,
-        }
-      : {}),
-  };
-
-  // Compute responsive placement coordinates
+  // Compute placement coordinates ONLY for direct grid children
   let placementStyle = {};
-  if (schema.placement) {
-    const coordinates = schema.placement[deviceType];
-    if (coordinates) {
-      placementStyle = {
-        ...placementStyle,
-        gridColumn: `${coordinates.colStart} / ${coordinates.colEnd}`,
-        gridRow: `${coordinates.rowStart} / ${coordinates.rowEnd}`,
-      };
-    }
-  }
+  const currentPlacement = schema.placement?.[deviceType];
+  const isRootContainer = schema.type === "Home" || schema.type === "Page";
 
-  const stickyStyle =
-    schema.containerStyle?.position === "sticky"
-      ? {
-          position: "sticky",
-          top: schema.containerStyle.top,
-          bottom: schema.containerStyle.bottom,
-          zIndex: schema.containerStyle.zIndex || 10,
-        }
-      : {};
+  if (isDirectGridChild && !isRootContainer && currentPlacement) {
+    const colEnd = resizeState?.type === "width" && resizeState.preview?.colEnd ? resizeState.preview.colEnd : currentPlacement.colEnd;
+    const rowEnd = resizeState?.type === "height" && resizeState.preview?.rowEnd ? resizeState.preview.rowEnd : currentPlacement.rowEnd;
+
+    placementStyle = {
+      gridColumn: `${currentPlacement.colStart} / ${colEnd}`,
+      gridRow: `${currentPlacement.rowStart} / ${rowEnd}`,
+    };
+  }
 
   const isSelected = isEditable && selectedId && schema.id === selectedId;
   const isBeingDragged = isDragging && dragSource?.nodeId === schema.id;
+  const isGhost = schema.__isDragGhost === true;
   const def = isEditable ? ComponentRegistry[schema.type] : null;
 
-  const isRootContainer = schema.type === "Home" || schema.type === "Page";
+  // Decide if child components should be grid children
+  const nextIsDirectGridChild = isRootContainer || (schema.type === "Box" && schema.containerStyle?.display === "grid");
+
+  // Extract positioning styles from containerStyle
+  const isAbsolute = schema.containerStyle?.position === "absolute";
+  const isFixed = schema.containerStyle?.position === "fixed";
+  const isSticky = schema.containerStyle?.position === "sticky";
+
+  const wrapperPositionStyle = isAbsolute
+    ? {
+        position: "absolute",
+        top: schema.containerStyle.top,
+        bottom: schema.containerStyle.bottom,
+        left: schema.containerStyle.left,
+        right: schema.containerStyle.right,
+        zIndex: schema.containerStyle.zIndex ?? (isSelected ? 30 : 3),
+        width: schema.containerStyle.width,
+        height: schema.containerStyle.height,
+        minWidth: schema.containerStyle.minWidth,
+        maxWidth: schema.containerStyle.maxWidth,
+        margin: schema.containerStyle.margin,
+        padding: 0,
+      }
+    : isFixed
+    ? {
+        position: "fixed",
+        top: schema.containerStyle.top,
+        bottom: schema.containerStyle.bottom,
+        left: schema.containerStyle.left,
+        right: schema.containerStyle.right,
+        zIndex: schema.containerStyle.zIndex || 100,
+      }
+    : isSticky
+    ? {
+        position: "sticky",
+        top: schema.containerStyle.top,
+        bottom: schema.containerStyle.bottom,
+        zIndex: schema.containerStyle.zIndex || 10,
+      }
+    : {
+        position: isEditable || !isDirectGridChild ? "relative" : undefined,
+      };
+
+  // Forward flex child styles to wrapper div if not a direct grid child and not root container
+  const flexChildStyle = !isDirectGridChild && !isAbsolute && !isRootContainer
+    ? {
+        flex: schema.containerStyle?.flex,
+        flexShrink: schema.containerStyle?.flexShrink,
+        flexGrow: schema.containerStyle?.flexGrow,
+        alignSelf: schema.containerStyle?.alignSelf,
+        marginTop: schema.containerStyle?.marginTop,
+        marginBottom: schema.containerStyle?.marginBottom,
+        marginLeft: schema.containerStyle?.marginLeft,
+        marginRight: schema.containerStyle?.marginRight,
+        width: schema.containerStyle?.width,
+        minWidth: schema.containerStyle?.minWidth,
+        maxWidth: schema.containerStyle?.maxWidth,
+        height: schema.containerStyle?.height,
+        minHeight: schema.containerStyle?.minHeight,
+        maxHeight: schema.containerStyle?.maxHeight,
+        display:
+          schema.containerStyle?.display === "flex" ||
+          schema.containerStyle?.display === "inline-flex"
+            ? "flex"
+            : undefined,
+      }
+    : {};
 
   return (
     <div
       ref={nodeRef}
       data-sdui-id={schema.id}
       data-sdui-type={schema.type}
+      draggable={isEditable && !isRootContainer && !isGhost}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleTap}
       style={{
         ...placementStyle,
-        ...stickyStyle,
-        position: isEditable
-          ? "relative"
-          : placementStyle.gridColumn || stickyStyle.position ? undefined : "relative",
-        outline: isSelected
+        ...flexChildStyle,
+        ...wrapperPositionStyle,
+        outline: isGhost
+          ? "2px dashed #4f46e5"
+          : isSelected
           ? "2px solid #4f46e5"
           : isHovered && isEditable && !isRootContainer && !isDragging
-          ? "1.5px solid rgba(79, 70, 229, 0.4)"
-          : dragOverHalf
-          ? "2px dashed #4f46e5"
+          ? "1.5px dashed rgba(79, 70, 229, 0.6)"
+          : dragZone
+          ? `2px dashed ${dragValidation.isValid ? "#4f46e5" : "#ef4444"}`
           : "none",
         outlineOffset: isSelected ? "-1px" : "0",
-        opacity: isBeingDragged ? 0.3 : 1,
-        transition: "outline 0.1s ease, opacity 0.15s ease",
-        cursor: isEditable && !isRootContainer ? "pointer" : undefined,
-        zIndex: isSelected ? 30 : dragOverHalf ? 25 : undefined,
+        boxShadow: isGhost
+          ? "0 0 0 4px rgba(79, 70, 229, 0.15)"
+          : isSelected
+          ? "0 0 0 3px rgba(79, 70, 229, 0.2)"
+          : undefined,
+        backgroundColor: isGhost ? "rgba(79, 70, 229, 0.04)" : undefined,
+        opacity: isBeingDragged ? 0.3 : isGhost ? 0.85 : 1,
+        transition: resizeState ? "none" : "outline 0.12s ease, opacity 0.15s ease, background-color 0.15s ease",
+        cursor: isEditable && !isRootContainer ? (isDragging ? "grabbing" : "grab") : undefined,
+        zIndex: isSelected ? 30 : dragZone ? 25 : wrapperPositionStyle.zIndex,
+        userSelect: isEditable ? "none" : undefined,
       }}
-      {...interactionProps}
     >
       {/* ── Insertion Guide Marker on Drag-Over ── */}
-      {isEditable && dragOverHalf && (
+      {isEditable && dragZone && (
         <div
           style={{
             position: "absolute",
             left: 0,
             right: 0,
-            top: dragOverHalf === "top" ? "-3px" : "auto",
-            bottom: dragOverHalf === "bottom" ? "-3px" : "auto",
-            height: "4px",
-            backgroundColor: "#4f46e5",
-            borderRadius: "2px",
-            boxShadow: "0 0 10px rgba(79, 70, 229, 0.8)",
+            top: dragZone === "before" ? "-4px" : dragZone === "inside" ? "0" : "auto",
+            bottom: dragZone === "after" ? "-4px" : dragZone === "inside" ? "0" : "auto",
+            height: dragZone === "inside" ? "100%" : "4px",
+            backgroundColor: dragZone === "inside"
+              ? dragValidation.isValid
+                ? "rgba(79, 70, 229, 0.12)"
+                : "rgba(239, 68, 68, 0.12)"
+              : dragValidation.isValid
+              ? "#4f46e5"
+              : "#ef4444",
+            borderRadius: "3px",
+            boxShadow: dragZone !== "inside"
+              ? `0 0 10px ${dragValidation.isValid ? "rgba(79, 70, 229, 0.8)" : "rgba(239, 68, 68, 0.8)"}`
+              : "none",
             zIndex: 100,
             pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <span
@@ -334,122 +479,166 @@ export const SDUIRenderer = ({
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
-              top: dragOverHalf === "top" ? "-22px" : "6px",
-              backgroundColor: "#4f46e5",
+              top: dragZone === "before" ? "-22px" : dragZone === "inside" ? "50%" : "6px",
+              marginTop: dragZone === "inside" ? "-10px" : "0",
+              backgroundColor: dragValidation.isValid ? "#4f46e5" : "#ef4444",
               color: "#ffffff",
               fontSize: "10px",
               fontWeight: "700",
-              padding: "2px 8px",
+              padding: "3px 9px",
               borderRadius: "8px",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
               whiteSpace: "nowrap",
             }}
           >
-            {dragOverHalf === "top" ? "↑ Insert Before" : "↓ Insert After"}
+            {dragValidation.isValid
+              ? dragZone === "before"
+                ? `↑ Insert Before ${def?.label || schema.type}`
+                : dragZone === "inside"
+                ? `↳ Drop Inside ${def?.label || schema.type}`
+                : `↓ Insert After ${def?.label || schema.type}`
+              : `🚫 ${dragValidation.reason || "Cannot drop here"}`}
           </span>
         </div>
       )}
 
-      {/* ── Selection / Hover Action Floating Pill in Edit Mode ── */}
-      {isEditable && !isRootContainer && (isSelected || (isHovered && !isDragging)) && (
+      {/* ── Ghost Label Badge ── */}
+      {isGhost && (
         <div
           style={{
             position: "absolute",
-            top: "-26px",
+            top: "6px",
+            right: "6px",
+            backgroundColor: "#4f46e5",
+            color: "#ffffff",
+            fontSize: "10px",
+            fontWeight: "700",
+            padding: "2px 8px",
+            borderRadius: "6px",
+            zIndex: 50,
+            pointerEvents: "none",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+          }}
+        >
+          📥 Drop Position
+        </div>
+      )}
+
+      {/* ── Live Drag-Resize Tooltip Indicator ── */}
+      {resizeState?.preview && (
+        <div
+          style={{
+            position: "absolute",
+            top: "-30px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#0f172a",
+            color: "#38bdf8",
+            fontSize: "11px",
+            fontWeight: "700",
+            padding: "4px 10px",
+            borderRadius: "6px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            zIndex: 300,
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {resizeState.preview.label}
+        </div>
+      )}
+
+      {/* ── Clean Selection Badge ── */}
+      {isEditable && !isRootContainer && isDirectGridChild && !isGhost && (isSelected || (isHovered && !isDragging && !resizeState)) && (
+        <div
+          style={{
+            position: "absolute",
+            top: "-22px",
             left: "0",
             zIndex: 200,
             display: "flex",
             alignItems: "center",
-            gap: "2px",
-            backgroundColor: isSelected ? "#4f46e5" : "rgba(15, 23, 42, 0.9)",
-            borderRadius: "6px 6px 0 0",
-            padding: "2px 6px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+            gap: "4px",
+            backgroundColor: isSelected ? "#4f46e5" : "rgba(15, 23, 42, 0.85)",
+            borderRadius: "4px 4px 0 0",
+            padding: "2px 8px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            color: "#ffffff",
+            fontSize: "10px",
+            fontWeight: "700",
+            pointerEvents: "none",
           }}
-          onClick={(e) => e.stopPropagation()}
         >
-          {/* Draggable Handle */}
-          <div
-            draggable
-            onDragStart={handleEditableDragStart}
-            onDragEnd={() => onDragEndNode?.()}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              cursor: "grab",
-              color: "#ffffff",
-              fontSize: "11px",
-              fontWeight: "700",
-              userSelect: "none",
-              paddingRight: "4px",
-            }}
-            title="Drag to reorder"
-          >
-            <span style={{ fontSize: "12px", opacity: 0.9 }}>⠿</span>
-            <span>{def?.icon || "📦"}</span>
-            <span>{def?.label || schema.type}</span>
-          </div>
-
-          {/* Quick Action Controls */}
-          {isSelected && (
-            <div style={{ display: "flex", alignItems: "center", gap: "2px", marginLeft: "4px", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: "4px" }}>
-              {/* Move Up */}
-              <button
-                onClick={(e) => { e.stopPropagation(); onMoveUp?.(schema.id); }}
-                title="Move Up (▲)"
-                style={{
-                  width: "18px", height: "18px", borderRadius: "3px", border: "none",
-                  background: "rgba(255,255,255,0.18)", color: "#ffffff", fontSize: "10px",
-                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ▲
-              </button>
-
-              {/* Move Down */}
-              <button
-                onClick={(e) => { e.stopPropagation(); onMoveDown?.(schema.id); }}
-                title="Move Down (▼)"
-                style={{
-                  width: "18px", height: "18px", borderRadius: "3px", border: "none",
-                  background: "rgba(255,255,255,0.18)", color: "#ffffff", fontSize: "10px",
-                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ▼
-              </button>
-
-              {/* Duplicate */}
-              <button
-                onClick={(e) => { e.stopPropagation(); onDuplicate?.(schema.id); }}
-                title="Duplicate (⧉)"
-                style={{
-                  width: "18px", height: "18px", borderRadius: "3px", border: "none",
-                  background: "rgba(255,255,255,0.18)", color: "#ffffff", fontSize: "10px",
-                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ⧉
-              </button>
-
-              {/* Delete */}
-              <button
-                onClick={(e) => { e.stopPropagation(); onDelete?.(schema.id); }}
-                title="Delete Component"
-                style={{
-                  width: "18px", height: "18px", borderRadius: "3px", border: "none",
-                  background: "#ef4444", color: "#ffffff", fontSize: "10px",
-                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ✕
-              </button>
-            </div>
-          )}
+          <span>⠿</span>
+          <span>{def?.icon || "📦"}</span>
+          <span>{def?.label || schema.type}</span>
         </div>
       )}
 
+      {/* ── Interactive On-Canvas Drag-Resize Handles ── */}
+      {isEditable && isSelected && isDirectGridChild && !isRootContainer && !isGhost && (
+        <>
+          {/* Right Handle (Column Width Adjuster) */}
+          <div
+            onMouseDown={handleStartWidthResize}
+            title="Drag to resize width"
+            style={{
+              position: "absolute",
+              right: "-5px",
+              top: "10%",
+              bottom: "10%",
+              width: "10px",
+              cursor: "ew-resize",
+              backgroundColor: "transparent",
+              zIndex: 220,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "4px",
+                height: "28px",
+                backgroundColor: "#4f46e5",
+                borderRadius: "2px",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+              }}
+            />
+          </div>
+
+          {/* Bottom Handle (Row Height Adjuster) */}
+          <div
+            onMouseDown={handleStartHeightResize}
+            title="Drag to resize height"
+            style={{
+              position: "absolute",
+              bottom: "-5px",
+              left: "10%",
+              right: "10%",
+              height: "10px",
+              cursor: "ns-resize",
+              backgroundColor: "transparent",
+              zIndex: 220,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "32px",
+                height: "4px",
+                backgroundColor: "#4f46e5",
+                borderRadius: "2px",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+              }}
+            />
+          </div>
+        </>
+      )}
+
+      {/* ── Component Body ── */}
       <ActionWrapper actions={schema.actions}>
         <TargetComponent
           data={schema.data}
@@ -490,8 +679,16 @@ export const SDUIRenderer = ({
                 onDropAtNode={onDropAtNode}
                 onDragStartNode={onDragStartNode}
                 onDragEndNode={onDragEndNode}
+                onApplyWidthPreset={onApplyWidthPreset}
+                onWrapInContainer={onWrapInContainer}
+                onResizePlacement={onResizePlacement}
+                onOpenQuickInserter={onOpenQuickInserter}
                 isDragging={isDragging}
                 dragSource={dragSource}
+                dropSlot={dropSlot}
+                onUpdateDropSlot={onUpdateDropSlot}
+                onClearDropSlot={onClearDropSlot}
+                isDirectGridChild={nextIsDirectGridChild}
               />
             ))}
         </TargetComponent>

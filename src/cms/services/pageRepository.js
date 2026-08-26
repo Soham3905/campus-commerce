@@ -3,7 +3,7 @@ import { defaultPages } from "../../schema/defaultPages";
 import { generateId } from "../utils/idUtils";
 import { cloneTree } from "../utils/treeUtils";
 
-const PAGES_STORAGE_KEY = "campus_sdui_pages";
+const PAGES_STORAGE_KEY = "campus_sdui_pages_v4";
 
 export const PageRepository = {
   getAll() {

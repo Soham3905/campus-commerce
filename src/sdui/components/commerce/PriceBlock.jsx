@@ -6,10 +6,13 @@ export const PriceBlock = ({ data, style }) => (
       display: "flex",
       alignItems: "baseline",
       gap: "8px",
+      margin: 0,
+      padding: 0,
+      boxSizing: "border-box",
       ...style,
     }}
   >
-    <span style={{ fontSize: "20px", fontWeight: "800", color: "#111" }}>
+    <span style={{ fontSize: "18px", fontWeight: "600", color: "#101F26" }}>
       {data?.sellingPrice}
     </span>
     {data?.mrp && (

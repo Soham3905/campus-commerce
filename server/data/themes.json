@@ -1,0 +1,1193 @@
+[
+  {
+    "id": "product-card-classic",
+    "componentType": "ProductCard",
+    "name": "Classic",
+    "description": "Standard card with rounded corners, complete product details, and soft shadow",
+    "tokens": {
+      "borderRadius": "16px",
+      "backgroundColor": "#ffffff",
+      "padding": "14px",
+      "boxShadow": "0 2px 8px rgba(0,0,0,0.06)",
+      "borderColor": "#e5e7eb",
+      "borderWidth": "1px"
+    },
+    "styles": {
+      "width": "280px",
+      "borderRadius": "16px",
+      "backgroundColor": "#ffffff",
+      "padding": "14px",
+      "boxShadow": "0 2px 8px rgba(0,0,0,0.06)",
+      "border": "1px solid #e5e7eb"
+    },
+    "defaultData": {
+      "id": "prod_classic_001"
+    },
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 32
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 50,
+        "rowStart": 1,
+        "rowEnd": 32
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 33,
+        "rowStart": 1,
+        "rowEnd": 32
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "Image",
+        "containerStyle": {
+          "height": "170px",
+          "width": "100%",
+          "objectFit": "contain",
+          "backgroundColor": "#f8fafc",
+          "borderRadius": "10px",
+          "display": "block"
+        },
+        "data": {
+          "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80",
+          "altText": "AudioPro Wireless Studio Headphones"
+        }
+      },
+      {
+        "type": "Label",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": "6px"
+        },
+        "children": [
+          {
+            "type": "Sponsored",
+            "data": {
+              "text": "Sponsored"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Badge",
+        "containerStyle": {
+          "backgroundColor": "#fef3c7",
+          "color": "#92400e",
+          "padding": "2px 8px",
+          "borderRadius": "999px",
+          "fontSize": "11px",
+          "fontWeight": "600",
+          "alignSelf": "flex-start"
+        },
+        "data": {
+          "text": "Limited Time Deal"
+        }
+      },
+      {
+        "type": "Title",
+        "containerStyle": {
+          "fontSize": "13px",
+          "fontWeight": "700",
+          "color": "#0f172a",
+          "overflow": "hidden",
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap"
+        },
+        "data": {
+          "text": "AudioPro ANC Wireless Studio Headphones"
+        }
+      },
+      {
+        "type": "Description",
+        "containerStyle": {
+          "fontSize": "12px",
+          "color": "#64748b",
+          "maxLines": 2,
+          "lineHeight": "16px"
+        },
+        "data": {
+          "text": "40mm drivers, active noise cancellation, and 30-hour battery life with fast USB-C charge.",
+          "maxLines": 2
+        }
+      },
+      {
+        "type": "Rating",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": "6px",
+          "fontSize": "12px"
+        },
+        "children": [
+          {
+            "type": "Score",
+            "data": {
+              "text": "4.4",
+              "out of": "5"
+            }
+          },
+          {
+            "type": "ReviewCount",
+            "data": {
+              "text": "850"
+            }
+          }
+        ]
+      },
+      {
+        "type": "PriceBlock",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "baseline",
+          "gap": "8px"
+        },
+        "data": {
+          "sellingPrice": "₹1,499",
+          "mrp": "₹3,999",
+          "discount": "62% OFF"
+        }
+      },
+      {
+        "type": "OfferText",
+        "containerStyle": {
+          "fontSize": "11px",
+          "fontWeight": "600",
+          "color": "#059669"
+        },
+        "data": {
+          "text": "Mega Student Savings • Extra ₹150 off"
+        }
+      },
+      {
+        "type": "DeliveryInfo",
+        "containerStyle": {
+          "fontSize": "11px",
+          "color": "#64748b"
+        },
+        "data": {
+          "prefix": "FREE delivery",
+          "daysOffset": 2
+        }
+      },
+      {
+        "type": "Button",
+        "containerStyle": {
+          "backgroundColor": "#4f46e5",
+          "color": "#ffffff",
+          "padding": "9px 16px",
+          "borderRadius": "8px",
+          "fontWeight": "600",
+          "fontSize": "13px",
+          "width": "100%",
+          "cursor": "pointer",
+          "border": "none",
+          "marginTop": "4px"
+        },
+        "data": {
+          "label": "Add to Cart"
+        }
+      }
+    ]
+  },
+  {
+    "id": "product-card-minimal",
+    "componentType": "ProductCard",
+    "name": "Minimal",
+    "description": "Clean, essential card with streamlined typography and direct buy button",
+    "tokens": {
+      "borderRadius": "12px",
+      "backgroundColor": "#f8fafc",
+      "padding": "12px",
+      "boxShadow": "none",
+      "borderColor": "#e2e8f0",
+      "borderWidth": "1px"
+    },
+    "styles": {
+      "width": "260px",
+      "borderRadius": "12px",
+      "backgroundColor": "#f8fafc",
+      "padding": "12px",
+      "boxShadow": "none",
+      "border": "1px solid #e2e8f0"
+    },
+    "defaultData": {
+      "id": "prod_minimal_001"
+    },
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 26
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 50,
+        "rowStart": 1,
+        "rowEnd": 26
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 33,
+        "rowStart": 1,
+        "rowEnd": 26
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "Image",
+        "containerStyle": {
+          "height": "150px",
+          "width": "100%",
+          "objectFit": "contain",
+          "backgroundColor": "#ffffff",
+          "borderRadius": "8px",
+          "display": "block"
+        },
+        "data": {
+          "imageUrl": "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500&auto=format&fit=crop&q=80",
+          "altText": "Wireless Earbuds Pro"
+        }
+      },
+      {
+        "type": "Title",
+        "containerStyle": {
+          "fontSize": "13px",
+          "fontWeight": "700",
+          "color": "#0f172a",
+          "overflow": "hidden",
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap"
+        },
+        "data": {
+          "text": "Buds Pro ANC Wireless Earbuds"
+        }
+      },
+      {
+        "type": "Rating",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": "4px",
+          "fontSize": "12px"
+        },
+        "children": [
+          {
+            "type": "Score",
+            "data": {
+              "text": "4.6",
+              "out of": "5"
+            }
+          }
+        ]
+      },
+      {
+        "type": "PriceBlock",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "baseline",
+          "gap": "6px"
+        },
+        "data": {
+          "sellingPrice": "₹1,299",
+          "mrp": "₹2,999",
+          "discount": "56%"
+        }
+      },
+      {
+        "type": "Button",
+        "containerStyle": {
+          "backgroundColor": "#0f172a",
+          "color": "#ffffff",
+          "padding": "8px 14px",
+          "borderRadius": "6px",
+          "fontWeight": "600",
+          "fontSize": "12px",
+          "width": "100%",
+          "cursor": "pointer",
+          "border": "none",
+          "marginTop": "4px"
+        },
+        "data": {
+          "label": "Buy Now"
+        }
+      }
+    ]
+  },
+  {
+    "id": "product-card-featured",
+    "componentType": "ProductCard",
+    "name": "Featured",
+    "description": "Elevated showcase card with glowing indigo accent border, rich tags, and badges",
+    "tokens": {
+      "borderRadius": "18px",
+      "backgroundColor": "#ffffff",
+      "padding": "16px",
+      "boxShadow": "0 10px 25px -5px rgba(99, 102, 241, 0.18), 0 4px 10px -2px rgba(0,0,0,0.04)",
+      "borderColor": "#818cf8",
+      "borderWidth": "2px"
+    },
+    "styles": {
+      "width": "290px",
+      "borderRadius": "18px",
+      "backgroundColor": "#ffffff",
+      "padding": "16px",
+      "boxShadow": "0 10px 25px -5px rgba(99, 102, 241, 0.18), 0 4px 10px -2px rgba(0,0,0,0.04)",
+      "border": "2px solid #818cf8"
+    },
+    "defaultData": {
+      "id": "prod_featured_001"
+    },
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 34
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 50,
+        "rowStart": 1,
+        "rowEnd": 34
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 33,
+        "rowStart": 1,
+        "rowEnd": 34
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "Image",
+        "containerStyle": {
+          "height": "175px",
+          "width": "100%",
+          "objectFit": "contain",
+          "backgroundColor": "#f5f3ff",
+          "borderRadius": "12px",
+          "display": "block"
+        },
+        "data": {
+          "imageUrl": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&auto=format&fit=crop&q=80",
+          "altText": "Aurora Smartwatch Ultra"
+        }
+      },
+      {
+        "type": "Badge",
+        "containerStyle": {
+          "backgroundColor": "#4f46e5",
+          "color": "#ffffff",
+          "padding": "3px 10px",
+          "borderRadius": "999px",
+          "fontSize": "10px",
+          "fontWeight": "700",
+          "letterSpacing": "0.05em",
+          "alignSelf": "flex-start"
+        },
+        "data": {
+          "text": "TOP CAMPUS CHOICE"
+        }
+      },
+      {
+        "type": "Label",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": "6px"
+        },
+        "children": [
+          {
+            "type": "Sponsored",
+            "data": {
+              "text": "AURORA TECH"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Title",
+        "containerStyle": {
+          "fontSize": "14px",
+          "fontWeight": "800",
+          "color": "#0f172a",
+          "overflow": "hidden",
+          "textOverflow": "ellipsis",
+          "whiteSpace": "nowrap"
+        },
+        "data": {
+          "text": "Aurora Smartwatch Ultra GPS 49mm"
+        }
+      },
+      {
+        "type": "Description",
+        "containerStyle": {
+          "fontSize": "12px",
+          "color": "#64748b",
+          "maxLines": 2,
+          "lineHeight": "16px"
+        },
+        "data": {
+          "text": "Retina display, titanium casing, ECG, heart rate monitor, and 3-day extended battery.",
+          "maxLines": 2
+        }
+      },
+      {
+        "type": "Rating",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": "6px",
+          "fontSize": "12px"
+        },
+        "children": [
+          {
+            "type": "Score",
+            "data": {
+              "text": "4.8",
+              "out of": "5"
+            }
+          },
+          {
+            "type": "ReviewCount",
+            "data": {
+              "text": "1,420"
+            }
+          }
+        ]
+      },
+      {
+        "type": "PriceBlock",
+        "containerStyle": {
+          "display": "flex",
+          "alignItems": "baseline",
+          "gap": "8px"
+        },
+        "data": {
+          "sellingPrice": "₹2,499",
+          "mrp": "₹5,999",
+          "discount": "58% OFF"
+        }
+      },
+      {
+        "type": "OfferText",
+        "containerStyle": {
+          "fontSize": "11px",
+          "fontWeight": "700",
+          "color": "#4f46e5"
+        },
+        "data": {
+          "text": "🔥 Flat ₹300 Instant Student Discount"
+        }
+      },
+      {
+        "type": "DeliveryInfo",
+        "containerStyle": {
+          "fontSize": "11px",
+          "color": "#059669",
+          "fontWeight": "600"
+        },
+        "data": {
+          "prefix": "FREE Next-Day Delivery",
+          "daysOffset": 1
+        }
+      },
+      {
+        "type": "Button",
+        "containerStyle": {
+          "background": "linear-gradient(135deg, #4f46e5, #7c3aed)",
+          "color": "#ffffff",
+          "padding": "10px 16px",
+          "borderRadius": "10px",
+          "fontWeight": "700",
+          "fontSize": "13px",
+          "width": "100%",
+          "cursor": "pointer",
+          "border": "none",
+          "marginTop": "4px",
+          "boxShadow": "0 4px 12px rgba(79, 70, 229, 0.3)"
+        },
+        "data": {
+          "label": "Add to Cart • ₹2,499"
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-classic",
+    "componentType": "Header",
+    "name": "Classic Deep Navy",
+    "description": "Campus commerce signature deep navy header with gold and pink nav accents",
+    "tokens": {
+      "backgroundColor": "#0D3540",
+      "color": "#ffffff",
+      "padding": "8px 16px",
+      "borderRadius": "0px"
+    },
+    "styles": {
+      "backgroundColor": "#0D3540",
+      "color": "#ffffff",
+      "padding": "8px 16px",
+      "position": "sticky",
+      "top": "0px",
+      "zIndex": 100,
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "space-between"
+    },
+    "defaultData": {},
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "#FFFFFF",
+          "fontSize": "15px",
+          "fontWeight": "700",
+          "letterSpacing": "0.08em",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "logo",
+          "label": "CampusCommerce",
+          "icon": "🎓"
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "home"
+          }
+        }
+      },
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "rgba(255,255,255,0.85)",
+          "fontSize": "12px",
+          "fontWeight": "600",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "deals",
+          "label": "Deals",
+          "icon": "⚡"
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "deals"
+          }
+        }
+      },
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "rgba(255,255,255,0.85)",
+          "fontSize": "12px",
+          "fontWeight": "600",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "cart",
+          "label": "Cart",
+          "icon": "🛒",
+          "count": 2
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "cart"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-compact",
+    "componentType": "Header",
+    "name": "Compact Clean White",
+    "description": "Minimal modern white header with integrated search and quick actions",
+    "tokens": {
+      "backgroundColor": "#ffffff",
+      "color": "#111827",
+      "padding": "8px 16px",
+      "borderRadius": "0px"
+    },
+    "styles": {
+      "backgroundColor": "#ffffff",
+      "color": "#111827",
+      "padding": "8px 16px",
+      "borderBottom": "1px solid #e5e7eb",
+      "position": "sticky",
+      "top": "0px",
+      "zIndex": 100,
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "space-between"
+    },
+    "defaultData": {},
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "#0f172a",
+          "fontSize": "14px",
+          "fontWeight": "800",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "logo",
+          "label": "ShopHub",
+          "icon": "🛍️"
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "home"
+          }
+        }
+      },
+      {
+        "type": "SearchBar",
+        "containerStyle": {
+          "backgroundColor": "#f1f5f9",
+          "borderRadius": "8px",
+          "padding": "4px 10px",
+          "width": "180px"
+        },
+        "data": {
+          "placeholder": "Search gear..."
+        }
+      },
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "#4f46e5",
+          "fontSize": "12px",
+          "fontWeight": "700",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "cart",
+          "label": "Cart",
+          "icon": "🛒",
+          "count": 1
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "cart"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-modern",
+    "componentType": "Header",
+    "name": "Modern Frosted Glass",
+    "description": "Translucent frosted header with backdrop blur and pill buttons",
+    "tokens": {
+      "backgroundColor": "rgba(255, 255, 255, 0.88)",
+      "color": "#0f172a",
+      "padding": "10px 20px",
+      "borderRadius": "0 0 16px 16px"
+    },
+    "styles": {
+      "backgroundColor": "rgba(255, 255, 255, 0.88)",
+      "backdropFilter": "blur(12px)",
+      "WebkitBackdropFilter": "blur(12px)",
+      "color": "#0f172a",
+      "padding": "10px 20px",
+      "borderBottom": "1px solid rgba(229, 231, 235, 0.8)",
+      "position": "sticky",
+      "top": "0px",
+      "zIndex": 100,
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "space-between"
+    },
+    "defaultData": {},
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 1,
+        "rowEnd": 6
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "#0f172a",
+          "fontSize": "15px",
+          "fontWeight": "800",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "logo",
+          "label": "Nexus",
+          "icon": "✨"
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "home"
+          }
+        }
+      },
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "color": "#64748b",
+          "fontSize": "12px",
+          "fontWeight": "600",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "categories",
+          "label": "Categories",
+          "icon": "🗂️"
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "categories"
+          }
+        }
+      },
+      {
+        "type": "HeaderButton",
+        "containerStyle": {
+          "backgroundColor": "#4f46e5",
+          "color": "#ffffff",
+          "padding": "6px 12px",
+          "borderRadius": "20px",
+          "fontSize": "12px",
+          "fontWeight": "700",
+          "cursor": "pointer"
+        },
+        "data": {
+          "id": "cart",
+          "label": "Cart",
+          "icon": "🛒",
+          "count": 3
+        },
+        "actions": {
+          "onTap": {
+            "type": "NAVIGATE",
+            "route": "cart"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "button-primary",
+    "componentType": "Button",
+    "name": "Primary Indigo",
+    "description": "High conversion bold indigo button with rounded corners",
+    "tokens": {
+      "backgroundColor": "#4f46e5",
+      "color": "#ffffff",
+      "borderRadius": "8px",
+      "padding": "10px 16px",
+      "fontWeight": "600"
+    },
+    "styles": {
+      "backgroundColor": "#4f46e5",
+      "color": "#ffffff",
+      "borderRadius": "8px",
+      "padding": "10px 16px",
+      "fontWeight": "600",
+      "border": "none",
+      "cursor": "pointer",
+      "width": "100%"
+    },
+    "defaultData": {
+      "label": "Add to Cart"
+    },
+    "defaultPlacement": {},
+    "defaultChildren": []
+  },
+  {
+    "id": "button-secondary",
+    "componentType": "Button",
+    "name": "Secondary Slate",
+    "description": "Subtle dark slate button with soft background",
+    "tokens": {
+      "backgroundColor": "#1e293b",
+      "color": "#ffffff",
+      "borderRadius": "8px",
+      "padding": "10px 16px",
+      "fontWeight": "600"
+    },
+    "styles": {
+      "backgroundColor": "#1e293b",
+      "color": "#ffffff",
+      "borderRadius": "8px",
+      "padding": "10px 16px",
+      "fontWeight": "600",
+      "border": "none",
+      "cursor": "pointer",
+      "width": "100%"
+    },
+    "defaultData": {
+      "label": "Quick Buy"
+    },
+    "defaultPlacement": {},
+    "defaultChildren": []
+  },
+  {
+    "id": "button-outline",
+    "componentType": "Button",
+    "name": "Outline Clean",
+    "description": "White surface with crisp border and dark text",
+    "tokens": {
+      "backgroundColor": "#ffffff",
+      "color": "#111827",
+      "borderRadius": "8px",
+      "padding": "9px 15px",
+      "borderColor": "#d1d5db",
+      "borderWidth": "1px"
+    },
+    "styles": {
+      "backgroundColor": "#ffffff",
+      "color": "#111827",
+      "borderRadius": "8px",
+      "padding": "9px 15px",
+      "border": "1px solid #d1d5db",
+      "fontWeight": "600",
+      "cursor": "pointer",
+      "width": "100%"
+    },
+    "defaultData": {
+      "label": "View Details"
+    },
+    "defaultPlacement": {},
+    "defaultChildren": []
+  },
+  {
+    "id": "category-grid-circular",
+    "componentType": "CategoryGrid",
+    "name": "Circular Avatars",
+    "description": "Classic horizontal scroll of rounded category circles",
+    "tokens": {
+      "backgroundColor": "#ffffff",
+      "padding": "12px",
+      "borderRadius": "16px"
+    },
+    "styles": {
+      "backgroundColor": "#ffffff",
+      "padding": "12px",
+      "borderRadius": "16px"
+    },
+    "defaultData": {},
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 8,
+        "rowEnd": 18
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 8,
+        "rowEnd": 18
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 8,
+        "rowEnd": 18
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Electronics",
+          "icon": "💻"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Audio",
+          "icon": "🎧"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Dorm Essentials",
+          "icon": "🛋️"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Fashion",
+          "icon": "👕"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Books",
+          "icon": "📚"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Snacks",
+          "icon": "☕"
+        }
+      }
+    ]
+  },
+  {
+    "id": "category-grid-card",
+    "componentType": "CategoryGrid",
+    "name": "Card Tiles",
+    "description": "Soft gray container with boxed tile items",
+    "tokens": {
+      "backgroundColor": "#f8fafc",
+      "padding": "14px",
+      "borderRadius": "16px",
+      "boxShadow": "0 2px 6px rgba(0,0,0,0.04)"
+    },
+    "styles": {
+      "backgroundColor": "#f8fafc",
+      "padding": "14px",
+      "borderRadius": "16px",
+      "border": "1px solid #e2e8f0"
+    },
+    "defaultData": {},
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 8,
+        "rowEnd": 18
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 8,
+        "rowEnd": 18
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 8,
+        "rowEnd": 18
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Laptops",
+          "icon": "💻"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Wearables",
+          "icon": "⌚"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Gaming",
+          "icon": "🎮"
+        }
+      },
+      {
+        "type": "CategoryItem",
+        "data": {
+          "label": "Backpacks",
+          "icon": "🎒"
+        }
+      }
+    ]
+  },
+  {
+    "id": "hero-banner-cinematic",
+    "componentType": "HeroBanner",
+    "name": "Cinematic Visual",
+    "description": "Full-bleed visual banner with bold headline and gradient overlay",
+    "tokens": {
+      "borderRadius": "16px"
+    },
+    "styles": {
+      "borderRadius": "16px",
+      "overflow": "hidden"
+    },
+    "defaultData": {
+      "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&auto=format&fit=crop&q=80",
+      "title": "Mega Campus Tech Fest",
+      "subtitle": "Up to 70% off on laptops, headphones & smart study gear",
+      "altText": "Hero Tech Fest"
+    },
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 18,
+        "rowEnd": 38
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 18,
+        "rowEnd": 38
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 18,
+        "rowEnd": 38
+      }
+    },
+    "defaultChildren": [
+      {
+        "type": "Badge",
+        "containerStyle": {
+          "backgroundColor": "#cc0c39",
+          "color": "#ffffff",
+          "padding": "4px 10px",
+          "borderRadius": "4px",
+          "fontSize": "11px",
+          "fontWeight": "700"
+        },
+        "data": {
+          "text": "CAMPUS EXCLUSIVE"
+        }
+      },
+      {
+        "type": "Button",
+        "containerStyle": {
+          "backgroundColor": "#ffffff",
+          "color": "#0f172a",
+          "padding": "8px 18px",
+          "borderRadius": "8px",
+          "fontWeight": "700",
+          "fontSize": "13px",
+          "border": "none",
+          "cursor": "pointer"
+        },
+        "data": {
+          "label": "Explore Deals →"
+        }
+      }
+    ]
+  },
+  {
+    "id": "coupon-ticket",
+    "componentType": "CouponCode",
+    "name": "Dashed Ticket",
+    "description": "Classic amber dashed border coupon box with one-click copy",
+    "tokens": {
+      "borderRadius": "12px",
+      "borderColor": "#f59e0b",
+      "borderStyle": "dashed"
+    },
+    "styles": {
+      "borderRadius": "12px",
+      "border": "1.5px dashed #f59e0b",
+      "backgroundColor": "#fffbeb"
+    },
+    "defaultData": {
+      "title": "CAMPUS50",
+      "description": "Get 50% off up to ₹200 on all student gear",
+      "copyLabel": "Copy Code"
+    },
+    "defaultPlacement": {
+      "mobile": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 38,
+        "rowEnd": 46
+      },
+      "tablet": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 38,
+        "rowEnd": 46
+      },
+      "desktop": {
+        "colStart": 1,
+        "colEnd": 100,
+        "rowStart": 38,
+        "rowEnd": 46
+      }
+    },
+    "defaultChildren": []
+  }
+]

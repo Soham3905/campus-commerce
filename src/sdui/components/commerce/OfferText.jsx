@@ -4,11 +4,13 @@ export const OfferText = ({ data, style }) => (
   <p
     style={{
       fontSize: "12px",
-      color: "#007185",
-      fontWeight: "500",
+      color: "#C4185F",
+      fontWeight: "600",
       display: "flex",
       alignItems: "center",
-      margin: "4px 0",
+      margin: 0,
+      padding: 0,
+      boxSizing: "border-box",
       ...style,
     }}
   >

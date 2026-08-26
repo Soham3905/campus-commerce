@@ -110,6 +110,7 @@ export const ComponentRegistry = {
     icon: "🔘",
     canHaveChildren: false,
     allowedChildren: [],
+    allowedParents: ["Header", "Box"],
     defaultData: {
       id: "nav_btn",
       label: "Shop Now",
@@ -118,7 +119,11 @@ export const ComponentRegistry = {
     },
     defaultPlacement: {},
     defaultContainerStyle: {
-      color: "#FFFFFF",
+      color: "#0f172a",
+      backgroundColor: "#f1f5f9",
+      border: "1px solid #e2e8f0",
+      borderRadius: "8px",
+      padding: "6px 12px",
       fontSize: "13px",
       fontWeight: "600",
       cursor: "pointer",
@@ -270,6 +275,7 @@ export const ComponentRegistry = {
     icon: "🔘",
     canHaveChildren: false,
     allowedChildren: [],
+    allowedParents: ["CategoryGrid", "Box"],
     defaultData: {
       label: "Electronics",
       icon: "💻",
@@ -489,6 +495,7 @@ export const ComponentRegistry = {
     icon: "🟣",
     canHaveChildren: false,
     allowedChildren: [],
+    allowedParents: ["StoryRow", "Box"],
     defaultData: {
       label: "New Drops",
       imageUrl: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=150&auto=format&fit=crop&q=80",

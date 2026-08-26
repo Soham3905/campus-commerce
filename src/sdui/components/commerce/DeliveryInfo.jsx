@@ -9,7 +9,7 @@ export const DeliveryInfo = ({ data, style }) => {
     month: "short",
   });
   return (
-    <p style={{ fontSize: "12px", color: "#333", margin: "4px 0", ...style }}>
+    <p style={{ fontSize: "12px", color: "#5E6E72", margin: 0, padding: 0, boxSizing: "border-box", ...style }}>
       🚚 <span style={{ fontWeight: "700" }}>{data?.prefix ?? "FREE delivery"}</span> {formatted}
     </p>
   );

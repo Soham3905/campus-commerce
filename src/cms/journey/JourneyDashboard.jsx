@@ -1,16 +1,40 @@
 import React, { useState } from "react";
-import { JourneyRepository } from "../services/journeyRepository";
-import { PageRepository } from "../services/pageRepository";
-import { BranchRepository } from "../services/branchRepository";
-import { PullRequestRepository } from "../services/pullRequestRepository";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  ChevronDown,
+  ChevronRight,
+  ChevronsUpDown,
+  Plus,
+  Search,
+  LogOut,
+  RefreshCw,
+  Play,
+  CheckCircle2,
+  Layers,
+  GitBranch,
+  FileCode,
+  History,
+  User,
+  Sparkles,
+  Package,
+  ArrowRight,
+  SlidersHorizontal,
+  ExternalLink,
+  Edit3,
+} from "lucide-react";
+import { createJourney } from "../../store/slices/journeySlice";
+import { FoundationRepository } from "../services/foundationRepository";
 import { ComponentRegistry } from "../../registry/componentRegistry";
+import { BranchRepository } from "../services/branchRepository";
 import { BranchModal } from "../branch/BranchModal";
 import { PullRequestModal } from "../pr/PullRequestModal";
+import { SDUIRenderer } from "../../sdui/SDUIRenderer";
+import { createComponent } from "../utils/componentFactory";
 
 // ─── Shared Styles ────────────────────────────────────────────────────────────
 const btn = (primary = false) => ({
   padding: "7px 14px",
-  borderRadius: "6px",
+  borderRadius: "8px",
   border: primary ? "none" : "1px solid #e2e8f0",
   backgroundColor: primary ? "#4f46e5" : "#ffffff",
   color: primary ? "#ffffff" : "#374151",
@@ -19,8 +43,9 @@ const btn = (primary = false) => ({
   cursor: "pointer",
   display: "inline-flex",
   alignItems: "center",
-  gap: "5px",
+  gap: "6px",
   whiteSpace: "nowrap",
+  transition: "all 0.15s ease",
 });
 
 const tag = (color = "#e2e8f0", text = "#374151") => ({
@@ -38,7 +63,7 @@ const tag = (color = "#e2e8f0", text = "#374151") => ({
 // ─── New Journey Modal ─────────────────────────────────────────────────────────
 const NewJourneyModal = ({ onClose, onCreate }) => {
   const [step, setStep] = useState(1);
-  const [mode, setMode] = useState("fresh"); // 'fresh' | 'duplicate'
+  const [mode, setMode] = useState("fresh");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
 
@@ -51,21 +76,28 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
   return (
     <div
       style={{
-        position: "fixed", inset: 0, zIndex: 5000,
-        background: "rgba(15,23,42,0.5)", backdropFilter: "blur(4px)",
-        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "fixed",
+        inset: 0,
+        zIndex: 5000,
+        background: "rgba(15,23,42,0.5)",
+        backdropFilter: "blur(4px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "600px", backgroundColor: "#ffffff", borderRadius: "12px",
-          border: "1px solid #e2e8f0", boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+          width: "600px",
+          backgroundColor: "#ffffff",
+          borderRadius: "16px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
           overflow: "hidden",
         }}
       >
-        {/* Modal Header */}
         <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
@@ -73,12 +105,11 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
               <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "700", color: "#0f172a" }}>New Journey</h2>
               <span style={{ ...tag("rgba(79,70,229,0.1)", "#4f46e5"), fontSize: "10px" }}>qamapping.json Engine</span>
             </div>
-            <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#64748b" }}>Start fresh or duplicate an existing journey — your call.</p>
+            <p style={{ margin: "0 0 16px", fontSize: "12px", color: "#64748b" }}>Start fresh or duplicate an existing journey.</p>
           </div>
           <button onClick={onClose} style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: "18px", color: "#94a3b8", lineHeight: 1 }}>✕</button>
         </div>
 
-        {/* Step Tabs */}
         <div style={{ padding: "0 24px", display: "flex", gap: "0", borderBottom: "1px solid #e2e8f0", marginBottom: "20px" }}>
           {["1. Start", "2. Details", "3. Pages", "4. Review & Create"].map((s, i) => (
             <button key={s} onClick={() => setStep(i + 1)} style={{
@@ -90,7 +121,6 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
           ))}
         </div>
 
-        {/* Step Content */}
         <div style={{ padding: "0 24px 24px" }}>
           {step === 1 && (
             <>
@@ -102,7 +132,7 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
                   { id: "duplicate", icon: "📋", label: "Duplicate existing journey", desc: "Clone pages & rules from another journey" },
                 ].map((opt) => (
                   <div key={opt.id} onClick={() => setMode(opt.id)} style={{
-                    padding: "16px", borderRadius: "8px", cursor: "pointer",
+                    padding: "16px", borderRadius: "10px", cursor: "pointer",
                     border: `2px solid ${mode === opt.id ? "#4f46e5" : "#e2e8f0"}`,
                     backgroundColor: mode === opt.id ? "rgba(79,70,229,0.04)" : "#ffffff",
                     transition: "all 0.15s ease",
@@ -120,11 +150,11 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#374151", marginBottom: "6px" }}>Journey Name *</label>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Product Checkout Flow" style={{ width: "100%", padding: "9px 12px", border: "1px solid #d1d5db", borderRadius: "6px", fontSize: "13px", outline: "none", boxSizing: "border-box" }} />
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Product Checkout Flow" style={{ width: "100%", padding: "9px 12px", border: "1px solid #d1d5db", borderRadius: "8px", fontSize: "13px", outline: "none", boxSizing: "border-box" }} />
               </div>
               <div>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#374151", marginBottom: "6px" }}>Description</label>
-                <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Describe what this journey covers..." rows={3} style={{ width: "100%", padding: "9px 12px", border: "1px solid #d1d5db", borderRadius: "6px", fontSize: "13px", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
+                <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Describe what this journey covers..." rows={3} style={{ width: "100%", padding: "9px 12px", border: "1px solid #d1d5db", borderRadius: "8px", fontSize: "13px", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
               </div>
             </div>
           )}
@@ -137,15 +167,15 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
           )}
         </div>
 
-        {/* Modal Footer */}
         <div style={{ padding: "16px 24px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between" }}>
           <button onClick={onClose} style={btn(false)}>Cancel</button>
           <div style={{ display: "flex", gap: "8px" }}>
-            {step > 1 && <button onClick={() => setStep(s => s - 1)} style={btn(false)}>← Back</button>}
-            {step < 4
-              ? <button onClick={() => setStep(s => s + 1)} style={btn(true)}>Continue →</button>
-              : <button onClick={handleCreate} disabled={!name.trim()} style={{ ...btn(true), opacity: name.trim() ? 1 : 0.5 }}>🚀 Create Journey</button>
-            }
+            {step > 1 && <button onClick={() => setStep((s) => s - 1)} style={btn(false)}>← Back</button>}
+            {step < 4 ? (
+              <button onClick={() => setStep((s) => s + 1)} style={btn(true)}>Continue →</button>
+            ) : (
+              <button onClick={handleCreate} disabled={!name.trim()} style={{ ...btn(true), opacity: name.trim() ? 1 : 0.5 }}>🚀 Create Journey</button>
+            )}
           </div>
         </div>
       </div>
@@ -154,23 +184,35 @@ const NewJourneyModal = ({ onClose, onCreate }) => {
 };
 
 // ─── Page Card ────────────────────────────────────────────────────────────────
-const PageCard = ({ page, pageIndex, activeBranchId, onEdit }) => {
-  const seqColor = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b", "#ef4444"][pageIndex % 5];
-
+const PageCard = ({ page, pageIndex, activeBranchId, onEdit, onHistory }) => {
   return (
-    <div style={{
-      backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "10px",
-      padding: "20px", display: "flex", flexDirection: "column", gap: "12px",
-      minWidth: "240px", flex: "1",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-      transition: "box-shadow 0.2s ease",
-    }}
-      onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)"}
-      onMouseLeave={e => e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.05)"}
+    <div
+      style={{
+        backgroundColor: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: "14px",
+        padding: "20px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        minWidth: "250px",
+        flex: "1",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+        transition: "all 0.18s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = "0 8px 20px rgba(15,23,42,0.08)";
+        e.currentTarget.style.borderColor = "#cbd5e1";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
+        e.currentTarget.style.borderColor = "#e2e8f0";
+      }}
     >
-      {/* Card Top */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div style={{ fontSize: "28px", color: "#94a3b8" }}>📄</div>
+        <div style={{ width: "36px", height: "36px", borderRadius: "10px", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
+          📄
+        </div>
         <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ ...tag("#e0f2fe", "#0369a1"), fontSize: "10px" }}>Seq {pageIndex + 1}</span>
           <span style={{ ...tag(activeBranchId === "main" ? "#dcfce7" : "#fef9c3", activeBranchId === "main" ? "#16a34a" : "#92400e"), fontSize: "10px" }}>
@@ -179,7 +221,6 @@ const PageCard = ({ page, pageIndex, activeBranchId, onEdit }) => {
         </div>
       </div>
 
-      {/* Title */}
       <div>
         <h3 style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: "700", color: "#0f172a" }}>{page.name}</h3>
         <p style={{ margin: 0, fontSize: "12px", color: "#64748b", lineHeight: "1.4" }}>
@@ -187,7 +228,6 @@ const PageCard = ({ page, pageIndex, activeBranchId, onEdit }) => {
         </p>
       </div>
 
-      {/* Meta */}
       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         {[
           { label: "Route", value: page.route || `/${page.id}` },
@@ -201,10 +241,15 @@ const PageCard = ({ page, pageIndex, activeBranchId, onEdit }) => {
         ))}
       </div>
 
-      {/* Actions */}
-      <div style={{ display: "flex", gap: "8px", marginTop: "auto", paddingTop: "4px", borderTop: "1px solid #f1f5f9" }}>
-        <button style={btn(false)}>📜 History</button>
-        <button onClick={() => onEdit(page.id)} style={btn(true)}>✏️ Edit Main</button>
+      <div style={{ display: "flex", gap: "8px", marginTop: "auto", paddingTop: "8px", borderTop: "1px solid #f1f5f9" }}>
+        <button onClick={onHistory} style={btn(false)}>
+          <History size={13} />
+          <span>History</span>
+        </button>
+        <button onClick={() => onEdit(page.id)} style={btn(true)}>
+          <Edit3 size={13} />
+          <span>Edit Main</span>
+        </button>
       </div>
     </div>
   );
@@ -255,45 +300,84 @@ const ComponentCard = ({ type, onOpen }) => {
   const def = ComponentRegistry[type];
   if (!def) return null;
   const [hovered, setHovered] = useState(false);
+  const defaultThemeId = FoundationRepository.getDefaultThemeId(type);
+
+  const previewSchema = React.useMemo(() => {
+    try {
+      return createComponent(type);
+    } catch (e) {
+      return null;
+    }
+  }, [type]);
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        backgroundColor: "#ffffff", border: `1px solid ${hovered ? "#4f46e5" : "#e2e8f0"}`,
-        borderRadius: "10px", padding: "16px", cursor: "pointer",
+        backgroundColor: "#ffffff",
+        border: `1.5px solid ${hovered ? "#4f46e5" : "#e2e8f0"}`,
+        borderRadius: "14px",
+        padding: "16px",
+        cursor: "pointer",
         transition: "all 0.15s ease",
-        boxShadow: hovered ? "0 4px 12px rgba(79,70,229,0.12)" : "none",
-        display: "flex", flexDirection: "column", gap: "10px",
+        boxShadow: hovered ? "0 8px 20px rgba(79,70,229,0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
       }}
       onClick={() => onOpen(type)}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <div style={{ width: "36px", height: "36px", borderRadius: "8px", backgroundColor: "rgba(79,70,229,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>
-          {def.icon || "📦"}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "10px", backgroundColor: "rgba(79,70,229,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>
+            {def.icon || "📦"}
+          </div>
+          <div>
+            <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a" }}>{def.label}</div>
+            <div style={{ fontSize: "11px", color: "#94a3b8" }}>{def.category}</div>
+          </div>
         </div>
-        <div>
-          <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>{def.label}</div>
-          <div style={{ fontSize: "11px", color: "#94a3b8" }}>{def.category}</div>
-        </div>
+        {defaultThemeId && (
+          <span style={{ fontSize: "10px", fontWeight: "600", padding: "2px 6px", borderRadius: "4px", backgroundColor: "#f1f5f9", color: "#64748b" }}>
+            ✓ {defaultThemeId.replace(`${type.toLowerCase()}-`, "").replace(/-/g, " ")}
+          </span>
+        )}
       </div>
+
+      {previewSchema && (
+        <div
+          style={{
+            backgroundColor: "#f8fafc",
+            borderRadius: "10px",
+            padding: "8px",
+            border: "1px solid #f1f5f9",
+            overflow: "hidden",
+            maxHeight: "180px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+          <div style={{ transform: type === "ProductCard" ? "scale(0.6)" : "scale(0.85)", transformOrigin: "top center", width: "100%", pointerEvents: "none", userSelect: "none" }}>
+            <SDUIRenderer schema={previewSchema} deviceType="mobile" isEditable={false} />
+          </div>
+        </div>
+      )}
+
       {def.description && (
         <p style={{ margin: 0, fontSize: "11px", color: "#64748b", lineHeight: "1.4" }}>{def.description}</p>
       )}
-      {def.allowedChildren?.length > 0 && (
-        <div style={{ fontSize: "10px", color: "#94a3b8" }}>
-          {def.allowedChildren.length} configurable field{def.allowedChildren.length !== 1 ? "s" : ""}
-        </div>
-      )}
-      <div style={{ ...btn(hovered), justifyContent: "center", fontSize: "11px" }}>
+
+      <div style={{ ...btn(hovered), justifyContent: "center", fontSize: "11px", marginTop: "auto" }}>
         {hovered ? "→ Open Studio" : "🖊 Edit Component"}
       </div>
     </div>
   );
 };
 
-// ─── JourneyDashboard ─────────────────────────────────────────────────────────
+// ─── Main JourneyDashboard ───────────────────────────────────────────────────
 export const JourneyDashboard = ({
   activeJourneyId = "journey-campus-commerce",
   activeBranchId = "main",
@@ -301,34 +385,73 @@ export const JourneyDashboard = ({
   onOpenPageEditor,
   onOpenComponentEditor,
   onSwitchBranch,
+  onLogout,
+  user,
 }) => {
-  const journeys = JourneyRepository.getAll();
+  const dispatch = useDispatch();
+  const journeys = useSelector((state) => state.journeys.list);
+  const pages = useSelector((state) => state.pages.list);
+  const branches = useSelector((state) => state.branches.list);
+  const pullRequests = useSelector((state) => state.pullRequests.list);
+
   const currentJourney = journeys.find((j) => j.id === activeJourneyId) || journeys[0];
   const [selectedJourneyId, setSelectedJourneyId] = useState(currentJourney?.id || null);
-  const pages = PageRepository.getAll();
-  const branches = BranchRepository.getAll();
-  const pullRequests = PullRequestRepository.getAll();
 
-  const [activeTab, setActiveTab] = useState("pages"); // 'pages' | 'branches' | 'prs' | 'history' | 'components'
+  // Expand / Collapse States
+  const [isJourneysSectionExpanded, setIsJourneysSectionExpanded] = useState(true);
+  const [expandedJourneyIds, setExpandedJourneyIds] = useState(() => new Set([currentJourney?.id || "journey-campus-commerce"]));
+
+  const [activeTab, setActiveTab] = useState("pages");
   const [isBranchModalOpen, setIsBranchModalOpen] = useState(false);
   const [isPrModalOpen, setIsPrModalOpen] = useState(false);
   const [selectedPr, setSelectedPr] = useState(null);
   const [isNewJourneyOpen, setIsNewJourneyOpen] = useState(false);
   const [journeySearch, setJourneySearch] = useState("");
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncNotice, setSyncNotice] = useState(false);
 
   const majorComponents = Object.keys(ComponentRegistry).filter((t) =>
     ["ProductCard", "Header", "SearchBar", "HeroBanner", "Carousel", "CategoryGrid",
      "CouponCode", "CountDownTimer", "Button", "Footer", "NavBar", "StoryRow",
-     "Box", "Text", "IFrame"].includes(t)
+     "Box", "Text", "IFrame", "PriceBlock", "Badge"].includes(t)
   );
 
   const handleSelectJourney = (id) => {
     setSelectedJourneyId(id);
     onSelectJourney?.({ id });
+    setExpandedJourneyIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        // Toggle collapse
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   };
 
-  const handleCreateJourney = ({ name, description }) => {
-    JourneyRepository.save({ name, description, pages: [] });
+  const toggleAllJourneys = () => {
+    setIsJourneysSectionExpanded((prev) => !prev);
+  };
+
+  const handleCreateJourney = async ({ name, description }) => {
+    await dispatch(createJourney({ name, description, pages: [] })).unwrap();
+  };
+
+  const handleDataSync = () => {
+    setIsSyncing(true);
+    setTimeout(() => {
+      setIsSyncing(false);
+      setSyncNotice(true);
+      setTimeout(() => setSyncNotice(false), 2500);
+    }, 600);
+  };
+
+  const handleRunQaJourney = () => {
+    if (pages.length > 0) {
+      onOpenPageEditor(pages[0].id);
+    }
   };
 
   const filteredJourneys = journeys.filter((j) =>
@@ -344,17 +467,23 @@ export const JourneyDashboard = ({
     { id: "components", label: "🧩 Components" },
   ];
 
+  const userName = user?.name || "Ayush Kumbhare";
+  const userEmail = user?.email || "admin@campuscommerce.edu";
+  const userInitial = userName.charAt(0).toUpperCase();
+
   return (
     <div style={{ display: "flex", height: "100vh", width: "100vw", backgroundColor: "#f8fafc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", overflow: "hidden" }}>
 
       {/* ── LEFT SIDEBAR ────────────────────────────────────────────────── */}
-      <aside style={{ width: "248px", backgroundColor: "#ffffff", borderRight: "1px solid #e2e8f0", display: "flex", flexDirection: "column", flexShrink: 0, overflow: "hidden" }}>
+      <aside style={{ width: "256px", backgroundColor: "#ffffff", borderRight: "1px solid #e2e8f0", display: "flex", flexDirection: "column", flexShrink: 0, overflow: "hidden" }}>
 
         {/* Brand */}
-        <div style={{ padding: "14px 16px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>🎓</div>
+        <div style={{ padding: "14px 16px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "15px", color: "#ffffff", boxShadow: "0 2px 6px rgba(79,70,229,0.3)" }}>
+            🎓
+          </div>
           <div>
-            <div style={{ fontSize: "12px", fontWeight: "700", color: "#0f172a" }}>CampusCommerce</div>
+            <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>CampusCommerce</div>
             <div style={{ fontSize: "10px", color: "#94a3b8" }}>Journey CMS & QA</div>
           </div>
         </div>
@@ -362,82 +491,192 @@ export const JourneyDashboard = ({
         {/* Tools */}
         <div style={{ padding: "10px 12px 6px" }}>
           <div style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", color: "#94a3b8", marginBottom: "6px", paddingLeft: "4px" }}>TOOLS</div>
-          <button style={{ ...btn(false), width: "100%", justifyContent: "flex-start", fontSize: "12px", padding: "7px 10px" }}>📊 QA Data Sync</button>
+          <button
+            onClick={handleDataSync}
+            disabled={isSyncing}
+            style={{
+              ...btn(false),
+              width: "100%",
+              justifyContent: "flex-start",
+              fontSize: "12px",
+              padding: "8px 10px",
+              backgroundColor: syncNotice ? "rgba(16,185,129,0.08)" : "#f8fafc",
+              borderColor: syncNotice ? "#10b981" : "#e2e8f0",
+              color: syncNotice ? "#059669" : "#374151",
+            }}
+          >
+            <RefreshCw size={13} className={isSyncing ? "spin-animation" : ""} style={{ animation: isSyncing ? "spin 0.8s linear infinite" : "none" }} />
+            <span>{syncNotice ? "Synced with Server ✓" : isSyncing ? "Syncing..." : "QA Data Sync"}</span>
+          </button>
         </div>
 
         {/* Search Journeys */}
         <div style={{ padding: "6px 12px" }}>
-          <input
-            value={journeySearch}
-            onChange={(e) => setJourneySearch(e.target.value)}
-            placeholder="Search journeys..."
-            style={{ width: "100%", padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "12px", outline: "none", boxSizing: "border-box", color: "#374151" }}
-          />
+          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+            <Search size={13} style={{ position: "absolute", left: "9px", color: "#94a3b8", pointerEvents: "none" }} />
+            <input
+              value={journeySearch}
+              onChange={(e) => setJourneySearch(e.target.value)}
+              placeholder="Search journeys..."
+              style={{
+                width: "100%",
+                padding: "7px 10px 7px 28px",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                fontSize: "12px",
+                outline: "none",
+                boxSizing: "border-box",
+                color: "#374151",
+                backgroundColor: "#f8fafc",
+              }}
+            />
+          </div>
         </div>
 
-        {/* Journeys Section Header */}
-        <div style={{ padding: "8px 16px 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", color: "#94a3b8" }}>
-            JOURNEYS ({filteredJourneys.length})
-          </span>
-          <div style={{ display: "flex", gap: "4px" }}>
-            <button style={{ background: "transparent", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "13px", padding: "0 2px" }}>↕</button>
-            <button onClick={() => setIsNewJourneyOpen(true)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "#4f46e5", fontSize: "16px", fontWeight: "700", lineHeight: 1 }}>+</button>
+        {/* Journeys Section Header with Expand / Collapse */}
+        <div style={{ padding: "10px 14px 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div
+            onClick={toggleAllJourneys}
+            style={{ display: "flex", alignItems: "center", gap: "4px", cursor: "pointer", userSelect: "none" }}
+            title={isJourneysSectionExpanded ? "Collapse Journeys" : "Expand Journeys"}
+          >
+            {isJourneysSectionExpanded ? <ChevronDown size={13} color="#94a3b8" /> : <ChevronRight size={13} color="#94a3b8" />}
+            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em", color: "#94a3b8" }}>
+              JOURNEYS ({filteredJourneys.length})
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            <button
+              onClick={toggleAllJourneys}
+              title="Expand / Collapse Journeys Section"
+              style={{ background: "transparent", border: "none", cursor: "pointer", color: "#64748b", padding: "2px 4px", borderRadius: "4px" }}
+            >
+              <ChevronsUpDown size={14} />
+            </button>
+            <button
+              onClick={() => setIsNewJourneyOpen(true)}
+              title="Create New Journey"
+              style={{ background: "rgba(79,70,229,0.08)", border: "none", cursor: "pointer", color: "#4f46e5", padding: "2px 6px", borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <Plus size={14} strokeWidth={2.5} />
+            </button>
           </div>
         </div>
 
         {/* Journey List */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {filteredJourneys.map((journey) => {
-            const isActive = selectedJourneyId === journey.id;
-            return (
-              <div key={journey.id}>
-                <button
-                  onClick={() => handleSelectJourney(journey.id)}
-                  style={{
-                    width: "100%", textAlign: "left", padding: "8px 16px",
-                    display: "flex", alignItems: "center", gap: "8px",
-                    background: isActive ? "rgba(79,70,229,0.06)" : "transparent",
-                    border: "none", cursor: "pointer",
-                    borderLeft: isActive ? "3px solid #4f46e5" : "3px solid transparent",
-                  }}
-                >
-                  <span style={{ fontSize: "14px" }}>{journey.icon || "✈️"}</span>
-                  <span style={{ fontSize: "13px", fontWeight: isActive ? "700" : "500", color: isActive ? "#4f46e5" : "#374151", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {journey.name}
-                  </span>
-                  {isActive && <span style={{ marginLeft: "auto", fontSize: "12px", color: "#94a3b8" }}>▼</span>}
-                </button>
-                {isActive && (
-                  <div style={{ paddingLeft: "36px", borderLeft: "2px solid #e2e8f0", marginLeft: "14px" }}>
-                    {["Pages", "Branches", "Pull Requests", "History"].map((sub) => {
-                      const tabId = sub === "Pages" ? "pages" : sub === "Branches" ? "branches" : sub === "Pull Requests" ? "prs" : "history";
-                      return (
-                        <button key={sub} onClick={() => setActiveTab(tabId)} style={{
-                          width: "100%", textAlign: "left", padding: "5px 12px",
-                          background: "transparent", border: "none", cursor: "pointer",
-                          fontSize: "12px", color: activeTab === tabId ? "#4f46e5" : "#64748b",
-                          fontWeight: activeTab === tabId ? "600" : "400",
-                        }}>{sub}</button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        {isJourneysSectionExpanded && (
+          <div style={{ flex: 1, overflowY: "auto", padding: "4px 0" }}>
+            {filteredJourneys.map((journey) => {
+              const isSelected = selectedJourneyId === journey.id;
+              const isExpanded = expandedJourneyIds.has(journey.id);
 
-        {/* User Footer */}
-        <div style={{ padding: "12px 16px", borderTop: "1px solid #e2e8f0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "11px", fontWeight: "700" }}>A</div>
-            <div>
-              <div style={{ fontSize: "11px", fontWeight: "600", color: "#0f172a" }}>Admin User</div>
-              <div style={{ fontSize: "10px", color: "#94a3b8" }}>admin@campus.edu</div>
+              return (
+                <div key={journey.id} style={{ marginBottom: "2px" }}>
+                  <button
+                    onClick={() => handleSelectJourney(journey.id)}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "8px 14px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      background: isSelected ? "rgba(79,70,229,0.07)" : "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      borderLeft: isSelected ? "3px solid #4f46e5" : "3px solid transparent",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    <span style={{ fontSize: "14px" }}>{journey.icon || "✈️"}</span>
+                    <span style={{ fontSize: "13px", fontWeight: isSelected ? "700" : "500", color: isSelected ? "#4f46e5" : "#334155", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                      {journey.name}
+                    </span>
+                    <span style={{ color: "#94a3b8", display: "flex", alignItems: "center" }}>
+                      {isExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                    </span>
+                  </button>
+
+                  {/* Sub-Tree Tabs */}
+                  {isExpanded && (
+                    <div style={{ paddingLeft: "32px", borderLeft: "2px solid #e2e8f0", marginLeft: "18px", marginTop: "2px", marginBottom: "4px" }}>
+                      {[
+                        { label: "Pages", id: "pages", icon: FileCode },
+                        { label: "Branches", id: "branches", icon: GitBranch },
+                        { label: "Pull Requests", id: "prs", icon: ChevronsUpDown },
+                        { label: "History", id: "history", icon: History },
+                      ].map((sub) => {
+                        const Icon = sub.icon;
+                        const isSubActive = isSelected && activeTab === sub.id;
+
+                        return (
+                          <button
+                            key={sub.id}
+                            onClick={() => {
+                              setSelectedJourneyId(journey.id);
+                              setActiveTab(sub.id);
+                            }}
+                            style={{
+                              width: "100%",
+                              textAlign: "left",
+                              padding: "5px 8px",
+                              background: isSubActive ? "rgba(79,70,229,0.06)" : "transparent",
+                              borderRadius: "6px",
+                              border: "none",
+                              cursor: "pointer",
+                              fontSize: "12px",
+                              color: isSubActive ? "#4f46e5" : "#64748b",
+                              fontWeight: isSubActive ? "600" : "400",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            <Icon size={12} />
+                            <span>{sub.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* User Profile & Sign Out Footer */}
+        <div style={{ padding: "12px 14px", borderTop: "1px solid #e2e8f0", backgroundColor: "#ffffff" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+            <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "linear-gradient(135deg, #4f46e5, #7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "12px", fontWeight: "700" }}>
+              {userInitial}
+            </div>
+            <div style={{ overflow: "hidden" }}>
+              <div style={{ fontSize: "12px", fontWeight: "700", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {userName}
+              </div>
+              <div style={{ fontSize: "10px", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {userEmail}
+              </div>
             </div>
           </div>
-          <button style={{ marginTop: "8px", ...btn(false), width: "100%", justifyContent: "center", fontSize: "11px", color: "#ef4444", borderColor: "#fca5a5" }}>⎋ Sign out</button>
+
+          <button
+            onClick={onLogout}
+            style={{
+              ...btn(false),
+              width: "100%",
+              justifyContent: "center",
+              fontSize: "12px",
+              color: "#dc2626",
+              borderColor: "#fecaca",
+              backgroundColor: "rgba(239, 68, 68, 0.04)",
+            }}
+            title="Sign out and return to login"
+          >
+            <LogOut size={13} />
+            <span>Sign out</span>
+          </button>
         </div>
       </aside>
 
@@ -459,7 +698,10 @@ export const JourneyDashboard = ({
               </p>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
-              <button style={btn(true)}>▶ Run QA Journey</button>
+              <button onClick={handleRunQaJourney} style={btn(true)}>
+                <Play size={13} fill="#ffffff" />
+                <span>Run QA Journey</span>
+              </button>
             </div>
           </div>
 
@@ -470,13 +712,19 @@ export const JourneyDashboard = ({
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
                 style={{
-                  padding: "10px 16px", border: "none", background: "transparent",
+                  padding: "10px 16px",
+                  border: "none",
+                  background: "transparent",
                   borderBottom: activeTab === t.id ? "2px solid #4f46e5" : "2px solid transparent",
                   color: activeTab === t.id ? "#4f46e5" : "#64748b",
-                  fontSize: "13px", fontWeight: activeTab === t.id ? "700" : "500",
-                  cursor: "pointer", whiteSpace: "nowrap",
+                  fontSize: "13px",
+                  fontWeight: activeTab === t.id ? "700" : "500",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
                 }}
-              >{t.label}</button>
+              >
+                {t.label}
+              </button>
             ))}
           </div>
         </header>
@@ -495,7 +743,14 @@ export const JourneyDashboard = ({
                   </div>
                 ) : (
                   pages.map((page, i) => (
-                    <PageCard key={page.id} page={page} pageIndex={i} activeBranchId={activeBranchId} onEdit={onOpenPageEditor} />
+                    <PageCard
+                      key={page.id}
+                      page={page}
+                      pageIndex={i}
+                      activeBranchId={activeBranchId}
+                      onEdit={onOpenPageEditor}
+                      onHistory={() => setActiveTab("history")}
+                    />
                   ))
                 )}
               </div>
@@ -510,10 +765,13 @@ export const JourneyDashboard = ({
                   <h2 style={{ margin: "0 0 4px", fontSize: "16px", fontWeight: "700", color: "#0f172a" }}>Branches</h2>
                   <p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>Explore and manage working branches for this journey</p>
                 </div>
-                <button onClick={() => setIsBranchModalOpen(true)} style={btn(true)}>+ Create Branch</button>
+                <button onClick={() => setIsBranchModalOpen(true)} style={btn(true)}>
+                  <Plus size={14} />
+                  <span>Create Branch</span>
+                </button>
               </div>
 
-              <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "10px", overflow: "hidden" }}>
+              <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "14px", overflow: "hidden" }}>
                 <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", display: "grid", gridTemplateColumns: "3fr 1fr 2fr 2fr", gap: "8px" }}>
                   {["Branch Name", "Status", "Created", "Actions"].map((h) => (
                     <span key={h} style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", color: "#94a3b8" }}>{h}</span>
@@ -538,11 +796,17 @@ export const JourneyDashboard = ({
           {activeTab === "prs" && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h2 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#0f172a" }}>Pull Requests</h2>
-                <button onClick={() => setIsPrModalOpen(true)} style={btn(true)}>+ Create Pull Request</button>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#0f172a" }}>Pull Requests</h2>
+                  <p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>Review and merge journey branches</p>
+                </div>
+                <button onClick={() => setIsPrModalOpen(true)} style={btn(true)}>
+                  <Plus size={14} />
+                  <span>Create Pull Request</span>
+                </button>
               </div>
 
-              <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "10px", overflow: "hidden" }}>
+              <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "14px", overflow: "hidden" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
@@ -572,7 +836,7 @@ export const JourneyDashboard = ({
                 <h2 style={{ margin: "0 0 4px", fontSize: "16px", fontWeight: "700", color: "#0f172a" }}>Component Definitions</h2>
                 <p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>Click any component to open its dedicated visual studio editor</p>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "14px" }}>
                 {majorComponents.map((type) => (
                   <ComponentCard key={type} type={type} onOpen={onOpenComponentEditor} />
                 ))}
@@ -585,7 +849,7 @@ export const JourneyDashboard = ({
             <div style={{ textAlign: "center", padding: "60px 20px", color: "#94a3b8" }}>
               <div style={{ fontSize: "40px", marginBottom: "12px" }}>📜</div>
               <div style={{ fontSize: "14px", fontWeight: "600", color: "#374151", marginBottom: "4px" }}>Activity & Release History</div>
-              <div style={{ fontSize: "12px" }}>No activity recorded yet. Changes are tracked after your first save.</div>
+              <div style={{ fontSize: "12px" }}>No activity recorded yet. Changes are tracked after your first save in the visual editor.</div>
             </div>
           )}
         </div>
@@ -603,6 +867,13 @@ export const JourneyDashboard = ({
       {isPrModalOpen && (
         <PullRequestModal isOpen pr={selectedPr} onClose={() => { setIsPrModalOpen(false); setSelectedPr(null); }} />
       )}
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

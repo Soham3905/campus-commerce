@@ -7,6 +7,17 @@
 import { ComponentRegistry } from "../../registry/componentRegistry";
 
 /**
+ * Gets the list of allowed child types for a given parent type.
+ * @param {string} parentType
+ * @returns {Array<string>|null} List of allowed types or null if any child is allowed
+ */
+export function getAllowedChildren(parentType) {
+  const def = ComponentRegistry[parentType];
+  if (!def || def.canHaveChildren === false) return [];
+  return def.allowedChildren || null;
+}
+
+/**
  * Checks whether a child component type or node can be added to a parent component.
  * Generic single-source-of-truth validation rule.
  *
@@ -36,7 +47,7 @@ export function canAddChild(parent, child) {
   if (parentDef.canHaveChildren === false) {
     return {
       valid: false,
-      reason: `"${parentDef.label || parentType}" is a leaf component and cannot contain child components.`,
+      reason: `"${parentDef.label || parentType}" cannot contain child components.`,
     };
   }
 
@@ -45,7 +56,7 @@ export function canAddChild(parent, child) {
     if (!parentDef.allowedChildren.includes(childType)) {
       return {
         valid: false,
-        reason: `Cannot place ${childDef.label || childType} inside ${parentDef.label || parentType}. Allowed children: [${parentDef.allowedChildren.join(", ")}].`,
+        reason: `${childDef.label || childType} is not an allowed child of ${parentDef.label || parentType}.`,
       };
     }
   }
@@ -55,12 +66,59 @@ export function canAddChild(parent, child) {
     if (!childDef.allowedParents.includes(parentType)) {
       return {
         valid: false,
-        reason: `Cannot place ${childDef.label || childType} inside ${parentDef.label || parentType}. It is only allowed inside: [${childDef.allowedParents.join(", ")}].`,
+        reason: `${childDef.label || childType} can only be placed inside: [${childDef.allowedParents.join(", ")}].`,
       };
     }
   }
 
   return { valid: true };
+}
+
+/**
+ * Checks whether a drop operation is valid.
+ * @param {string} draggedType - Type of component being dragged
+ * @param {string} targetParentType - Type of parent receiving the drop
+ * @param {'before'|'after'|'inside'} mode - Drop mode
+ * @returns {{ valid: boolean, reason?: string }}
+ */
+export function canDrop(draggedType, targetParentType, mode = "inside") {
+  return canAddChild(targetParentType, draggedType);
+}
+
+/**
+ * Calculates drop mode (BEFORE, INSIDE, AFTER) based on pointer position relative to bounding rectangle.
+ *
+ * @param {number} clientY - Pointer Y coordinate
+ * @param {DOMRect} rect - Target element DOMRect
+ * @param {string} targetType - Target component type
+ * @param {string} [draggedType=null] - Dragged component type
+ * @returns {'before'|'inside'|'after'}
+ */
+export function getDropMode(clientY, rect, targetType, draggedType = null) {
+  if (!rect || rect.height <= 0) return "inside";
+
+  const offsetY = clientY - rect.top;
+  const height = rect.height;
+  const targetDef = ComponentRegistry[targetType];
+
+  const canAcceptInside =
+    targetDef?.canHaveChildren !== false &&
+    (!draggedType || canAddChild(targetType, draggedType).valid);
+
+  // If container can accept this child inside
+  if (canAcceptInside) {
+    // Top 20% -> before, Middle 60% -> inside, Bottom 20% -> after
+    if (offsetY < height * 0.2) {
+      return "before";
+    } else if (offsetY > height * 0.8) {
+      return "after";
+    } else {
+      return "inside";
+    }
+  }
+
+  // Leaf component or container that cannot accept this child inside: split 50/50
+  return offsetY < height * 0.5 ? "before" : "after";
 }
 
 /**
@@ -169,7 +227,10 @@ export function validateSchema(input) {
 }
 
 export default {
+  getAllowedChildren,
   canAddChild,
+  canDrop,
+  getDropMode,
   canMoveNode,
   validateNode,
   validateSchema,

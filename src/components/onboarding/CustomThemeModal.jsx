@@ -14,6 +14,7 @@ export const CustomThemeModal = ({ isOpen, onClose, componentType = "ProductCard
 
   const handleSave = (e) => {
     e.preventDefault();
+    const baseTheme = ThemeRepository.getByComponentType(componentType)[0];
     const newTheme = {
       componentType,
       name,
@@ -33,6 +34,9 @@ export const CustomThemeModal = ({ isOpen, onClose, componentType = "ProductCard
         padding,
         boxShadow,
       },
+      defaultData: baseTheme?.defaultData ? JSON.parse(JSON.stringify(baseTheme.defaultData)) : {},
+      defaultChildren: baseTheme?.defaultChildren ? JSON.parse(JSON.stringify(baseTheme.defaultChildren)) : [],
+      defaultPlacement: baseTheme?.defaultPlacement ? JSON.parse(JSON.stringify(baseTheme.defaultPlacement)) : {},
     };
 
     const saved = ThemeRepository.save(newTheme);

@@ -1,5 +1,5 @@
 /**
- * Theme Repository — Manages retrieval, creation, duplication, and storage of component themes.
+ * Theme Repository — Manages retrieval, creation, duplication, and storage of component themes and blueprints.
  */
 
 import { StorageService } from "./storage";
@@ -10,7 +10,7 @@ const THEMES_STORAGE_KEY = "campus_sdui_custom_themes";
 
 export const ThemeRepository = {
   /**
-   * Retrieves all themes (both predefined and custom).
+   * Retrieves all themes (both predefined blueprints and custom themes).
    * @returns {Array<Object>}
    */
   getAll() {
@@ -69,6 +69,9 @@ export const ThemeRepository = {
         isCustom: true,
         tokens: theme.tokens || {},
         styles: theme.styles || {},
+        defaultData: theme.defaultData || {},
+        defaultChildren: theme.defaultChildren || [],
+        defaultPlacement: theme.defaultPlacement || {},
         createdAt: now,
         updatedAt: now,
       };

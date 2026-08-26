@@ -9,6 +9,8 @@ import { VisualCanvas } from "../canvas/VisualCanvas";
 import { Inspector } from "../inspector/Inspector";
 import { JsonEditorModal } from "../dialogs/JsonEditorModal";
 import { PageManagerModal } from "../dialogs/PageManagerModal";
+import { BranchModal } from "../../branch/BranchModal";
+import { BranchRepository } from "../../services/branchRepository";
 import { JourneyDashboard } from "../../journey/JourneyDashboard";
 import { colors } from "../../theme";
 
@@ -19,7 +21,7 @@ const RIGHT_TABS = [
   { id: "json", label: "{ } JSON" },
 ];
 
-export const CmsLayout = ({ onLogout }) => {
+export const CmsLayout = ({ onLogout, user }) => {
   const {
     schema, selectedComponentId, selectedNode, activeDevice,
     activePage, activeJourney, activeBranch, editingContext,
@@ -40,6 +42,7 @@ export const CmsLayout = ({ onLogout }) => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 900);
   const [isPagesOpen, setIsPagesOpen] = useState(false);
   const [isJsonOpen, setIsJsonOpen] = useState(false);
+  const [isBranchOpen, setIsBranchOpen] = useState(false);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth <= 900);
@@ -107,6 +110,8 @@ export const CmsLayout = ({ onLogout }) => {
           onOpenPageEditor={handleOpenPageEditor}
           onOpenComponentEditor={handleOpenComponentEditor}
           onSwitchBranch={(branch) => { switchBranch(branch); setActiveBranch(branch); }}
+          onLogout={onLogout}
+          user={user}
         />
         <ToastContainer toasts={toasts} onDismiss={removeToast} />
       </div>
@@ -118,7 +123,7 @@ export const CmsLayout = ({ onLogout }) => {
   const inspectorW = 340;
 
   return (
-    <DragDropProvider onDropItem={handleDropItem} onInvalidDrop={handleInvalidDrop}>
+    <DragDropProvider schema={schema} onDropItem={handleDropItem} onInvalidDrop={handleInvalidDrop}>
       <div style={{
         display: "flex", flexDirection: "column", height: "100vh", width: "100vw",
         overflow: "hidden", backgroundColor: colors.bgCanvas,
@@ -142,6 +147,7 @@ export const CmsLayout = ({ onLogout }) => {
           onSave={() => { saveCurrentPage(); showSuccess("Saved ✓"); }}
           onOpenPages={() => setIsPagesOpen(true)}
           onOpenJson={() => setIsJsonOpen(true)}
+          onOpenBranches={() => setIsBranchOpen(true)}
           onBackToDashboard={() => setCurrentView("dashboard")}
         />
 
@@ -314,6 +320,24 @@ export const CmsLayout = ({ onLogout }) => {
           onClose={() => setIsJsonOpen(false)}
           schema={schema}
           onApplyJson={(json) => { applyJsonSchema(json); showSuccess("Schema applied"); }}
+        />
+        <BranchModal
+          isOpen={isBranchOpen}
+          onClose={() => setIsBranchOpen(false)}
+          currentBranch={activeBranch}
+          onSwitchBranch={(b) => {
+            switchBranch(b);
+            setActiveBranch(b);
+            setIsBranchOpen(false);
+            showSuccess(`Switched to branch ${b}`);
+          }}
+          onCreateBranch={(name) => {
+            BranchRepository.create(name, activeBranch);
+            switchBranch(name);
+            setActiveBranch(name);
+            setIsBranchOpen(false);
+            showSuccess(`Created and switched to branch ${name}`);
+          }}
         />
         <ToastContainer toasts={toasts} onDismiss={removeToast} />
       </div>

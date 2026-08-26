@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { SDUIRenderer } from "../../../sdui/SDUIRenderer";
 import { ComponentRow } from "./ComponentRow";
 import { DropSlot } from "./DropSlot";
 import { ComponentRegistry } from "../../../registry/componentRegistry";
 import { useDragDrop } from "../../dragdrop/DragDropContext";
 import { findParentById } from "../../utils/treeUtils";
+import { canAddChild, getDropMode } from "../../utils/validation";
 
 /**
  * VisualCanvas — the center editor panel.
  *
  * THREE MODES:
  *  1. "visual" (default) — Live SDUI Grid renderer with selection outlines,
- *                          floating action pills (Move Up/Down, Duplicate, Delete),
- *                          and drag-and-drop insertion markers.
+ *                          dynamic reflow preview, and live insertion markers.
  *  2. "list"             — Hierarchical component tree for structural editing.
  *  3. "clean"            — Pure customer live preview.
  */
@@ -21,22 +21,35 @@ import { findParentById } from "../../utils/treeUtils";
 const DeviceFrame = ({ device, children }) => {
   if (device === "mobile") {
     return (
-      <div style={{
-        width: "390px",
-        borderRadius: "48px",
-        border: "10px solid #1e293b",
-        boxShadow: "0 24px 48px rgba(0,0,0,0.3), 0 0 0 2px #334155 inset",
-        overflow: "hidden",
-        backgroundColor: "#ffffff",
-        flexShrink: 0,
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        height: "800px",
-        maxHeight: "calc(100vh - 140px)",
-      }}>
+      <div
+        style={{
+          width: "390px",
+          borderRadius: "48px",
+          border: "10px solid #1e293b",
+          boxShadow: "0 24px 48px rgba(0,0,0,0.3), 0 0 0 2px #334155 inset",
+          overflow: "hidden",
+          backgroundColor: "#ffffff",
+          flexShrink: 0,
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          height: "800px",
+          maxHeight: "calc(100vh - 140px)",
+        }}
+      >
         {/* Status bar */}
-        <div style={{ height: "26px", backgroundColor: "#1e293b", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", flexShrink: 0, userSelect: "none" }}>
+        <div
+          style={{
+            height: "26px",
+            backgroundColor: "#1e293b",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 20px",
+            flexShrink: 0,
+            userSelect: "none",
+          }}
+        >
           <span style={{ color: "#ffffff", fontSize: "10px", fontWeight: "700" }}>9:41</span>
           <div style={{ width: "70px", height: "14px", backgroundColor: "#334155", borderRadius: "7px" }} />
           <span style={{ color: "#ffffff", fontSize: "10px" }}>▲ ■</span>
@@ -45,7 +58,16 @@ const DeviceFrame = ({ device, children }) => {
           {children}
         </div>
         {/* Home indicator */}
-        <div style={{ height: "18px", backgroundColor: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <div
+          style={{
+            height: "18px",
+            backgroundColor: "#f8fafc",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
           <div style={{ width: "100px", height: "4px", backgroundColor: "#cbd5e1", borderRadius: "2px" }} />
         </div>
       </div>
@@ -54,18 +76,20 @@ const DeviceFrame = ({ device, children }) => {
 
   if (device === "tablet") {
     return (
-      <div style={{
-        width: "min(768px, 100%)",
-        borderRadius: "28px",
-        border: "8px solid #1e293b",
-        boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
-        overflow: "hidden",
-        backgroundColor: "#ffffff",
-        height: "820px",
-        maxHeight: "calc(100vh - 140px)",
-        display: "flex",
-        flexDirection: "column",
-      }}>
+      <div
+        style={{
+          width: "min(768px, 100%)",
+          borderRadius: "28px",
+          border: "8px solid #1e293b",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+          overflow: "hidden",
+          backgroundColor: "#ffffff",
+          height: "820px",
+          maxHeight: "calc(100vh - 140px)",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <div style={{ flex: 1, overflowY: "auto" }}>
           {children}
         </div>
@@ -83,9 +107,18 @@ const DeviceFrame = ({ device, children }) => {
 
 // ─── List-style tree view (recursive) ─────────────────────────────────────────
 const ListNodeTree = ({
-  nodes, parentId, parentType, depth = 0,
-  selectedId, expandedIds, onSelect, onDelete, onDuplicate, onToggleExpand,
-  onRowDragStart, onRowDragEnd,
+  nodes,
+  parentId,
+  parentType,
+  depth = 0,
+  selectedId,
+  expandedIds,
+  onSelect,
+  onDelete,
+  onDuplicate,
+  onToggleExpand,
+  onRowDragStart,
+  onRowDragEnd,
 }) => {
   if (!Array.isArray(nodes) || nodes.length === 0) {
     return (
@@ -160,6 +193,11 @@ export const VisualCanvas = ({
   onDuplicateComponent,
   onDeleteComponent,
   onMoveComponent,
+  onApplyWidthPreset,
+  onWrapInContainer,
+  onResizePlacement,
+  onInsertBlockAtSlot,
+  onInsertNodesAtSlot,
   onDropItem,
   onInvalidDrop,
   editingContext = null,
@@ -167,7 +205,16 @@ export const VisualCanvas = ({
 }) => {
   const [mode, setMode] = useState("visual"); // 'visual' | 'list' | 'clean'
   const [expandedIds, setExpandedIds] = useState(() => new Set());
-  const { startDrag, endDrag, isDragging, dragSource } = useDragDrop();
+  const {
+    startDrag,
+    endDrag,
+    isDragging,
+    dragSource,
+    dropSlot,
+    previewTree,
+    updateDropSlot,
+    clearDropSlot,
+  } = useDragDrop();
 
   const toggleExpand = (id) => {
     setExpandedIds((prev) => {
@@ -187,9 +234,79 @@ export const VisualCanvas = ({
     });
   };
 
+  // Called when hovering over a node in visual mode
+  const handleUpdateDropSlotFromRenderer = useCallback(
+    ({ targetNode, dropMode, draggedType, rect, clientY, isValid, reason }) => {
+      if (!targetNode || !dragSource) return;
+
+      if (dropMode === "inside") {
+        updateDropSlot({
+          parentId: targetNode.id,
+          parentType: targetNode.type,
+          targetNodeId: targetNode.id,
+          dropMode: "inside",
+          afterIndex: (targetNode.children?.length || 0) - 1,
+          isValid,
+          reason,
+          label: `Drop inside ${targetNode.type}`,
+        });
+        return;
+      }
+
+      const parentInfo = findParentById(schema, targetNode.id);
+      if (!parentInfo) return;
+
+      const afterIndex = dropMode === "before" ? parentInfo.index - 1 : parentInfo.index;
+
+      updateDropSlot({
+        parentId: parentInfo.parent.id,
+        parentType: parentInfo.parent.type,
+        targetNodeId: targetNode.id,
+        dropMode,
+        afterIndex,
+        isValid,
+        reason,
+        label: dropMode === "before" ? `Insert before ${targetNode.type}` : `Insert after ${targetNode.type}`,
+      });
+    },
+    [schema, dragSource, updateDropSlot]
+  );
+
   // Drop onto a node in live visual mode
-  const handleDropAtNode = ({ targetNode, position }) => {
-    if (!targetNode || !dragSource) return;
+  const handleDropAtNode = ({ targetNode, position, draggedType, draggedId }) => {
+    const src =
+      dragSource ||
+      (draggedId
+        ? { nodeId: draggedId, isNew: false }
+        : draggedType
+        ? { type: draggedType, isNew: true }
+        : null);
+
+    if (!targetNode || !src) return;
+
+    if (position === "inside") {
+      const check = canAddChild(targetNode.type, src.type);
+      if (!check.valid) {
+        onInvalidDrop?.({
+          source: src,
+          slot: { parentId: targetNode.id, parentType: targetNode.type },
+          reason: check.reason || `Cannot place ${src.type} inside ${targetNode.type}`,
+        });
+        endDrag(false);
+        return;
+      }
+
+      onDropItem?.({
+        source: src,
+        slot: {
+          parentId: targetNode.id,
+          parentType: targetNode.type,
+          afterIndex: (targetNode.children?.length || 0) - 1,
+        },
+      });
+      endDrag(false);
+      return;
+    }
 
     const parentInfo = findParentById(schema, targetNode.id);
     if (!parentInfo) return;
@@ -197,7 +314,7 @@ export const VisualCanvas = ({
     const afterIndex = position === "before" ? parentInfo.index - 1 : parentInfo.index;
 
     onDropItem?.({
-      source: dragSource,
+      source: src,
       slot: {
         parentId: parentInfo.parent.id,
         parentType: parentInfo.parent.type,
@@ -220,46 +337,111 @@ export const VisualCanvas = ({
 
   const { nodes, parentId, parentType } = getEditNodes();
 
+  const handleCanvasDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  };
+
+  const handleCanvasDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const draggedType = e.dataTransfer.getData("application/sdui-type") || dragSource?.type;
+    const draggedId = e.dataTransfer.getData("application/sdui-id") || dragSource?.nodeId;
+    const src =
+      dragSource ||
+      (draggedId
+        ? { nodeId: draggedId, isNew: false }
+        : draggedType
+        ? { type: draggedType, isNew: true }
+        : null);
+
+    if (src && parentId) {
+      onDropItem?.({
+        source: src,
+        slot: {
+          parentId,
+          parentType,
+          afterIndex: nodes.length - 1,
+        },
+      });
+      endDrag(false);
+    }
+  };
+
   const modes = [
     { id: "visual", label: "✏️ Visual Editor" },
-    { id: "list",   label: "☰ List View" },
-    { id: "clean",  label: "👁 Preview" },
+    { id: "list", label: "☰ List View" },
+    { id: "clean", label: "👁 Preview" },
   ];
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "100%", overflow: "hidden" }}>
+  // Active schema rendered in canvas: use live preview tree when dragging
+  const renderedSchema = isDragging && previewTree ? previewTree : schema;
 
+  return (
+    <div
+      style={{ display: "flex", flexDirection: "column", height: "100%", width: "100%", overflow: "hidden" }}
+      onDragOver={handleCanvasDragOver}
+      onDrop={handleCanvasDrop}
+    >
       {/* ── Toolbar ─────────────────────────────────────────────────────── */}
-      <div style={{
-        height: "44px", backgroundColor: "#ffffff", borderBottom: "1px solid #e2e8f0",
-        display: "flex", alignItems: "center", padding: "0 16px", gap: "8px",
-        flexShrink: 0,
-      }}>
+      <div
+        style={{
+          height: "44px",
+          backgroundColor: "#ffffff",
+          borderBottom: "1px solid #e2e8f0",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 16px",
+          gap: "8px",
+          flexShrink: 0,
+        }}
+      >
         {/* Mode Toggle */}
         <div style={{ display: "flex", backgroundColor: "#f1f5f9", borderRadius: "8px", padding: "2px", gap: "1px" }}>
           {modes.map((m) => (
-            <button key={m.id} onClick={() => setMode(m.id)} style={{
-              padding: "4px 12px", borderRadius: "6px", border: "none",
-              fontSize: "11px", fontWeight: "600", cursor: "pointer",
-              backgroundColor: mode === m.id ? "#ffffff" : "transparent",
-              color: mode === m.id ? "#0f172a" : "#64748b",
-              boxShadow: mode === m.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-              transition: "all 0.12s ease", whiteSpace: "nowrap",
-            }}>{m.label}</button>
+            <button
+              key={m.id}
+              onClick={() => setMode(m.id)}
+              style={{
+                padding: "4px 12px",
+                borderRadius: "6px",
+                border: "none",
+                fontSize: "11px",
+                fontWeight: "600",
+                cursor: "pointer",
+                backgroundColor: mode === m.id ? "#ffffff" : "transparent",
+                color: mode === m.id ? "#0f172a" : "#64748b",
+                boxShadow: mode === m.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                transition: "all 0.12s ease",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {m.label}
+            </button>
           ))}
         </div>
 
         {/* Context label */}
         {editingContext && (
-          <span style={{ fontSize: "11px", fontWeight: "700", padding: "3px 8px", borderRadius: "4px", backgroundColor: "rgba(79,70,229,0.1)", color: "#4f46e5" }}>
+          <span
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              backgroundColor: "rgba(79,70,229,0.1)",
+              color: "#4f46e5",
+            }}
+          >
             🏷️ {editingContext} Studio
           </span>
         )}
 
         {/* Hint */}
         {mode === "visual" && (
-          <span style={{ marginLeft: "auto", fontSize: "10px", color: "#94a3b8", whiteSpace: "nowrap" }}>
-            Click component to inspect • Use ▲ ▼ or drag to reorder
+          <span style={{ marginLeft: "auto", fontSize: "11px", color: "#64748b", fontWeight: "500", whiteSpace: "nowrap" }}>
+            Drag & drop components anywhere • Grid automatically calculates & adjusts
           </span>
         )}
         {mode !== "visual" && (
@@ -278,21 +460,22 @@ export const VisualCanvas = ({
           flexDirection: "column",
           alignItems: mode === "visual" ? "center" : "stretch",
           justifyContent: mode === "visual" ? "center" : undefined,
-          backgroundColor: mode === "visual" ? "#e2e8f0" : "#ffffff",
+          backgroundColor: mode === "visual" ? "#f1f5f9" : "#ffffff",
           padding: mode === "visual" ? "16px" : "0",
           position: "relative",
         }}
+        onDragOver={handleCanvasDragOver}
+        onDrop={handleCanvasDrop}
         onClick={(e) => {
           if (e.target === e.currentTarget) onSelectComponent?.(null);
         }}
       >
-
-        {/* ══ VISUAL EDITOR MODE (100% Native SDUI Grid + Interactive Overlays) ══ */}
+        {/* ══ VISUAL EDITOR MODE (100% Native SDUI Grid + Interactive Overlays + Live Reflow) ══ */}
         {mode === "visual" && (
           <DeviceFrame device={activeDevice}>
-            {schema ? (
+            {renderedSchema ? (
               <SDUIRenderer
-                schema={schema}
+                schema={renderedSchema}
                 deviceType={activeDevice}
                 selectedId={selectedId}
                 onSelect={onSelectComponent}
@@ -311,8 +494,14 @@ export const VisualCanvas = ({
                   })
                 }
                 onDragEndNode={() => endDrag(false)}
+                onApplyWidthPreset={onApplyWidthPreset}
+                onWrapInContainer={onWrapInContainer}
+                onResizePlacement={onResizePlacement}
                 isDragging={isDragging}
                 dragSource={dragSource}
+                dropSlot={dropSlot}
+                onUpdateDropSlot={handleUpdateDropSlotFromRenderer}
+                onClearDropSlot={clearDropSlot}
                 onNavigate={onNavigate}
               />
             ) : (
@@ -351,7 +540,7 @@ export const VisualCanvas = ({
 
         {/* ══ CLEAN PREVIEW MODE ════════════════════════════════════════════ */}
         {mode === "clean" && (
-          <div style={{ flex: 1, display: "flex", justifyContent: "center", padding: "16px", backgroundColor: "#e2e8f0" }}>
+          <div style={{ flex: 1, display: "flex", justifyContent: "center", padding: "16px", backgroundColor: "#f1f5f9" }}>
             <DeviceFrame device={activeDevice}>
               {schema ? (
                 <SDUIRenderer

@@ -1,9 +1,29 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "./useHistory";
-import { PageRepository } from "../services/pageRepository";
-import { InterfaceRepository } from "../services/interfaceRepository";
-import { JourneyRepository } from "../services/journeyRepository";
-import { BranchRepository } from "../services/branchRepository";
+import {
+  fetchPages,
+  savePage,
+  setActivePageId,
+  updateLocalPageSchema,
+  createPage,
+  deletePage as deletePageAction,
+} from "../../store/slices/pageSlice";
+import {
+  fetchJourneys,
+  setActiveJourneyId,
+} from "../../store/slices/journeySlice";
+import {
+  fetchBranches,
+  setActiveBranch,
+  saveBranchSnapshot,
+} from "../../store/slices/branchSlice";
+import {
+  fetchPullRequests,
+} from "../../store/slices/pullRequestSlice";
+import {
+  fetchThemes,
+} from "../../store/slices/themeSlice";
 import {
   findNodeById,
   updateNode,
@@ -22,25 +42,30 @@ import { ensureStableIds } from "../utils/idUtils";
 import { ComponentRegistry } from "../../registry/componentRegistry";
 
 export function useCmsState() {
-  const journeys = JourneyRepository.getAll();
-  const initialJourney = journeys[0] || null;
+  const dispatch = useDispatch();
 
-  const [activeJourney, setActiveJourney] = useState(initialJourney);
-  const [activeBranch, setActiveBranch] = useState("main");
+  // Redux store selectors
+  const journeys = useSelector((state) => state.journeys.list);
+  const activeJourneyId = useSelector((state) => state.journeys.activeJourneyId);
+  const pages = useSelector((state) => state.pages.list);
+  const activePageId = useSelector((state) => state.pages.activePageId);
+  const branches = useSelector((state) => state.branches.list);
+  const activeBranchName = useSelector((state) => state.branches.activeBranchName);
+  const activeBranchId = useSelector((state) => state.branches.activeBranchId);
+  const pullRequests = useSelector((state) => state.pullRequests.list);
+
+  const activeJourney = journeys.find((j) => j.id === activeJourneyId) || journeys[0] || null;
+  const activePage = pages.find((p) => p.id === activePageId) || pages[0] || null;
+
+  // Local working & editor UI state
   const [editingContext, setEditingContext] = useState(null); // null (Page) | string (e.g. 'ProductCard')
-
-  const initialPages = PageRepository.getAll();
-  const initialPage = initialPages[0] || null;
-
-  const [activePage, setActivePage] = useState(initialPage);
-  const [activeInterfaceId, setActiveInterfaceId] = useState(
-    initialPage?.interfaceId || "ecommerce-home"
-  );
+  const [activeInterfaceId, setActiveInterfaceId] = useState("ecommerce-home");
   const [selectedComponentId, setSelectedComponentId] = useState(null);
   const [activeDevice, setActiveDevice] = useState("desktop");
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle"); // 'idle' | 'saving' | 'saved' | 'error'
 
+  // Undo / Redo history
   const {
     state: schema,
     setState: setSchemaWithHistory,
@@ -49,7 +74,38 @@ export function useCmsState() {
     canUndo,
     canRedo,
     resetHistory,
-  } = useHistory(initialPage?.schema ? ensureStableIds(initialPage.schema) : {});
+  } = useHistory(activePage?.schema ? ensureStableIds(activePage.schema) : {});
+
+  const initializedRef = useRef(false);
+
+  // Initial data loading from Express API into Redux
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      dispatch(fetchJourneys());
+      dispatch(fetchPages());
+      dispatch(fetchBranches());
+      dispatch(fetchPullRequests());
+      dispatch(fetchThemes());
+    }
+  }, [dispatch]);
+
+  // Sync schema when active page or active branch changes
+  useEffect(() => {
+    if (activePage && !editingContext) {
+      const currentBranch = branches.find(
+        (b) => b.name === activeBranchName || b.id === activeBranchId
+      );
+      const branchSchema = currentBranch?.pageSnapshots?.[activePage.id];
+      const targetSchema = branchSchema || activePage.schema;
+
+      if (targetSchema) {
+        resetHistory(ensureStableIds(cloneTree(targetSchema)));
+        setIsDirty(false);
+        setSaveStatus("idle");
+      }
+    }
+  }, [activePageId, activeBranchName, activeBranchId, branches, resetHistory, editingContext]);
 
   // Update dirty state whenever schema changes
   const setSchema = useCallback(
@@ -57,8 +113,11 @@ export function useCmsState() {
       setSchemaWithHistory(newSchema);
       setIsDirty(true);
       setSaveStatus("idle");
+      if (activePage?.id) {
+        dispatch(updateLocalPageSchema({ pageId: activePage.id, schema: newSchema }));
+      }
     },
-    [setSchemaWithHistory]
+    [setSchemaWithHistory, activePage?.id, dispatch]
   );
 
   // Selection handlers
@@ -88,46 +147,26 @@ export function useCmsState() {
   const addComponent = useCallback(
     (type, targetId = null, position = null) => {
       const newNode = createComponent(type);
-      const effectiveTargetId = targetId || selectedComponentId;
+      const rootChildren = schema.children || [];
+      const pageNode = rootChildren.find((c) => c.type === "Page");
+      const targetParent = pageNode || schema;
+      const targetParentId = targetParent.id;
 
-      // Find target node to decide insertion strategy
-      const targetNode = effectiveTargetId ? findNodeById(schema, effectiveTargetId) : null;
-      const targetDef = targetNode ? ComponentRegistry[targetNode.type] : null;
-
-      let insertTargetId;
-      let insertPosition;
-
-      if (!effectiveTargetId || !targetNode) {
-        // No selection — insert into root Page level
-        const rootChildren = schema.children || [];
-        const pageNode = rootChildren.find((c) => c.type === "Page");
-        insertTargetId = pageNode?.id || schema.id;
-        insertPosition = "inside";
-      } else if (targetDef && targetDef.canHaveChildren !== false) {
-        // Check if allowed child
-        const check = canAddChild(targetNode.type, type);
-        if (check.valid) {
-          insertTargetId = effectiveTargetId;
-          insertPosition = "inside";
+      let insertIndex = 0;
+      if (Array.isArray(targetParent?.children) && targetParent.children.length > 0) {
+        if (targetParent.children[0]?.type === "Header" && type !== "Header") {
+          insertIndex = 1;
         } else {
-          insertTargetId = effectiveTargetId;
-          insertPosition = "after";
+          insertIndex = 0;
         }
-      } else {
-        insertTargetId = effectiveTargetId;
-        insertPosition = "after";
       }
 
-      if (position === "inside" || position === "before" || position === "after") {
-        insertPosition = position;
-      }
-
-      const updated = insertNode(schema, insertTargetId, newNode, insertPosition);
+      const updated = insertNodeAtIndex(schema, targetParentId, newNode, insertIndex);
       setSchema(updated);
       setSelectedComponentId(newNode.id);
       return newNode;
     },
-    [schema, selectedComponentId, setSchema]
+    [schema, setSchema]
   );
 
   const addComponentAtSlot = useCallback(
@@ -138,17 +177,18 @@ export function useCmsState() {
 
       const parentNode = findNodeById(schema, slot.parentId);
       if (!parentNode) {
-        return { ok: false, reason: "Unable to find the target container." };
+        return { ok: false, reason: `Target node not found.` };
       }
 
-      const check = canAddChild(parentNode, type);
+      const check = canAddChild(parentNode.type, type);
       if (!check.valid) {
         return { ok: false, reason: check.reason };
       }
 
-      const insertIndex = slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0;
       const newNode = createComponent(type);
+      const insertIndex = Math.max(0, slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0);
       const updated = insertNodeAtIndex(schema, slot.parentId, newNode, insertIndex);
+
       setSchema(updated);
       setSelectedComponentId(newNode.id);
       return { ok: true, node: newNode };
@@ -157,105 +197,199 @@ export function useCmsState() {
   );
 
   const moveComponentToSlot = useCallback(
-    (id, slot) => {
-      if (!id || !slot?.parentId) {
-        return { ok: false, reason: "Drop target is missing." };
+    (nodeId, slot) => {
+      if (!slot?.parentId) {
+        return { ok: false, reason: "Target parent is missing." };
       }
 
-      const check = canMoveNodeToSlot(schema, id, slot.parentId);
-      if (!check.valid) {
-        return { ok: false, reason: check.reason };
-      }
+      const insertIndex = Math.max(0, slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0);
+      const updated = moveNodeToSlot(schema, nodeId, slot.parentId, insertIndex);
 
-      const insertIndex = slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0;
-      const updated = moveNodeToSlot(schema, id, slot.parentId, insertIndex);
-      if (updated === schema) {
-        return { ok: true, moved: false };
+      if (!updated) {
+        return { ok: false, reason: "Move operation rejected by contract validator." };
       }
 
       setSchema(updated);
-      setSelectedComponentId(id);
-      return { ok: true, moved: true };
+      setSelectedComponentId(nodeId);
+      return { ok: true };
+    },
+    [schema, setSchema]
+  );
+
+  const insertBlockAtSlot = useCallback(
+    (blockTree, slot) => {
+      if (!slot?.parentId || !blockTree) return { ok: false };
+      const prepared = ensureStableIds(cloneTree(blockTree));
+      const insertIndex = Math.max(0, slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0);
+      const updated = insertNodeAtIndex(schema, slot.parentId, prepared, insertIndex);
+      setSchema(updated);
+      setSelectedComponentId(prepared.id);
+      return { ok: true, node: prepared };
+    },
+    [schema, setSchema]
+  );
+
+  const insertNodesAtSlot = useCallback(
+    (nodes, slot) => {
+      if (!slot?.parentId || !Array.isArray(nodes) || nodes.length === 0) return { ok: false };
+      let currentTree = cloneTree(schema);
+      let startIndex = Math.max(0, slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0);
+
+      nodes.forEach((node, idx) => {
+        const prepared = ensureStableIds(cloneTree(node));
+        currentTree = insertNodeAtIndex(currentTree, slot.parentId, prepared, startIndex + idx);
+      });
+
+      setSchema(currentTree);
+      return { ok: true };
     },
     [schema, setSchema]
   );
 
   const deleteComponent = useCallback(
     (id) => {
-      const targetId = id || selectedComponentId;
-      if (!targetId || targetId === schema.id) {
-        console.warn("Cannot delete root container");
-        return;
-      }
-      const updated = removeNode(schema, targetId);
-      if (updated) {
-        setSchema(updated);
-        if (selectedComponentId === targetId) {
-          setSelectedComponentId(null);
-        }
-      }
-    },
-    [schema, selectedComponentId, setSchema]
-  );
-
-  const duplicateCurrentComponent = useCallback(
-    (id) => {
-      const targetId = id || selectedComponentId;
-      if (!targetId || targetId === schema.id) return;
-      const updated = duplicateNode(schema, targetId);
+      if (!id || id === schema.id) return;
+      const updated = removeNode(schema, id);
       setSchema(updated);
-    },
-    [schema, selectedComponentId, setSchema]
-  );
-
-  const moveCurrentComponent = useCallback(
-    (id, direction) => {
-      const targetId = id || selectedComponentId;
-      if (!targetId) return;
-      const updated = moveNode(schema, targetId, direction);
-      setSchema(updated);
-    },
-    [schema, selectedComponentId, setSchema]
-  );
-
-  // Apply JSON Schema with validation
-  const applyJsonSchema = useCallback(
-    (jsonInput) => {
-      const validation = validateSchema(jsonInput);
-      if (!validation.isValid) {
-        throw new Error(validation.errors[0] || "Schema validation failed.");
-      }
-      const normalized = ensureStableIds(validation.parsedSchema);
-      setSchema(normalized);
-      setSelectedComponentId(null);
-    },
-    [setSchema]
-  );
-
-  // Page management
-  const switchPage = useCallback(
-    (pageId) => {
-      const page = PageRepository.getById(pageId);
-      if (page) {
-        setActivePage(page);
-        setEditingContext(null);
-        setActiveInterfaceId(page.interfaceId || "ecommerce-home");
-        const normalized = ensureStableIds(cloneTree(page.schema));
-        resetHistory(normalized);
+      if (selectedComponentId === id) {
         setSelectedComponentId(null);
-        setIsDirty(false);
-        setSaveStatus("idle");
       }
     },
-    [resetHistory]
+    [schema, selectedComponentId, setSchema]
   );
 
-  // Switch to component-only editing mode
+  const duplicateComponentInstance = useCallback(
+    (id) => {
+      if (!id) return;
+      const updated = duplicateNode(schema, id);
+      setSchema(updated);
+    },
+    [schema, setSchema]
+  );
+
+  const moveComponent = useCallback(
+    (id, direction) => {
+      if (!id) return;
+      const updated = moveNode(schema, id, direction);
+      setSchema(updated);
+    },
+    [schema, setSchema]
+  );
+
+  const applyWidthPreset = useCallback(
+    (id, preset) => {
+      if (!id) return;
+      updateComponent(id, (node) => {
+        const currentDevice = activeDevice;
+        const oldPlacement = node.placement?.[currentDevice] || {
+          colStart: 1,
+          colEnd: 101,
+          rowStart: 1,
+          rowEnd: 10,
+        };
+        let newColStart = 1;
+        let newColEnd = 101;
+
+        if (preset === "full") {
+          newColStart = 1;
+          newColEnd = 101;
+        } else if (preset === "half-left") {
+          newColStart = 1;
+          newColEnd = 51;
+        } else if (preset === "half-right") {
+          newColStart = 51;
+          newColEnd = 101;
+        } else if (preset === "third-left") {
+          newColStart = 1;
+          newColEnd = 34;
+        } else if (preset === "third-mid") {
+          newColStart = 34;
+          newColEnd = 68;
+        } else if (preset === "third-right") {
+          newColStart = 68;
+          newColEnd = 101;
+        }
+
+        return {
+          ...node,
+          placement: {
+            ...node.placement,
+            [currentDevice]: {
+              ...oldPlacement,
+              colStart: newColStart,
+              colEnd: newColEnd,
+            },
+          },
+        };
+      });
+    },
+    [activeDevice, updateComponent]
+  );
+
+  const wrapInContainer = useCallback(
+    (id, containerType = "Box") => {
+      if (!id) return;
+      const targetNode = findNodeById(schema, id);
+      if (!targetNode) return;
+
+      const container = createComponent(containerType, {
+        containerStyle: {
+          padding: "16px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+        },
+        children: [cloneTree(targetNode)],
+      });
+
+      const updated = updateNode(schema, id, () => container);
+      setSchema(updated);
+      setSelectedComponentId(container.id);
+    },
+    [schema, setSchema]
+  );
+
+  const resizePlacement = useCallback(
+    (id, { deltaCol = 0, deltaRow = 0, activeDevice = "desktop" }) => {
+      if (!id) return;
+      updateComponent(id, (node) => {
+        const current = node.placement?.[activeDevice] || {
+          colStart: 1,
+          colEnd: 101,
+          rowStart: 1,
+          rowEnd: 10,
+        };
+        const newColEnd = Math.max(
+          current.colStart + 5,
+          Math.min(101, (current.colEnd || 101) + deltaCol)
+        );
+        const newRowEnd = Math.max(
+          current.rowStart + 1,
+          (current.rowEnd || current.rowStart + 5) + deltaRow
+        );
+
+        return {
+          ...node,
+          placement: {
+            ...node.placement,
+            [activeDevice]: {
+              ...current,
+              colEnd: newColEnd,
+              rowEnd: newRowEnd,
+            },
+          },
+        };
+      });
+    },
+    [updateComponent]
+  );
+
+  // Standalone Component Editor Mode
   const openComponentEditor = useCallback(
     (compType) => {
       setEditingContext(compType);
-
-      // Create a standalone component instance inside a clean wrapper for visual editing
       const sampleComponent = createComponent(compType);
       const standaloneSchema = ensureStableIds({
         id: `editor_root_${compType}`,
@@ -285,12 +419,21 @@ export function useCmsState() {
     [resetHistory]
   );
 
-  const saveCurrentPage = useCallback(() => {
+  const exitComponentEditor = useCallback(() => {
+    setEditingContext(null);
+    if (activePage?.schema) {
+      resetHistory(ensureStableIds(cloneTree(activePage.schema)));
+    }
+  }, [activePage, resetHistory]);
+
+  // Save current working state to Express Backend API
+  const saveCurrentPage = useCallback(async () => {
     if (!activePage) return;
     setSaveStatus("saving");
+
     try {
       if (editingContext) {
-        // Component-only save feedback
+        // Component studio save feedback
         setTimeout(() => {
           setIsDirty(false);
           setSaveStatus("saved");
@@ -299,57 +442,52 @@ export function useCmsState() {
         return;
       }
 
-      const updatedPage = {
-        ...activePage,
-        schema: cloneTree(schema),
-      };
-      PageRepository.save(updatedPage);
-      if (activeBranch !== "main") {
-        BranchRepository.updateBranchSnapshot(activeBranch, activePage.id, schema);
+      if (activeBranchName !== "main") {
+        // Persist to branch snapshot via API
+        await dispatch(
+          saveBranchSnapshot({
+            branchId: activeBranchId,
+            pageId: activePage.id,
+            schema: cloneTree(schema),
+          })
+        ).unwrap();
+      } else {
+        // Persist to main page schema via API
+        await dispatch(
+          savePage({
+            id: activePage.id,
+            pageData: {
+              ...activePage,
+              schema: cloneTree(schema),
+            },
+          })
+        ).unwrap();
       }
-      setActivePage(updatedPage);
+
       setIsDirty(false);
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus("idle"), 2500);
     } catch (e) {
-      console.error("[useCmsState] Failed to save page:", e);
+      console.error("[useCmsState] Failed to save page via API:", e);
       setSaveStatus("error");
     }
-  }, [activePage, activeBranch, editingContext, schema]);
+  }, [activePage, activeBranchName, activeBranchId, editingContext, schema, dispatch]);
 
   // Branch switcher
   const switchBranch = useCallback(
     (branchName) => {
-      setActiveBranch(branchName);
-      const branches = BranchRepository.getAll();
-      const branch = branches.find((b) => b.name === branchName);
-
-      if (branch && branch.pageSnapshots?.[activePage?.id]) {
-        const snapshot = ensureStableIds(cloneTree(branch.pageSnapshots[activePage.id]));
-        resetHistory(snapshot);
-      } else if (activePage?.schema) {
-        const normalized = ensureStableIds(cloneTree(activePage.schema));
-        resetHistory(normalized);
-      }
-
-      setIsDirty(false);
-      setSaveStatus("idle");
+      dispatch(setActiveBranch(branchName));
     },
-    [activePage, resetHistory]
+    [dispatch]
   );
 
-  // Interface management
-  const loadInterface = useCallback(
-    (interfaceId) => {
-      const blueprint = InterfaceRepository.getById(interfaceId);
-      if (blueprint) {
-        setActiveInterfaceId(blueprint.id);
-        const normalized = ensureStableIds(cloneTree(blueprint.schema));
-        setSchema(normalized);
-        setSelectedComponentId(null);
-      }
+  // Page switcher
+  const switchPage = useCallback(
+    (pageId) => {
+      dispatch(setActivePageId(pageId));
+      setSelectedComponentId(null);
     },
-    [setSchema]
+    [dispatch]
   );
 
   const selectedNode = selectedComponentId
@@ -357,40 +495,56 @@ export function useCmsState() {
     : null;
 
   return {
+    // State
     schema,
+    activeJourney,
+    activePage,
+    activeBranch: activeBranchName,
+    activeBranchId,
+    activeInterfaceId,
     selectedComponentId,
     selectedNode,
     activeDevice,
-    activePage,
-    activeJourney,
-    activeBranch,
-    editingContext,
-    activeInterfaceId,
     isDirty,
     saveStatus,
+    editingContext,
+
+    // Lists
+    journeys,
+    pages,
+    branches,
+    pullRequests,
+
+    // History
+    undo,
+    redo,
     canUndo,
     canRedo,
-    setActiveDevice,
-    setActiveJourney,
-    setActiveBranch,
-    setEditingContext,
+    resetHistory,
+
+    // Actions
+    setSchema,
     selectComponent,
     clearSelection,
     updateComponent,
     addComponent,
     addComponentAtSlot,
-    deleteComponent,
-    duplicateComponent: duplicateCurrentComponent,
-    moveComponent: moveCurrentComponent,
     moveComponentToSlot,
-    applyJsonSchema,
-    switchPage,
-    openComponentEditor,
-    switchBranch,
+    insertBlockAtSlot,
+    insertNodesAtSlot,
+    deleteComponent,
+    duplicateComponent: duplicateComponentInstance,
+    moveComponent,
+    applyWidthPreset,
+    wrapInContainer,
+    resizePlacement,
     saveCurrentPage,
-    loadInterface,
-    undo,
-    redo,
-    resetHistory,
+    switchBranch,
+    switchPage,
+    setActiveDevice,
+    openComponentEditor,
+    exitComponentEditor,
   };
 }
+
+export default useCmsState;

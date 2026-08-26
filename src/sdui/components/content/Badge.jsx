@@ -5,11 +5,16 @@ export const Badge = ({ data = {}, style }) => (
     style={{
       backgroundColor: "#cc0c39",
       color: "white",
-      padding: "4px 10px",
+      padding: "0 9px",
       fontSize: "11px",
-      fontWeight: "bold",
-      borderRadius: "16px",
-      display: "inline-block",
+      fontWeight: "600",
+      letterSpacing: "0.01em",
+      borderRadius: "999px",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      whiteSpace: "nowrap",
+      boxSizing: "border-box",
       ...style,
     }}
   >

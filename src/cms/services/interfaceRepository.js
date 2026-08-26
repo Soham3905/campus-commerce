@@ -3,7 +3,7 @@ import { defaultInterfaces } from "../../schema/defaultInterfaces";
 import { generateId } from "../utils/idUtils";
 import { cloneTree } from "../utils/treeUtils";
 
-const INTERFACES_STORAGE_KEY = "campus_sdui_interfaces";
+const INTERFACES_STORAGE_KEY = "campus_sdui_interfaces_v4";
 
 export const InterfaceRepository = {
   getAll() {

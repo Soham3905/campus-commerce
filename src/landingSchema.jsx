@@ -29,9 +29,24 @@ export const fullPageJSON = {
             "scrollbarWidth": "none"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 1, "rowEnd": 5 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 1,
+              "rowEnd": 5
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 1,
+              "rowEnd": 5
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 1,
+              "rowEnd": 5
+            }
           },
           "children": [
             {
@@ -85,7 +100,7 @@ export const fullPageJSON = {
                 "whiteSpace": "nowrap",
                 "boxSizing": "border-box",
                 "cursor": "pointer",
-                "boxShadow": "inset 0 -2px 0 #C4185F",
+                "boxShadow": "inset 0 -2px 0 #C4185F"
               },
               "data": {
                 "id": "home",
@@ -277,9 +292,24 @@ export const fullPageJSON = {
             "boxShadow": "0 4px 14px rgba(10,42,49,0.18)"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 6, "rowEnd": 10 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 6, "rowEnd": 10 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 6, "rowEnd": 10 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 6,
+              "rowEnd": 10
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 6,
+              "rowEnd": 10
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 6,
+              "rowEnd": 10
+            }
           },
           "children": [
             {
@@ -430,12 +460,27 @@ export const fullPageJSON = {
           "type": "StoryRow",
           "containerStyle": {
             "padding": "20px max(16px, calc((100% - 1180px) / 2)) 8px",
-            "backgroundColor": "transparent",
+            "backgroundColor": "transparent"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 16, "rowEnd": 26 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 11, "rowEnd": 22 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 11, "rowEnd": 22 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 11,
+              "rowEnd": 22
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 11,
+              "rowEnd": 22
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 11,
+              "rowEnd": 22
+            }
           },
           "actions": {
             "onDrop": {
@@ -448,46 +493,44 @@ export const fullPageJSON = {
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "borderColor": "#123A44",
-                "accentColor": "#123A44",
-                "--story-ring": "#123A44",
-                "--ring-color": "#123A44"
+                "gap": "8px",
+                "borderRadius": "50%",
+                "border": "2px solid #C4185F",
+                "padding": "2px",
+                "cursor": "pointer",
+                "boxSizing": "border-box"
               },
               "data": {
                 "label": "Sale",
-                "imageUrl": "https://picsum.photos/id/2/200/200"
+                "imageUrl": "https://picsum.photos/id/1025/200/200"
               },
               "actions": {
-                "onDrag": {
-                  "type": "API_CALL",
-                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                  "actionName": "ON_DRAG_STORY"
-                },
                 "onTap": {
-                  "type": "SHOW_IMAGE_MODAL",
-                  "data": {
-                    "imageUrl": "https://picsum.photos/id/2/600/600"
-                  }
+                  "type": "NAVIGATE",
+                  "route": "deals",
+                  "actionName": "ON_TAP_STORY_SALE"
                 }
               }
             },
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "borderColor": "#C4185F",
-                "accentColor": "#C4185F",
-                "--story-ring": "#C4185F",
-                "--ring-color": "#C4185F"
+                "gap": "8px",
+                "borderRadius": "50%",
+                "border": "2px solid #C4185F",
+                "padding": "2px",
+                "cursor": "pointer",
+                "boxSizing": "border-box"
               },
               "data": {
                 "label": "Trending",
-                "imageUrl": "https://picsum.photos/id/3/200/200"
+                "imageUrl": "https://picsum.photos/id/1062/200/200"
               },
               "actions": {
                 "onTap": {
                   "type": "SHOW_IMAGE_MODAL",
                   "data": {
-                    "imageUrl": "https://picsum.photos/id/3/600/600"
+                    "imageUrl": "https://picsum.photos/id/1062/600/600"
                   }
                 }
               }
@@ -495,20 +538,22 @@ export const fullPageJSON = {
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "borderColor": "#C4185F",
-                "accentColor": "#C4185F",
-                "--story-ring": "#C4185F",
-                "--ring-color": "#C4185F"
+                "gap": "8px",
+                "borderRadius": "50%",
+                "border": "2px solid #C4185F",
+                "padding": "2px",
+                "cursor": "pointer",
+                "boxSizing": "border-box"
               },
               "data": {
                 "label": "Electronics",
-                "imageUrl": "https://picsum.photos/id/4/200/200"
+                "imageUrl": "https://picsum.photos/id/160/200/200"
               },
               "actions": {
                 "onTap": {
                   "type": "SHOW_IMAGE_MODAL",
                   "data": {
-                    "imageUrl": "https://picsum.photos/id/4/600/600"
+                    "imageUrl": "https://picsum.photos/id/160/600/600"
                   }
                 }
               }
@@ -516,20 +561,22 @@ export const fullPageJSON = {
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "borderColor": "#C4185F",
-                "accentColor": "#C4185F",
-                "--story-ring": "#C4185F",
-                "--ring-color": "#C4185F"
+                "gap": "8px",
+                "borderRadius": "50%",
+                "border": "2px solid #C4185F",
+                "padding": "2px",
+                "cursor": "pointer",
+                "boxSizing": "border-box"
               },
               "data": {
                 "label": "Kitchen",
-                "imageUrl": "https://picsum.photos/id/30/200/200"
+                "imageUrl": "https://picsum.photos/id/1060/200/200"
               },
               "actions": {
                 "onTap": {
                   "type": "SHOW_IMAGE_MODAL",
                   "data": {
-                    "imageUrl": "https://picsum.photos/id/30/600/600"
+                    "imageUrl": "https://picsum.photos/id/1060/600/600"
                   }
                 }
               }
@@ -537,20 +584,22 @@ export const fullPageJSON = {
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "borderColor": "#C4185F",
-                "accentColor": "#C4185F",
-                "--story-ring": "#C4185F",
-                "--ring-color": "#C4185F"
+                "gap": "8px",
+                "borderRadius": "50%",
+                "border": "2px solid #C4185F",
+                "padding": "2px",
+                "cursor": "pointer",
+                "boxSizing": "border-box"
               },
               "data": {
                 "label": "Fashion",
-                "imageUrl": "https://picsum.photos/id/21/200/200"
+                "imageUrl": "https://picsum.photos/id/338/200/200"
               },
               "actions": {
                 "onTap": {
                   "type": "SHOW_IMAGE_MODAL",
                   "data": {
-                    "imageUrl": "https://picsum.photos/id/21/600/600"
+                    "imageUrl": "https://picsum.photos/id/338/600/600"
                   }
                 }
               }
@@ -558,10 +607,12 @@ export const fullPageJSON = {
             {
               "type": "StoryCircle",
               "containerStyle": {
-                "borderColor": "#C4185F",
-                "accentColor": "#C4185F",
-                "--story-ring": "#C4185F",
-                "--ring-color": "#C4185F"
+                "gap": "8px",
+                "borderRadius": "50%",
+                "border": "2px solid #C4185F",
+                "padding": "2px",
+                "cursor": "pointer",
+                "boxSizing": "border-box"
               },
               "data": {
                 "label": "Beauty",
@@ -587,12 +638,27 @@ export const fullPageJSON = {
             "borderRadius": "16px",
             "border": "1px solid #E4E7E4",
             "boxShadow": "0 1px 2px rgba(16,31,38,0.04)",
-            "boxSizing": "border-box",
+            "boxSizing": "border-box"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 27, "rowEnd": 35 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 22, "rowEnd": 30 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 22, "rowEnd": 30 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 23,
+              "rowEnd": 31
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 23,
+              "rowEnd": 31
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 23,
+              "rowEnd": 31
+            }
           },
           "children": [
             {
@@ -677,7 +743,7 @@ export const fullPageJSON = {
               },
               "data": {
                 "label": "Home",
-                "icon": "🏠"
+                "icon": "🛋️"
               },
               "actions": {
                 "onTap": {
@@ -732,7 +798,7 @@ export const fullPageJSON = {
                   "actionName": "ON_TAP_GROCERY"
                 }
               }
-            },
+            }
           ]
         },
         {
@@ -740,12 +806,27 @@ export const fullPageJSON = {
           "containerStyle": {
             "borderRadius": "16px",
             "border": "1px solid #E4E7E4",
-            "boxSizing": "border-box",
+            "boxSizing": "border-box"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 36, "rowEnd": 58 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 54 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 31, "rowEnd": 54 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 32,
+              "rowEnd": 54
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 32,
+              "rowEnd": 54
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 32,
+              "rowEnd": 54
+            }
           },
           "data": {
             "showDots": true,
@@ -773,25 +854,22 @@ export const fullPageJSON = {
               "containerStyle": {
                 "height": "220px",
                 "objectFit": "cover",
-                "borderRadius": "16px",
+                "borderRadius": "16px"
               },
               "data": {
-                "imageUrl": "https://picsum.photos/id/1080/1600/500",
-                "altText": ""
+                "imageUrl": "https://picsum.photos/id/1070/1600/500",
+                "altText": "Campus electronics fest"
               }
             },
             {
               "type": "IFrame",
               "containerStyle": {
                 "height": "220px",
-                "width": "100%",
-                "borderRadius": "16px",
-                "overflow": "hidden"
+                "borderRadius": "16px"
               },
               "data": {
-                "src": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1",
-                "title": "Campus Tech & Deals Showcase",
-                "allowFullScreen": true
+                "src": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&controls=0&showinfo=0&rel=0",
+                "title": "Special announcement"
               }
             },
             {
@@ -799,7 +877,7 @@ export const fullPageJSON = {
               "containerStyle": {
                 "height": "220px",
                 "objectFit": "cover",
-                "borderRadius": "16px",
+                "borderRadius": "16px"
               },
               "data": {
                 "imageUrl": "https://picsum.photos/id/180/1600/500",
@@ -814,12 +892,27 @@ export const fullPageJSON = {
             "borderRadius": "16px",
             "border": "1px solid #E4E7E4",
             "boxShadow": "0 1px 2px rgba(16,31,38,0.05)",
-            "boxSizing": "border-box",
+            "boxSizing": "border-box"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 59, "rowEnd": 99 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 55, "rowEnd": 95 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 55, "rowEnd": 95 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 55,
+              "rowEnd": 95
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 55,
+              "rowEnd": 95
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 55,
+              "rowEnd": 95
+            }
           },
           "data": {
             "imageUrl": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80",
@@ -861,10 +954,10 @@ export const fullPageJSON = {
                 "format": "DD:HH:MM:SS"
               },
               "actions": {
-                "onHover": {
+                "onExpire": {
                   "type": "API_CALL",
                   "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                  "actionName": "ON_HOVER_FLASH_TIMER"
+                  "actionName": "HERO_SALE_EXPIRED"
                 }
               }
             }
@@ -877,15 +970,31 @@ export const fullPageJSON = {
             "flexDirection": "row",
             "flexWrap": "nowrap",
             "gap": "14px",
+            "padding": "0 max(16px, calc((100% - 1180px) / 2))",
             "overflowX": "auto",
             "scrollbarWidth": "none",
             "WebkitOverflowScrolling": "touch",
-            "boxSizing": "border-box",
+            "boxSizing": "border-box"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 100, "rowEnd": 111 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 96, "rowEnd": 107 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 96, "rowEnd": 107 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 96,
+              "rowEnd": 107
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 96,
+              "rowEnd": 107
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 96,
+              "rowEnd": 107
+            }
           },
           "children": [
             {
@@ -894,88 +1003,24 @@ export const fullPageJSON = {
                 "flexShrink": "0",
                 "minWidth": "280px",
                 "maxWidth": "320px",
-                "background": "linear-gradient(180deg, #FFF3DF 0%, #FFF3DF 100%)",
-                "backgroundImage": "linear-gradient(180deg, #FFF3DF 0%, #FFF3DF 100%)",
-                "backgroundColor": "#FFF3DF",
+                "background": "linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%)",
+                "backgroundImage": "linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%)",
+                "backgroundColor": "#FCE7F3",
                 "padding": "14px 16px",
                 "borderRadius": "16px",
-                "border": "1px dashed #E9C489",
-                "color": "#8A5209",
+                "border": "1.5px dashed #F472B6",
+                "color": "#9D174D",
                 "fontSize": "14px",
                 "fontWeight": "500",
                 "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                 "boxSizing": "border-box",
-              },
-              "data": {
-                "title": "Save 20% on this order",
-                "coupon": "SAVE20",
-                "description": "Applies to orders above ₹999.",
-                "copyLabel": "Copy code"
-              },
-              "actions": {
-                "onCopy": {
-                  "type": "COPY_TO_CLIPBOARD",
-                  "value": "SAVE20"
-                }
-              }
-            },
-            {
-              "type": "CouponCode",
-              "containerStyle": {
-                "flexShrink": "0",
-                "minWidth": "280px",
-                "maxWidth": "320px",
-                "background": "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)",
-                "backgroundImage": "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)",
-                "backgroundColor": "#DCFCE7",
-                "padding": "14px 16px",
-                "borderRadius": "16px",
-                "border": "1.5px dashed #86EFAC",
-                "color": "#166534",
-                "fontSize": "14px",
-                "fontWeight": "500",
-                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                "boxSizing": "border-box",
-                "boxShadow": "0 4px 16px rgba(22, 101, 52, 0.06)",
+                "boxShadow": "0 4px 16px rgba(157, 23, 77, 0.06)",
                 "cursor": "pointer"
               },
               "data": {
-                "title": "Flat ₹500 OFF Super Saver",
-                "coupon": "FLAT500",
-                "description": "Valid on purchases above ₹2,499.",
-                "copyLabel": "Copy code"
-              },
-              "actions": {
-                "onCopy": {
-                  "type": "COPY_TO_CLIPBOARD",
-                  "value": "FLAT500"
-                }
-              }
-            },
-            {
-              "type": "CouponCode",
-              "containerStyle": {
-                "flexShrink": "0",
-                "minWidth": "280px",
-                "maxWidth": "320px",
-                "background": "linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)",
-                "backgroundImage": "linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)",
-                "backgroundColor": "#EDE9FE",
-                "padding": "14px 16px",
-                "borderRadius": "16px",
-                "border": "1.5px dashed #C4B5FD",
-                "color": "#5B21B6",
-                "fontSize": "14px",
-                "fontWeight": "500",
-                "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                "boxSizing": "border-box",
-                "boxShadow": "0 4px 16px rgba(91, 33, 182, 0.06)",
-                "cursor": "pointer"
-              },
-              "data": {
-                "title": "Campus Special: 50% OFF",
+                "title": "Campus Exclusive 50% Cashback",
                 "coupon": "CAMPUS50",
-                "description": "Max discount ₹300 for student members.",
+                "description": "Use campus student ID at checkout.",
                 "copyLabel": "Copy code"
               },
               "actions": {
@@ -991,24 +1036,24 @@ export const fullPageJSON = {
                 "flexShrink": "0",
                 "minWidth": "280px",
                 "maxWidth": "320px",
-                "background": "linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)",
-                "backgroundImage": "linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)",
-                "backgroundColor": "#FFE4E6",
+                "background": "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
+                "backgroundImage": "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
+                "backgroundColor": "#DBEAFE",
                 "padding": "14px 16px",
                 "borderRadius": "16px",
-                "border": "1.5px dashed #FDA4AF",
-                "color": "#9F1239",
+                "border": "1.5px dashed #60A5FA",
+                "color": "#1E40AF",
                 "fontSize": "14px",
                 "fontWeight": "500",
                 "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                 "boxSizing": "border-box",
-                "boxShadow": "0 4px 16px rgba(159, 18, 57, 0.06)",
+                "boxShadow": "0 4px 16px rgba(30, 64, 175, 0.06)",
                 "cursor": "pointer"
               },
               "data": {
-                "title": "Free Delivery + ₹150 OFF",
+                "title": "Zero Delivery Fee Drop",
                 "coupon": "FREEDROP",
-                "description": "First campus order with instant express drop.",
+                "description": "Free instant 10-minute delivery code.",
                 "copyLabel": "Copy code"
               },
               "actions": {
@@ -1024,24 +1069,24 @@ export const fullPageJSON = {
                 "flexShrink": "0",
                 "minWidth": "280px",
                 "maxWidth": "320px",
-                "background": "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
-                "backgroundImage": "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
-                "backgroundColor": "#DBEAFE",
+                "background": "linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%)",
+                "backgroundImage": "linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%)",
+                "backgroundColor": "#F3E8FF",
                 "padding": "14px 16px",
                 "borderRadius": "16px",
-                "border": "1.5px dashed #93C5FD",
-                "color": "#1E40AF",
+                "border": "1.5px dashed #C084FC",
+                "color": "#6B21A8",
                 "fontSize": "14px",
                 "fontWeight": "500",
                 "fontFamily": "'Inter Tight', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                 "boxSizing": "border-box",
-                "boxShadow": "0 4px 16px rgba(30, 64, 175, 0.06)",
+                "boxShadow": "0 4px 16px rgba(107, 33, 168, 0.06)",
                 "cursor": "pointer"
               },
               "data": {
-                "title": "30% OFF Tech & Gadgets",
+                "title": "Tech Accessories Flat 30%",
                 "coupon": "TECH30",
-                "description": "Valid on chargers, earphones & cables.",
+                "description": "Valid across keyboards, mice & chargers.",
                 "copyLabel": "Copy code"
               },
               "actions": {
@@ -1060,15 +1105,31 @@ export const fullPageJSON = {
             "flexDirection": "row",
             "flexWrap": "nowrap",
             "gap": "14px",
+            "padding": "0 max(16px, calc((100% - 1180px) / 2))",
             "overflowX": "auto",
             "scrollbarWidth": "none",
             "WebkitOverflowScrolling": "touch",
-            "boxSizing": "border-box",
+            "boxSizing": "border-box"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 112, "rowEnd": 120 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 108, "rowEnd": 116 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 108, "rowEnd": 116 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 108,
+              "rowEnd": 116
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 108,
+              "rowEnd": 116
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 108,
+              "rowEnd": 116
+            }
           },
           "children": [
             {
@@ -1224,12 +1285,27 @@ export const fullPageJSON = {
             "padding": "20px max(16px, calc((100% - 1180px) / 2)) 28px",
             "overflowX": "auto",
             "WebkitOverflowScrolling": "touch",
-            "boxSizing": "border-box",
+            "boxSizing": "border-box"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 121, "rowEnd": 173 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 117, "rowEnd": 169 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 117, "rowEnd": 169 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 117,
+              "rowEnd": 175
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 117,
+              "rowEnd": 175
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 117,
+              "rowEnd": 175
+            }
           },
           "actions": {
             "onScroll": {
@@ -1252,19 +1328,25 @@ export const fullPageJSON = {
                 "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundColor": "#FFFFFF",
+                "position": "relative",
                 "flex": "0 0 auto",
+                "width": "clamp(236px, 74vw, 268px)",
                 "height": "516px",
                 "minHeight": "516px",
                 "maxHeight": "516px",
                 "alignSelf": "stretch",
                 "display": "flex",
                 "flexDirection": "column",
+                "justifyContent": "flex-start",
                 "gap": "8px",
                 "padding": "14px",
                 "border": "1px solid #E4E7E4",
                 "borderRadius": "16px",
                 "boxShadow": "0 1px 2px rgba(16,31,38,0.04)",
                 "boxSizing": "border-box",
+                "minWidth": "0",
+                "overflow": "hidden",
+                "scrollSnapAlign": "start"
               },
               "data": {
                 "id": "serenelife-001"
@@ -1312,13 +1394,14 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "height": "176px",
                     "minHeight": "176px",
+                    "maxHeight": "176px",
                     "flex": "0 0 176px",
                     "flexShrink": "0",
                     "width": "100%",
-                    "maxHeight": "176px",
                     "objectFit": "contain",
                     "backgroundColor": "#FAFAF8",
                     "borderRadius": "10px",
+                    "display": "block",
                     "boxSizing": "border-box"
                   },
                   "data": {
@@ -1529,7 +1612,7 @@ export const fullPageJSON = {
                     "backgroundColor": "#C4185F",
                     "marginTop": "auto",
                     "width": "calc(100% - 52px)",
-                    "alignSelf": "flex-end",
+                    "alignSelf": "flex-start",
                     "display": "flex",
                     "alignItems": "center",
                     "justifyContent": "center",
@@ -1560,7 +1643,7 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "position": "absolute",
                     "right": "14px",
-                    "bottom": "8px",
+                    "bottom": "14px",
                     "zIndex": "3",
                     "width": "44px",
                     "height": "44px",
@@ -1661,10 +1744,10 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "height": "176px",
                     "minHeight": "176px",
+                    "maxHeight": "176px",
                     "flex": "0 0 176px",
                     "flexShrink": "0",
                     "width": "100%",
-                    "maxHeight": "176px",
                     "objectFit": "contain",
                     "backgroundColor": "#FAFAF8",
                     "borderRadius": "10px",
@@ -1879,7 +1962,7 @@ export const fullPageJSON = {
                     "backgroundColor": "#C4185F",
                     "marginTop": "auto",
                     "width": "calc(100% - 52px)",
-                    "alignSelf": "flex-end",
+                    "alignSelf": "flex-start",
                     "display": "flex",
                     "alignItems": "center",
                     "justifyContent": "center",
@@ -1910,7 +1993,7 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "position": "absolute",
                     "right": "14px",
-                    "bottom": "8px",
+                    "bottom": "14px",
                     "zIndex": "3",
                     "width": "44px",
                     "height": "44px",
@@ -2011,10 +2094,10 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "height": "176px",
                     "minHeight": "176px",
+                    "maxHeight": "176px",
                     "flex": "0 0 176px",
                     "flexShrink": "0",
                     "width": "100%",
-                    "maxHeight": "176px",
                     "objectFit": "contain",
                     "backgroundColor": "#FAFAF8",
                     "borderRadius": "10px",
@@ -2229,7 +2312,7 @@ export const fullPageJSON = {
                     "backgroundColor": "#C4185F",
                     "marginTop": "auto",
                     "width": "calc(100% - 52px)",
-                    "alignSelf": "flex-end",
+                    "alignSelf": "flex-start",
                     "display": "flex",
                     "alignItems": "center",
                     "justifyContent": "center",
@@ -2260,7 +2343,7 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "position": "absolute",
                     "right": "14px",
-                    "bottom": "8px",
+                    "bottom": "14px",
                     "zIndex": "3",
                     "width": "44px",
                     "height": "44px",
@@ -2361,10 +2444,10 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "height": "176px",
                     "minHeight": "176px",
+                    "maxHeight": "176px",
                     "flex": "0 0 176px",
                     "flexShrink": "0",
                     "width": "100%",
-                    "maxHeight": "176px",
                     "objectFit": "contain",
                     "backgroundColor": "#FAFAF8",
                     "borderRadius": "10px",
@@ -2579,7 +2662,7 @@ export const fullPageJSON = {
                     "backgroundColor": "#C4185F",
                     "marginTop": "auto",
                     "width": "calc(100% - 52px)",
-                    "alignSelf": "flex-end",
+                    "alignSelf": "flex-start",
                     "display": "flex",
                     "alignItems": "center",
                     "justifyContent": "center",
@@ -2610,7 +2693,7 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "position": "absolute",
                     "right": "14px",
-                    "bottom": "8px",
+                    "bottom": "14px",
                     "zIndex": "3",
                     "width": "44px",
                     "height": "44px",
@@ -2711,10 +2794,10 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "height": "176px",
                     "minHeight": "176px",
+                    "maxHeight": "176px",
                     "flex": "0 0 176px",
                     "flexShrink": "0",
                     "width": "100%",
-                    "maxHeight": "176px",
                     "objectFit": "contain",
                     "backgroundColor": "#FAFAF8",
                     "borderRadius": "10px",
@@ -2929,7 +3012,7 @@ export const fullPageJSON = {
                     "backgroundColor": "#C4185F",
                     "marginTop": "auto",
                     "width": "calc(100% - 52px)",
-                    "alignSelf": "flex-end",
+                    "alignSelf": "flex-start",
                     "display": "flex",
                     "alignItems": "center",
                     "justifyContent": "center",
@@ -2960,7 +3043,7 @@ export const fullPageJSON = {
                   "containerStyle": {
                     "position": "absolute",
                     "right": "14px",
-                    "bottom": "8px",
+                    "bottom": "14px",
                     "zIndex": "3",
                     "width": "44px",
                     "height": "44px",
@@ -3028,49 +3111,33 @@ export const fullPageJSON = {
             }
           ]
         },
-        // This is Box And Text Component..
-        // {
-        //   "type": "Box",
-        //   "containerStyle": {
-        //     "padding": "20px",
-        //     "backgroundColor": "#e0f2fe",
-        //     "borderRadius": "12px",
-        //     "display": "flex",
-        //     "justifyContent": "center",
-        //     "alignItems": "center",
-        //     "border": "2px dashed #0284c7"
-        //   },
-        //   "placement": {
-        //     "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 174, "rowEnd": 180 },
-        //     "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 172 },
-        //     "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 172 }
-        //   },
-        //   "children": [
-        //     {
-        //       "type": "Text",
-        //       "data": {
-        //         "text": "This is a demonstration of Box and Text components!"
-        //       },
-        //       "containerStyle": {
-        //         "fontSize": "16px",
-        //         "fontWeight": "bold",
-        //         "color": "#0369a1"
-        //       }
-        //     }
-        //   ]
-        // },
-        // ── 10. SMALL PRODUCT CARDS (RESPONSIVE GRID) ───────────────────
         {
           "type": "Box",
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 174, "rowEnd": 350 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 350 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 170, "rowEnd": 350 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 177,
+              "rowEnd": 305
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 177,
+              "rowEnd": 275
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 177,
+              "rowEnd": 245
+            }
           },
           "containerStyle": {
             "display": "grid",
             "gridTemplateColumns": "repeat(auto-fill, minmax(180px, 1fr))",
             "gap": "12px",
+            "padding": "16px max(16px, calc((100% - 1180px) / 2))",
             "backgroundColor": "#F8FAFC",
             "alignContent": "start",
             "boxSizing": "border-box",
@@ -3087,13 +3154,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s1" },
+              "data": {
+                "id": "s1"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/20/400/400", "altText": "Gas Stove" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.3" } }, { "type": "ReviewCount", "data": { "text": "84" } }] },
-                { "type": "Title", "data": { "text": "BIGFLAME Power Hexa..." } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹6,632", "mrp": "₹12,800", "discount": "48%" } },
-                { "type": "OfferText", "data": { "text": "₹6,512 with Bank offer" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/20/400/400",
+                    "altText": "Gas Stove"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.3"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "84"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "BIGFLAME Power Hexa..."
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹6,632",
+                    "mrp": "₹12,800",
+                    "discount": "48%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "₹6,512 with Bank offer"
+                  }
+                }
               ]
             },
             {
@@ -3106,13 +3219,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s2" },
+              "data": {
+                "id": "s2"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/10/400/400", "altText": "Men Cargos" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.1" } }, { "type": "ReviewCount", "data": { "text": "120" } }] },
-                { "type": "Title", "data": { "text": "VeBNoR Men Cargos" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹524", "mrp": "₹1,999", "discount": "73%" } },
-                { "type": "OfferText", "data": { "text": "Special discount" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/10/400/400",
+                    "altText": "Men Cargos"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.1"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "120"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "VeBNoR Men Cargos"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹524",
+                    "mrp": "₹1,999",
+                    "discount": "73%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Special discount"
+                  }
+                }
               ]
             },
             {
@@ -3125,13 +3284,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s3" },
+              "data": {
+                "id": "s3"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", "altText": "Shoes" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.5" } }, { "type": "ReviewCount", "data": { "text": "210" } }] },
-                { "type": "Title", "data": { "text": "RED TAPE Lifestyle Sneakers" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹1,391", "mrp": "₹9,099", "discount": "84%" } },
-                { "type": "OfferText", "data": { "text": "Limited time deal" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80",
+                    "altText": "Shoes"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.5"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "210"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "RED TAPE Lifestyle Sneakers"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹1,391",
+                    "mrp": "₹9,099",
+                    "discount": "84%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Limited time deal"
+                  }
+                }
               ]
             },
             {
@@ -3144,13 +3349,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s4" },
+              "data": {
+                "id": "s4"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/30/400/400", "altText": "T-Shirt" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.0" } }, { "type": "ReviewCount", "data": { "text": "56" } }] },
-                { "type": "Title", "data": { "text": "Anime Printed Cotton Tee" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹399", "mrp": "₹999", "discount": "60%" } },
-                { "type": "OfferText", "data": { "text": "Trending on campus" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/30/400/400",
+                    "altText": "T-Shirt"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.0"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "56"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "Anime Printed Cotton Tee"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹399",
+                    "mrp": "₹999",
+                    "discount": "60%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Trending on campus"
+                  }
+                }
               ]
             },
             {
@@ -3163,13 +3414,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s5" },
+              "data": {
+                "id": "s5"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/40/400/400", "altText": "Smart Watch" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.2" } }, { "type": "ReviewCount", "data": { "text": "340" } }] },
-                { "type": "Title", "data": { "text": "Noise Pulse 2 Max Display" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹1,499", "mrp": "₹5,999", "discount": "75%" } },
-                { "type": "OfferText", "data": { "text": "Lowest price ever" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/40/400/400",
+                    "altText": "Smart Watch"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.2"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "340"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "Noise Pulse 2 Max Display"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹1,499",
+                    "mrp": "₹5,999",
+                    "discount": "75%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Lowest price ever"
+                  }
+                }
               ]
             },
             {
@@ -3182,13 +3479,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s6" },
+              "data": {
+                "id": "s6"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/50/400/400", "altText": "Backpack" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.6" } }, { "type": "ReviewCount", "data": { "text": "1.2k" } }] },
-                { "type": "Title", "data": { "text": "Skybags 25L Campus Bag" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹899", "mrp": "₹2,100", "discount": "57%" } },
-                { "type": "OfferText", "data": { "text": "Bestseller" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/50/400/400",
+                    "altText": "Backpack"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.6"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "1.2k"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "Skybags 25L Campus Bag"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹899",
+                    "mrp": "₹2,100",
+                    "discount": "57%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Bestseller"
+                  }
+                }
               ]
             },
             {
@@ -3201,13 +3544,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s7" },
+              "data": {
+                "id": "s7"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/60/400/400", "altText": "Headphones" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "4.4" } }, { "type": "ReviewCount", "data": { "text": "800" } }] },
-                { "type": "Title", "data": { "text": "boAt Rockerz 450 Wireless" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹1,299", "mrp": "₹3,990", "discount": "67%" } },
-                { "type": "OfferText", "data": { "text": "Mega savings" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/60/400/400",
+                    "altText": "Headphones"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "4.4"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "800"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "boAt Rockerz 450 Wireless"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹1,299",
+                    "mrp": "₹3,990",
+                    "discount": "67%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Mega savings"
+                  }
+                }
               ]
             },
             {
@@ -3220,13 +3609,59 @@ export const fullPageJSON = {
                 "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.04)",
                 "border": "1px solid #F1F5F9"
               },
-              "data": { "id": "s8" },
+              "data": {
+                "id": "s8"
+              },
               "children": [
-                { "type": "Image", "containerStyle": { "height": "140px", "objectFit": "cover", "borderRadius": "8px" }, "data": { "imageUrl": "https://picsum.photos/id/70/400/400", "altText": "Sunglasses" } },
-                { "type": "Rating", "children": [{ "type": "Score", "data": { "text": "3.9" } }, { "type": "ReviewCount", "data": { "text": "23" } }] },
-                { "type": "Title", "data": { "text": "Fastrack UV Protect Shades" } },
-                { "type": "PriceBlock", "data": { "sellingPrice": "₹599", "mrp": "₹999", "discount": "40%" } },
-                { "type": "OfferText", "data": { "text": "Hot Deal" } }
+                {
+                  "type": "Image",
+                  "containerStyle": {
+                    "height": "140px",
+                    "objectFit": "cover",
+                    "borderRadius": "8px"
+                  },
+                  "data": {
+                    "imageUrl": "https://picsum.photos/id/70/400/400",
+                    "altText": "Sunglasses"
+                  }
+                },
+                {
+                  "type": "Rating",
+                  "children": [
+                    {
+                      "type": "Score",
+                      "data": {
+                        "text": "3.9"
+                      }
+                    },
+                    {
+                      "type": "ReviewCount",
+                      "data": {
+                        "text": "23"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Title",
+                  "data": {
+                    "text": "Fastrack UV Protect Shades"
+                  }
+                },
+                {
+                  "type": "PriceBlock",
+                  "data": {
+                    "sellingPrice": "₹599",
+                    "mrp": "₹999",
+                    "discount": "40%"
+                  }
+                },
+                {
+                  "type": "OfferText",
+                  "data": {
+                    "text": "Hot Deal"
+                  }
+                }
               ]
             }
           ]
@@ -3237,7 +3672,7 @@ export const fullPageJSON = {
             "background": "linear-gradient(180deg, #0D323B 0%, #0A2A31 100%)",
             "backgroundImage": "linear-gradient(180deg, #0D323B 0%, #0A2A31 100%)",
             "backgroundColor": "#0A2A31",
-            "padding": "20px",
+            "padding": "24px max(16px, calc((100% - 1180px) / 2))",
             "borderRadius": "12px",
             "color": "#CFDDDC",
             "fontSize": "14px",
@@ -3246,9 +3681,24 @@ export const fullPageJSON = {
             "borderTop": "1px solid rgba(255,255,255,0.08)"
           },
           "placement": {
-            "mobile": { "colStart": 1, "colEnd": 100, "rowStart": 352, "rowEnd": 380 },
-            "tablet": { "colStart": 1, "colEnd": 100, "rowStart": 352, "rowEnd": 380 },
-            "desktop": { "colStart": 1, "colEnd": 100, "rowStart": 352, "rowEnd": 380 }
+            "mobile": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 307,
+              "rowEnd": 335
+            },
+            "tablet": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 277,
+              "rowEnd": 305
+            },
+            "desktop": {
+              "colStart": 1,
+              "colEnd": 100,
+              "rowStart": 247,
+              "rowEnd": 275
+            }
           },
           "data": {
             "sections": [
@@ -3375,4 +3825,4 @@ export const fullPageJSON = {
       }
     }
   ]
-}
+};

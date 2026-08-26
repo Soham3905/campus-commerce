@@ -1,39 +1,54 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
 import { canAddChild } from "../utils/validation";
+import { computePreviewTree } from "./dragSession";
 
 const DragDropCtx = createContext(null);
 
 /**
- * Slot-based DragDrop Provider.
- * Tracks which item is being dragged and which drop slot is currently targeted.
- * Exposes helpers that any component can call from HTML5 drag event handlers.
+ * Universal Drag & Drop Provider.
+ * Tracks drag sessions, computes real-time preview trees with reflowed placeholders,
+ * and ensures single-atomic-commit history upon drop.
  */
-export const DragDropProvider = ({ children, onDropItem, onInvalidDrop }) => {
-  // The item being dragged: { type, nodeId, isNew, label, sourceParentId }
+export const DragDropProvider = ({ children, schema, onDropItem, onInvalidDrop }) => {
+  // Drag source: { type, nodeId, isNew, label, sourceParentId }
   const [dragSource, setDragSource] = useState(null);
-  // The active drop slot: { parentId, parentType, afterIndex, rect, isValid, reason }
+  // Active drop slot: { parentId, parentType, targetNodeId, dropMode, afterIndex, isValid, reason, label }
   const [dropSlot, setDropSlot] = useState(null);
-  // Keep a ref for use in callbacks that need latest value without re-render
+  // Temporary preview tree during drag
+  const [previewTree, setPreviewTree] = useState(null);
+
   const dropSlotRef = useRef(null);
   const dragSourceRef = useRef(null);
+  const schemaRef = useRef(schema);
+
+  useEffect(() => {
+    schemaRef.current = schema;
+  }, [schema]);
 
   const startDrag = useCallback((item) => {
-    const src = { type: item.type, nodeId: item.nodeId || null, isNew: item.isNew !== false, label: item.label || item.type, sourceParentId: item.sourceParentId || null };
+    const src = {
+      type: item.type,
+      nodeId: item.nodeId || null,
+      isNew: item.isNew !== false,
+      label: item.label || item.type,
+      sourceParentId: item.sourceParentId || null,
+    };
     setDragSource(src);
     dragSourceRef.current = src;
     setDropSlot(null);
     dropSlotRef.current = null;
+    setPreviewTree(null);
   }, []);
 
   /**
-   * Called by DropSlot components on dragover.
-   * parentType is needed for validation.
+   * Updates current drop target slot and computes the temporary preview layout.
    */
   const updateDropSlot = useCallback((slot) => {
-    if (!dragSourceRef.current) return;
+    const src = dragSourceRef.current;
+    if (!src || !slot) return;
 
     const parentType = slot.parentType || "Page";
-    const childType = dragSourceRef.current.type;
+    const childType = src.type;
     const check = canAddChild(parentType, childType);
 
     const resolved = {
@@ -41,39 +56,67 @@ export const DragDropProvider = ({ children, onDropItem, onInvalidDrop }) => {
       isValid: check.valid,
       reason: check.reason || null,
     };
+
     setDropSlot(resolved);
     dropSlotRef.current = resolved;
+
+    if (resolved.isValid && schemaRef.current) {
+      try {
+        const preview = computePreviewTree(schemaRef.current, src, resolved);
+        setPreviewTree(preview);
+      } catch (err) {
+        console.warn("[DragDropContext] Failed to compute preview tree:", err);
+      }
+    } else {
+      setPreviewTree(null);
+    }
   }, []);
 
   const clearDropSlot = useCallback(() => {
     setDropSlot(null);
     dropSlotRef.current = null;
+    setPreviewTree(null);
   }, []);
 
-  const endDrag = useCallback((dropped = false) => {
-    const slot = dropSlotRef.current;
-    const src = dragSourceRef.current;
+  const endDrag = useCallback(
+    (dropped = false) => {
+      const slot = dropSlotRef.current;
+      const src = dragSourceRef.current;
 
-    if (dropped && slot && src) {
-      if (slot.isValid) {
-        onDropItem?.({
-          source: src,
-          slot: slot,
-        });
-      } else {
-        onInvalidDrop?.({
-          source: src,
-          slot: slot,
-          reason: slot.reason || `Cannot place ${src.type} here.`,
-        });
+      if (dropped && slot && src) {
+        if (slot.isValid) {
+          onDropItem?.({
+            source: src,
+            slot: slot,
+          });
+        } else {
+          onInvalidDrop?.({
+            source: src,
+            slot: slot,
+            reason: slot.reason || `Cannot place ${src.label || src.type} here.`,
+          });
+        }
       }
-    }
 
-    setDragSource(null);
-    setDropSlot(null);
-    dragSourceRef.current = null;
-    dropSlotRef.current = null;
-  }, [onDropItem, onInvalidDrop]);
+      setDragSource(null);
+      setDropSlot(null);
+      setPreviewTree(null);
+      dragSourceRef.current = null;
+      dropSlotRef.current = null;
+    },
+    [onDropItem, onInvalidDrop]
+  );
+
+  // Global Escape key listener to cancel active drag
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && dragSourceRef.current) {
+        endDrag(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [endDrag]);
 
   return (
     <DragDropCtx.Provider
@@ -81,6 +124,7 @@ export const DragDropProvider = ({ children, onDropItem, onInvalidDrop }) => {
         isDragging: !!dragSource,
         dragSource,
         dropSlot,
+        previewTree,
         startDrag,
         updateDropSlot,
         clearDropSlot,

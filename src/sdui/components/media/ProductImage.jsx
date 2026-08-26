@@ -1,17 +1,44 @@
 import React from "react";
 
-export const ProductImage = ({ data = {}, style }) => (
-  <div style={{ backgroundColor: "#f8f9fa", borderRadius: "8px", overflow: "hidden" }}>
-    <img
-      src={data.imageUrl}
-      alt={data.altText || "Product"}
+export const ProductImage = ({ data = {}, style }) => {
+  const {
+    height = "176px",
+    minHeight = height,
+    maxHeight = height,
+    objectFit = "contain",
+    backgroundColor = "#FAFAF8",
+    borderRadius = "10px",
+    ...restStyle
+  } = style || {};
+
+  return (
+    <div
       style={{
         width: "100%",
-        height: style?.height || "180px",
-        objectFit: "contain",
-        display: "block",
-        ...style,
+        height,
+        minHeight,
+        maxHeight,
+        backgroundColor,
+        borderRadius,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        boxSizing: "border-box",
+        ...restStyle,
       }}
-    />
-  </div>
-);
+    >
+      <img
+        src={data.imageUrl}
+        alt={data.altText || "Product"}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit,
+          display: "block",
+        }}
+      />
+    </div>
+  );
+};

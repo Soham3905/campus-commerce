@@ -4,13 +4,15 @@ export const ProductCard = ({ children, style, isHovered }) => {
   return (
     <div
       style={{
-        padding: "10px",
-        width: "280px",
-        borderRadius: "10px",
+        padding: "14px",
+        borderRadius: "16px",
         backgroundColor: "#fff",
         position: "relative",
-        overflow: "hidden",
         boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        overflow: "hidden",
         ...style,
       }}
     >
@@ -20,11 +22,12 @@ export const ProductCard = ({ children, style, isHovered }) => {
       <div
         style={{
           position: "absolute",
-          top: "145px",
+          top: "135px",
           left: "14px",
           right: "14px",
           zIndex: 10,
           opacity: isHovered ? 1 : 0,
+          pointerEvents: isHovered ? "auto" : "none",
           transform: isHovered ? "translateY(0) scale(1)" : "translateY(8px) scale(0.96)",
           transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
@@ -35,21 +38,21 @@ export const ProductCard = ({ children, style, isHovered }) => {
           }}
           style={{
             width: "100%",
-            padding: "9px 14px",
+            padding: "8px 12px",
             backgroundColor: "rgba(17, 24, 39, 0.92)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
             color: "#ffffff",
             border: "1px solid rgba(255, 255, 255, 0.2)",
-            borderRadius: "12px",
+            borderRadius: "10px",
             fontWeight: "600",
-            fontSize: "13px",
+            fontSize: "12px",
             letterSpacing: "0.02em",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "7px",
+            gap: "6px",
             boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.1)",
             transition: "all 0.2s ease",
             fontFamily: "'Inter Tight', Inter, sans-serif",
@@ -61,7 +64,7 @@ export const ProductCard = ({ children, style, isHovered }) => {
             e.currentTarget.style.backgroundColor = "rgba(17, 24, 39, 0.92)";
           }}
         >
-          <span style={{ fontSize: "13px" }}>⚡</span>
+          <span style={{ fontSize: "12px" }}>⚡</span>
           <span>Quick Add</span>
         </button>
       </div>

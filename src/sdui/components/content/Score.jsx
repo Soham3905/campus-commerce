@@ -9,6 +9,8 @@ export const Score = ({ data = {}, style }) => (
       background: "rgba(231,118,0,0.1)",
       padding: "2px 6px",
       borderRadius: "8px",
+      margin: 0,
+      boxSizing: "border-box",
       ...style,
     }}
   >
