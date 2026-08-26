@@ -85,14 +85,15 @@ export function reflowChildren(children, targetDevice = "all", options = {}) {
       colStart = Math.max(1, Math.min(MAX_GRID_COLUMNS, colStart));
       colEnd = Math.max(colStart + 1, Math.min(MAX_GRID_COLUMNS + 1, colEnd));
 
-      // Calculate rowSpan
-      let rowSpan = getDefaultRowSpan(child.type);
+      // Calculate rowSpan for this specific device
+      const defaultSpan = getDefaultRowSpan(child, device);
+      let rowSpan = defaultSpan;
       if (
         typeof existingPlacement.rowStart === "number" &&
         typeof existingPlacement.rowEnd === "number" &&
         existingPlacement.rowEnd > existingPlacement.rowStart
       ) {
-        rowSpan = existingPlacement.rowEnd - existingPlacement.rowStart;
+        rowSpan = Math.max(defaultSpan, existingPlacement.rowEnd - existingPlacement.rowStart);
       }
       rowSpan = Math.max(1, rowSpan);
 

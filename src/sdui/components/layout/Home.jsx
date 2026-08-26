@@ -6,6 +6,9 @@ export const Home = ({ children, style }) => {
       style={{
         display: "flex",
         flexDirection: "column",
+        width: "100%",
+        minHeight: "100%",
+        boxSizing: "border-box",
         ...style,
       }}
     >
@@ -13,3 +16,5 @@ export const Home = ({ children, style }) => {
     </div>
   );
 };
+
+export default Home;

@@ -16,7 +16,7 @@ export const StyleTab = ({ node, onUpdate }) => {
   };
 
   return (
-    <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "12px" }}>
+    <div style={{ padding: "14px", display: "flex", flexDirection: "column", gap: "14px" }}>
       {/* Background Color */}
       <div>
         <label style={commonStyles.label}>Background Color</label>
@@ -57,6 +57,30 @@ export const StyleTab = ({ node, onUpdate }) => {
         </div>
       </div>
 
+      {/* Width & Height */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+        <div>
+          <label style={commonStyles.label}>Width</label>
+          <input
+            type="text"
+            style={commonStyles.input}
+            placeholder="e.g. 300px, 100%, auto"
+            value={style.width || ""}
+            onChange={(e) => handleStyleChange("width", e.target.value)}
+          />
+        </div>
+        <div>
+          <label style={commonStyles.label}>Height</label>
+          <input
+            type="text"
+            style={commonStyles.input}
+            placeholder="e.g. 48px, auto"
+            value={style.height || ""}
+            onChange={(e) => handleStyleChange("height", e.target.value)}
+          />
+        </div>
+      </div>
+
       {/* Padding & Border Radius */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
         <div>
@@ -79,6 +103,18 @@ export const StyleTab = ({ node, onUpdate }) => {
             onChange={(e) => handleStyleChange("borderRadius", e.target.value)}
           />
         </div>
+      </div>
+
+      {/* Border & Shadow */}
+      <div>
+        <label style={commonStyles.label}>Border</label>
+        <input
+          type="text"
+          style={commonStyles.input}
+          placeholder="1px solid #e5e7eb"
+          value={style.border || ""}
+          onChange={(e) => handleStyleChange("border", e.target.value)}
+        />
       </div>
 
       {/* Sticky Header Positioning */}
@@ -109,3 +145,5 @@ export const StyleTab = ({ node, onUpdate }) => {
     </div>
   );
 };
+
+export default StyleTab;

@@ -40,6 +40,8 @@ import { createComponent } from "../utils/componentFactory";
 import { validateSchema, canAddChild } from "../utils/validation";
 import { ensureStableIds } from "../utils/idUtils";
 import { ComponentRegistry } from "../../registry/componentRegistry";
+import { defaultPages } from "../../schema/defaultPages";
+import { GridEngine } from "../layout/gridEngine";
 
 export function useCmsState() {
   const dispatch = useDispatch();
@@ -55,7 +57,7 @@ export function useCmsState() {
   const pullRequests = useSelector((state) => state.pullRequests.list);
 
   const activeJourney = journeys.find((j) => j.id === activeJourneyId) || journeys[0] || null;
-  const activePage = pages.find((p) => p.id === activePageId) || pages[0] || null;
+  const activePage = pages.find((p) => p.id === activePageId) || pages[0] || defaultPages[0];
 
   // Local working & editor UI state
   const [editingContext, setEditingContext] = useState(null); // null (Page) | string (e.g. 'ProductCard')
@@ -64,6 +66,10 @@ export function useCmsState() {
   const [activeDevice, setActiveDevice] = useState("desktop");
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle"); // 'idle' | 'saving' | 'saved' | 'error'
+
+  const initialSchema = activePage?.schema
+    ? ensureStableIds(cloneTree(activePage.schema))
+    : defaultPages[0].schema;
 
   // Undo / Redo history
   const {
@@ -74,7 +80,7 @@ export function useCmsState() {
     canUndo,
     canRedo,
     resetHistory,
-  } = useHistory(activePage?.schema ? ensureStableIds(activePage.schema) : {});
+  } = useHistory(initialSchema);
 
   const initializedRef = useRef(false);
 
@@ -118,6 +124,25 @@ export function useCmsState() {
       }
     },
     [setSchemaWithHistory, activePage?.id, dispatch]
+  );
+
+  const applyJsonSchema = useCallback(
+    (newSchema) => {
+      let parsed = newSchema;
+      if (typeof newSchema === "string") {
+        try {
+          parsed = JSON.parse(newSchema);
+        } catch (e) {
+          console.error("Invalid JSON input:", e);
+          return;
+        }
+      }
+      if (!parsed || typeof parsed !== "object") return;
+      const prepared = ensureStableIds(cloneTree(parsed));
+      setSchema(prepared);
+      setSelectedComponentId(null);
+    },
+    [setSchema]
   );
 
   // Selection handlers
@@ -395,12 +420,13 @@ export function useCmsState() {
         id: `editor_root_${compType}`,
         type: "Home",
         containerStyle: {
-          backgroundColor: "#f8fafc",
-          minHeight: "100vh",
+          backgroundColor: "#ffffff",
+          minHeight: "100%",
+          width: "100%",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "24px",
+          flexDirection: "column",
+          padding: "16px",
+          boxSizing: "border-box",
         },
         children: [
           {
@@ -544,6 +570,7 @@ export function useCmsState() {
     setActiveDevice,
     openComponentEditor,
     exitComponentEditor,
+    applyJsonSchema,
   };
 }
 

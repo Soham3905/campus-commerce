@@ -360,6 +360,7 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
+                "width" : "300px",
                 "borderRadius": "12px",
                 "fontSize": "12px",
                 "fontWeight": "600",
@@ -394,6 +395,7 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
+                "width" : "300px",
                 "borderRadius": "12px",
                 "fontSize": "12px",
                 "fontWeight": "600",
@@ -426,6 +428,7 @@ export const fullPageJSON = {
               "containerStyle": {
                 "display": "inline-flex",
                 "alignItems": "center",
+                "width" : "100px",
                 "justifyContent": "center",
                 "borderRadius": "12px",
                 "fontSize": "12px",

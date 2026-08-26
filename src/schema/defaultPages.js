@@ -2,6 +2,24 @@ import { defaultInterfaces } from "./defaultInterfaces";
 import { fullPageJSON } from "./landingSchema";
 import { ensureStableIds } from "../cms/utils/idUtils";
 import { createComponent } from "../cms/utils/componentFactory";
+import { GridEngine } from "../cms/layout/gridEngine";
+
+function preparePageSchema(schema) {
+  if (!schema) return schema;
+  const clone = ensureStableIds(JSON.parse(JSON.stringify(schema)));
+  if (Array.isArray(clone.children)) {
+    clone.children = clone.children.map((child) => {
+      if (child.type === "Page" && Array.isArray(child.children)) {
+        return {
+          ...child,
+          children: GridEngine.reflowChildren(child.children, "all", { parentType: "Page" }),
+        };
+      }
+      return child;
+    });
+  }
+  return clone;
+}
 
 export const defaultPages = [
   {
@@ -9,7 +27,7 @@ export const defaultPages = [
     name: "Home Storefront",
     route: "home",
     interfaceId: "ecommerce-home",
-    schema: fullPageJSON,
+    schema: preparePageSchema(fullPageJSON),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -18,7 +36,7 @@ export const defaultPages = [
     name: "AudioPro Headphones",
     route: "product",
     interfaceId: "product-details",
-    schema: defaultInterfaces.find((i) => i.id === "product-details")?.schema || fullPageJSON,
+    schema: preparePageSchema(defaultInterfaces.find((i) => i.id === "product-details")?.schema || fullPageJSON),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -27,7 +45,7 @@ export const defaultPages = [
     name: "Categories Discovery",
     route: "categories",
     interfaceId: "category-showcase",
-    schema: defaultInterfaces.find((i) => i.id === "category-showcase")?.schema || fullPageJSON,
+    schema: preparePageSchema(defaultInterfaces.find((i) => i.id === "category-showcase")?.schema || fullPageJSON),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -36,7 +54,7 @@ export const defaultPages = [
     name: "Mega Flash Deals",
     route: "deals",
     interfaceId: "marketing-landing",
-    schema: defaultInterfaces.find((i) => i.id === "marketing-landing")?.schema || fullPageJSON,
+    schema: preparePageSchema(defaultInterfaces.find((i) => i.id === "marketing-landing")?.schema || fullPageJSON),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -45,7 +63,7 @@ export const defaultPages = [
     name: "Shopping Cart",
     route: "cart",
     interfaceId: "blank-page",
-    schema: ensureStableIds({
+    schema: preparePageSchema({
       type: "Home",
       containerStyle: { backgroundColor: "#F6F6F4" },
       children: [
@@ -96,3 +114,5 @@ export const defaultPages = [
     updatedAt: new Date().toISOString(),
   },
 ];
+
+export default defaultPages;

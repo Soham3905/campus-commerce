@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { pagesApi } from "../../api/pagesApi";
+import { defaultPages } from "../../schema/defaultPages";
 
 export const fetchPages = createAsyncThunk(
   "pages/fetchPages",
@@ -60,9 +61,9 @@ export const deletePage = createAsyncThunk(
 const pageSlice = createSlice({
   name: "pages",
   initialState: {
-    list: [],
+    list: defaultPages,
     activePageId: "page_home",
-    activePage: null,
+    activePage: defaultPages[0],
     status: "idle",
     saveStatus: "idle", // 'idle' | 'saving' | 'saved' | 'error'
     error: null,
@@ -70,7 +71,7 @@ const pageSlice = createSlice({
   reducers: {
     setActivePageId(state, action) {
       state.activePageId = action.payload;
-      state.activePage = state.list.find((p) => p.id === action.payload) || null;
+      state.activePage = state.list.find((p) => p.id === action.payload) || state.list[0] || null;
     },
     updateLocalPageSchema(state, action) {
       const { pageId, schema } = action.payload;
@@ -94,7 +95,8 @@ const pageSlice = createSlice({
       })
       .addCase(fetchPages.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.list = action.payload || [];
+        const fetchedList = Array.isArray(action.payload) && action.payload.length > 0 ? action.payload : defaultPages;
+        state.list = fetchedList;
         if (!state.activePageId && state.list.length > 0) {
           state.activePageId = state.list[0].id;
           state.activePage = state.list[0];
@@ -105,6 +107,11 @@ const pageSlice = createSlice({
       .addCase(fetchPages.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+        if (!state.list || state.list.length === 0) {
+          state.list = defaultPages;
+          state.activePage = defaultPages[0];
+          state.activePageId = "page_home";
+        }
       })
       // Save Page
       .addCase(savePage.pending, (state) => {

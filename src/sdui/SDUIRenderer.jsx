@@ -128,7 +128,7 @@ export const SDUIRenderer = ({
     };
   }, [resizeState, schema?.id, deviceType, onResizePlacement]);
 
-  if (!schema) return null;
+  if (!schema || !schema.type) return null;
 
   const TargetComponent = ComponentMap[schema.type];
   if (!TargetComponent) {
@@ -232,7 +232,8 @@ export const SDUIRenderer = ({
     const rect = nodeRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    const draggedType = e.dataTransfer.getData("application/sdui-type") || dragSource?.type;
+    const draggedType = dragSource?.type || e.dataTransfer.getData("application/sdui-type");
+    if (!draggedType) return;
     const mode = getDropMode(e.clientY, rect, schema.type, draggedType);
 
     let check = { valid: true };
@@ -329,6 +330,8 @@ export const SDUIRenderer = ({
     placementStyle = {
       gridColumn: `${currentPlacement.colStart} / ${colEnd}`,
       gridRow: `${currentPlacement.rowStart} / ${rowEnd}`,
+      width: "100%",
+      boxSizing: "border-box",
     };
   }
 
@@ -659,7 +662,7 @@ export const SDUIRenderer = ({
           }
           onNavigate={onNavigate}
         >
-          {Array.isArray(schema.children) &&
+          {Array.isArray(schema.children) && schema.children.length > 0 ? (
             schema.children.map((child, idx) => (
               <SDUIRenderer
                 key={child.id || idx}
@@ -690,7 +693,31 @@ export const SDUIRenderer = ({
                 onClearDropSlot={onClearDropSlot}
                 isDirectGridChild={nextIsDirectGridChild}
               />
-            ))}
+            ))
+          ) : isEditable && def?.canHaveChildren && !isRootContainer && !isGhost ? (
+            <div
+              style={{
+                padding: "16px 12px",
+                textAlign: "center",
+                border: "1.5px dashed #cbd5e1",
+                borderRadius: "8px",
+                backgroundColor: "rgba(248, 250, 252, 0.7)",
+                color: "#64748b",
+                fontSize: "11px",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                width: "100%",
+                boxSizing: "border-box",
+                pointerEvents: "none",
+              }}
+            >
+              <span>{def?.icon || "📦"}</span>
+              <span>Drop components inside {def?.label || schema.type}</span>
+            </div>
+          ) : null}
         </TargetComponent>
       </ActionWrapper>
     </div>
