@@ -86,8 +86,7 @@
                       "route": "home",
                       "actionName": "ON_TAP_LOGO"
                     }
-                  },
-                  "id": "headerbutton_9iwowp91q"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -120,8 +119,7 @@
                       "route": "home",
                       "actionName": "ON_TAP_NAV_HOME"
                     }
-                  },
-                  "id": "headerbutton_9iwoncb9f"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -153,8 +151,7 @@
                       "route": "categories",
                       "actionName": "ON_TAP_NAV_CATEGORIES"
                     }
-                  },
-                  "id": "headerbutton_9iwoy00ep"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -186,8 +183,7 @@
                       "route": "deals",
                       "actionName": "ON_TAP_NAV_DEALS"
                     }
-                  },
-                  "id": "headerbutton_9iwo3g3dg"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -219,8 +215,7 @@
                       "route": "orders",
                       "actionName": "ON_TAP_NAV_ORDERS"
                     }
-                  },
-                  "id": "headerbutton_9iwosdtun"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -250,8 +245,7 @@
                       "route": "login",
                       "actionName": "ON_TAP_LOGIN"
                     }
-                  },
-                  "id": "headerbutton_9iwo595l3"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -282,11 +276,9 @@
                       "route": "signup",
                       "actionName": "ON_TAP_SIGNUP"
                     }
-                  },
-                  "id": "headerbutton_9iwo7a1tt"
+                  }
                 }
-              ],
-              "id": "header_9iwotpkmf"
+              ]
             },
             {
               "type": "Header",
@@ -341,6 +333,13 @@
                     "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                     "backgroundColor": "#FFFFFF"
                   },
+                  "responsiveContainerStyle": {
+                    "mobile": {
+                      "width": "100%",
+                      "flex": "1 0 100%",
+                      "minWidth": "100%"
+                    }
+                  },
                   "data": {
                     "placeholder": "Search products, brands and more"
                   },
@@ -366,8 +365,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_BLUR_SEARCH"
                     }
-                  },
-                  "id": "searchbar_9iwoqjdao"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -375,6 +373,7 @@
                     "display": "inline-flex",
                     "alignItems": "center",
                     "justifyContent": "center",
+                    "width": "300px",
                     "borderRadius": "12px",
                     "fontSize": "12px",
                     "fontWeight": "600",
@@ -401,8 +400,7 @@
                       "route": "cart",
                       "actionName": "ON_TAP_CART_HEADER"
                     }
-                  },
-                  "id": "headerbutton_9iwovu8db"
+                  }
                 },
                 {
                   "type": "HeaderButton",
@@ -410,6 +408,7 @@
                     "display": "inline-flex",
                     "alignItems": "center",
                     "justifyContent": "center",
+                    "width": "300px",
                     "borderRadius": "12px",
                     "fontSize": "12px",
                     "fontWeight": "600",
@@ -435,14 +434,14 @@
                       "route": "wishlist",
                       "actionName": "ON_TAP_WISHLIST_HEADER"
                     }
-                  },
-                  "id": "headerbutton_9iwokib7d"
+                  }
                 },
                 {
                   "type": "HeaderButton",
                   "containerStyle": {
                     "display": "inline-flex",
                     "alignItems": "center",
+                    "width": "100px",
                     "justifyContent": "center",
                     "borderRadius": "12px",
                     "fontSize": "12px",
@@ -469,11 +468,9 @@
                       "route": "favourites",
                       "actionName": "ON_TAP_FAVOURITES_HEADER"
                     }
-                  },
-                  "id": "headerbutton_9iwoy33ps"
+                  }
                 }
-              ],
-              "id": "header_9iwogv075"
+              ]
             },
             {
               "type": "StoryRow",
@@ -529,8 +526,7 @@
                       "route": "deals",
                       "actionName": "ON_TAP_STORY_SALE"
                     }
-                  },
-                  "id": "storycircle_9iwoggiu3"
+                  }
                 },
                 {
                   "type": "StoryCircle",
@@ -553,8 +549,7 @@
                         "imageUrl": "https://picsum.photos/id/1062/600/600"
                       }
                     }
-                  },
-                  "id": "storycircle_9iwoox68r"
+                  }
                 },
                 {
                   "type": "StoryCircle",
@@ -577,8 +572,7 @@
                         "imageUrl": "https://picsum.photos/id/160/600/600"
                       }
                     }
-                  },
-                  "id": "storycircle_9iwosso2c"
+                  }
                 },
                 {
                   "type": "StoryCircle",
@@ -601,8 +595,7 @@
                         "imageUrl": "https://picsum.photos/id/1060/600/600"
                       }
                     }
-                  },
-                  "id": "storycircle_9iwo8vfd6"
+                  }
                 },
                 {
                   "type": "StoryCircle",
@@ -625,8 +618,7 @@
                         "imageUrl": "https://picsum.photos/id/338/600/600"
                       }
                     }
-                  },
-                  "id": "storycircle_9iwow07g0"
+                  }
                 },
                 {
                   "type": "StoryCircle",
@@ -649,11 +641,9 @@
                         "imageUrl": "https://picsum.photos/id/64/600/600"
                       }
                     }
-                  },
-                  "id": "storycircle_9iwos6vbh"
+                  }
                 }
-              ],
-              "id": "storyrow_9iwoerw3h"
+              ]
             },
             {
               "type": "CategoryGrid",
@@ -708,8 +698,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_TAP_MOBILES"
                     }
-                  },
-                  "id": "categoryitem_9iwod61qu"
+                  }
                 },
                 {
                   "type": "CategoryItem",
@@ -732,8 +721,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_TAP_FASHION"
                     }
-                  },
-                  "id": "categoryitem_9iwo8eu1c"
+                  }
                 },
                 {
                   "type": "CategoryItem",
@@ -756,8 +744,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_TAP_LAPTOPS"
                     }
-                  },
-                  "id": "categoryitem_9iwo8ll70"
+                  }
                 },
                 {
                   "type": "CategoryItem",
@@ -780,8 +767,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_TAP_HOME"
                     }
-                  },
-                  "id": "categoryitem_9iwosv3pu"
+                  }
                 },
                 {
                   "type": "CategoryItem",
@@ -804,8 +790,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_TAP_BEAUTY"
                     }
-                  },
-                  "id": "categoryitem_9iwoglabr"
+                  }
                 },
                 {
                   "type": "CategoryItem",
@@ -828,11 +813,9 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "ON_TAP_GROCERY"
                     }
-                  },
-                  "id": "categoryitem_9iwophn0c"
+                  }
                 }
-              ],
-              "id": "categorygrid_9iwo0yp25"
+              ]
             },
             {
               "type": "Carousel",
@@ -892,8 +875,7 @@
                   "data": {
                     "imageUrl": "https://picsum.photos/id/1070/1600/500",
                     "altText": "Campus electronics fest"
-                  },
-                  "id": "image_9iwoxanhb"
+                  }
                 },
                 {
                   "type": "IFrame",
@@ -904,8 +886,7 @@
                   "data": {
                     "src": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&controls=0&showinfo=0&rel=0",
                     "title": "Special announcement"
-                  },
-                  "id": "iframe_9iwootdeh"
+                  }
                 },
                 {
                   "type": "Image",
@@ -917,11 +898,9 @@
                   "data": {
                     "imageUrl": "https://picsum.photos/id/180/1600/500",
                     "altText": ""
-                  },
-                  "id": "image_9iwoldz6g"
+                  }
                 }
-              ],
-              "id": "carousel_9iwocvzly"
+              ]
             },
             {
               "type": "HeroBanner",
@@ -996,11 +975,9 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "HERO_SALE_EXPIRED"
                     }
-                  },
-                  "id": "countdowntimer_9iwopxiyp"
+                  }
                 }
-              ],
-              "id": "herobanner_9iwoj7ikq"
+              ]
             },
             {
               "type": "Box",
@@ -1067,8 +1044,7 @@
                       "type": "COPY_TO_CLIPBOARD",
                       "value": "CAMPUS50"
                     }
-                  },
-                  "id": "couponcode_9iwo8bo81"
+                  }
                 },
                 {
                   "type": "CouponCode",
@@ -1101,8 +1077,7 @@
                       "type": "COPY_TO_CLIPBOARD",
                       "value": "FREEDROP"
                     }
-                  },
-                  "id": "couponcode_9iwojlnr1"
+                  }
                 },
                 {
                   "type": "CouponCode",
@@ -1135,11 +1110,9 @@
                       "type": "COPY_TO_CLIPBOARD",
                       "value": "TECH30"
                     }
-                  },
-                  "id": "couponcode_9iwo83ru0"
+                  }
                 }
-              ],
-              "id": "box_9iwoh74wv"
+              ]
             },
             {
               "type": "Box",
@@ -1209,8 +1182,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "DEAL_OF_THE_DAY_ENDED"
                     }
-                  },
-                  "id": "countdowntimer_9iwo8g0g8"
+                  }
                 },
                 {
                   "type": "CountDownTimer",
@@ -1246,8 +1218,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "FLASH_SALE_ENDED"
                     }
-                  },
-                  "id": "countdowntimer_9iwodykm1"
+                  }
                 },
                 {
                   "type": "CountDownTimer",
@@ -1283,8 +1254,7 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "TECH_DROP_ENDED"
                     }
-                  },
-                  "id": "countdowntimer_9iwolxa22"
+                  }
                 },
                 {
                   "type": "CountDownTimer",
@@ -1320,11 +1290,9 @@
                       "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                       "actionName": "LIMITED_STOCK_ENDED"
                     }
-                  },
-                  "id": "countdowntimer_9iwo1zn5b"
+                  }
                 }
-              ],
-              "id": "box_9iwo9p4ux"
+              ]
             },
             {
               "type": "ProductList",
@@ -1455,8 +1423,7 @@
                       "data": {
                         "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
                         "altText": "SereneLife folding shopping cart"
-                      },
-                      "id": "image_9iwo1526n"
+                      }
                     },
                     {
                       "type": "Label",
@@ -1481,11 +1448,9 @@
                           "type": "Sponsored",
                           "data": {
                             "text": "Sponsored"
-                          },
-                          "id": "sponsored_9iwoxktqb"
+                          }
                         }
-                      ],
-                      "id": "label_9iwocy59p"
+                      ]
                     },
                     {
                       "type": "Badge",
@@ -1509,8 +1474,7 @@
                       },
                       "data": {
                         "text": "Limited time offer"
-                      },
-                      "id": "badge_9iwoxae4l"
+                      }
                     },
                     {
                       "type": "Title",
@@ -1531,8 +1495,7 @@
                       },
                       "data": {
                         "text": "SereneLife"
-                      },
-                      "id": "title_9iwo069dj"
+                      }
                     },
                     {
                       "type": "Description",
@@ -1556,8 +1519,7 @@
                       },
                       "data": {
                         "text": "Compact folding shopping cart with waterproof liner, 360° swivel wheels and a 70 lb capacity"
-                      },
-                      "id": "description_9iwo0gelr"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -1581,18 +1543,15 @@
                           "data": {
                             "text": "4.4",
                             "out of": "5"
-                          },
-                          "id": "score_9iwowti81"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "376"
-                          },
-                          "id": "reviewcount_9iwooybd0"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwoy7mq3"
+                      ]
                     },
                     {
                       "type": "PriceBlock",
@@ -1616,8 +1575,7 @@
                         "sellingPrice": "₹7,089",
                         "mrp": "₹12,250",
                         "discount": "42%"
-                      },
-                      "id": "priceblock_9iwo5kdml"
+                      }
                     },
                     {
                       "type": "OfferText",
@@ -1637,8 +1595,7 @@
                       },
                       "data": {
                         "text": "Up to 5% back with Amazon Pay ICICI card"
-                      },
-                      "id": "offertext_9iwo1w2c7"
+                      }
                     },
                     {
                       "type": "DeliveryInfo",
@@ -1657,8 +1614,7 @@
                       "data": {
                         "prefix": "Free delivery",
                         "daysOffset": 7
-                      },
-                      "id": "deliveryinfo_9iwozqbe0"
+                      }
                     },
                     {
                       "type": "Button",
@@ -1696,8 +1652,7 @@
                           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                           "actionName": "ADD_TO_CART"
                         }
-                      },
-                      "id": "button_9iwob8rq7"
+                      }
                     },
                     {
                       "type": "ShareButton",
@@ -1766,11 +1721,9 @@
                             ]
                           }
                         }
-                      },
-                      "id": "sharebutton_9iwo9icx0"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwovi335"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -1820,8 +1773,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/1010/600/600",
                         "altText": "Aurora Buds Pro wireless earbuds"
-                      },
-                      "id": "image_9iwoz32hv"
+                      }
                     },
                     {
                       "type": "Label",
@@ -1846,11 +1798,9 @@
                           "type": "Sponsored",
                           "data": {
                             "text": " "
-                          },
-                          "id": "sponsored_9iwo4f30m"
+                          }
                         }
-                      ],
-                      "id": "label_9iwoj68kp"
+                      ]
                     },
                     {
                       "type": "Badge",
@@ -1874,8 +1824,7 @@
                       },
                       "data": {
                         "text": "Bestseller"
-                      },
-                      "id": "badge_9iwo4z0h0"
+                      }
                     },
                     {
                       "type": "Title",
@@ -1896,8 +1845,7 @@
                       },
                       "data": {
                         "text": "Aurora Audio"
-                      },
-                      "id": "title_9iwoanrrn"
+                      }
                     },
                     {
                       "type": "Description",
@@ -1921,8 +1869,7 @@
                       },
                       "data": {
                         "text": "Buds Pro ANC wireless earbuds — 42 hr battery, dual pairing, IPX5 water resistance"
-                      },
-                      "id": "description_9iwoa56ce"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -1946,18 +1893,15 @@
                           "data": {
                             "text": "4.2",
                             "out of": "5"
-                          },
-                          "id": "score_9iwonum5i"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "12,480"
-                          },
-                          "id": "reviewcount_9iwo2x7el"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwoosmix"
+                      ]
                     },
                     {
                       "type": "PriceBlock",
@@ -1981,8 +1925,7 @@
                         "sellingPrice": "₹2,499",
                         "mrp": "₹4,999",
                         "discount": "50%"
-                      },
-                      "id": "priceblock_9iwosasq3"
+                      }
                     },
                     {
                       "type": "OfferText",
@@ -2002,8 +1945,7 @@
                       },
                       "data": {
                         "text": "No cost EMI on select cards"
-                      },
-                      "id": "offertext_9iwosl0g5"
+                      }
                     },
                     {
                       "type": "DeliveryInfo",
@@ -2022,8 +1964,7 @@
                       "data": {
                         "prefix": "Free delivery",
                         "daysOffset": 2
-                      },
-                      "id": "deliveryinfo_9iwonz5m1"
+                      }
                     },
                     {
                       "type": "Button",
@@ -2061,8 +2002,7 @@
                           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                           "actionName": "ADD_TO_CART"
                         }
-                      },
-                      "id": "button_9iwo9t8td"
+                      }
                     },
                     {
                       "type": "ShareButton",
@@ -2131,11 +2071,9 @@
                             ]
                           }
                         }
-                      },
-                      "id": "sharebutton_9iwo5pdvr"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwopl9ez"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -2185,8 +2123,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/30/600/600",
                         "altText": "Kettleworks electric kettle"
-                      },
-                      "id": "image_9iwovukoz"
+                      }
                     },
                     {
                       "type": "Label",
@@ -2211,11 +2148,9 @@
                           "type": "Sponsored",
                           "data": {
                             "text": " "
-                          },
-                          "id": "sponsored_9iwo7xpg2"
+                          }
                         }
-                      ],
-                      "id": "label_9iwoxoxb4"
+                      ]
                     },
                     {
                       "type": "Badge",
@@ -2239,8 +2174,7 @@
                       },
                       "data": {
                         "text": "Only 3 left"
-                      },
-                      "id": "badge_9iwoh6z5b"
+                      }
                     },
                     {
                       "type": "Title",
@@ -2261,8 +2195,7 @@
                       },
                       "data": {
                         "text": "Kettleworks"
-                      },
-                      "id": "title_9iwocp16o"
+                      }
                     },
                     {
                       "type": "Description",
@@ -2286,8 +2219,7 @@
                       },
                       "data": {
                         "text": "1L stainless steel electric kettle with auto shut-off and boil-dry protection"
-                      },
-                      "id": "description_9iwok3qju"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -2311,18 +2243,15 @@
                           "data": {
                             "text": "4.6",
                             "out of": "5"
-                          },
-                          "id": "score_9iwodlzlb"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "2,043"
-                          },
-                          "id": "reviewcount_9iwojiof7"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwoir362"
+                      ]
                     },
                     {
                       "type": "PriceBlock",
@@ -2346,8 +2275,7 @@
                         "sellingPrice": "₹1,299",
                         "mrp": "₹1,999",
                         "discount": "35%"
-                      },
-                      "id": "priceblock_9iwonx7vi"
+                      }
                     },
                     {
                       "type": "OfferText",
@@ -2367,8 +2295,7 @@
                       },
                       "data": {
                         "text": "Extra 5% off with bank cards"
-                      },
-                      "id": "offertext_9iwo0286h"
+                      }
                     },
                     {
                       "type": "DeliveryInfo",
@@ -2387,8 +2314,7 @@
                       "data": {
                         "prefix": "Free delivery",
                         "daysOffset": 4
-                      },
-                      "id": "deliveryinfo_9iwofflj3"
+                      }
                     },
                     {
                       "type": "Button",
@@ -2426,8 +2352,7 @@
                           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                           "actionName": "ADD_TO_CART"
                         }
-                      },
-                      "id": "button_9iwoftays"
+                      }
                     },
                     {
                       "type": "ShareButton",
@@ -2496,11 +2421,9 @@
                             ]
                           }
                         }
-                      },
-                      "id": "sharebutton_9iwo10fj9"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwosod5r"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -2550,8 +2473,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/292/600/600",
                         "altText": "Nimbus air fryer"
-                      },
-                      "id": "image_9iwogxyq1"
+                      }
                     },
                     {
                       "type": "Label",
@@ -2576,11 +2498,9 @@
                           "type": "Sponsored",
                           "data": {
                             "text": " "
-                          },
-                          "id": "sponsored_9iwonuja0"
+                          }
                         }
-                      ],
-                      "id": "label_9iwoiyy67"
+                      ]
                     },
                     {
                       "type": "Badge",
@@ -2604,8 +2524,7 @@
                       },
                       "data": {
                         "text": "Deal of the day"
-                      },
-                      "id": "badge_9iwolsmk1"
+                      }
                     },
                     {
                       "type": "Title",
@@ -2626,8 +2545,7 @@
                       },
                       "data": {
                         "text": "Nimbus"
-                      },
-                      "id": "title_9iwolo0s4"
+                      }
                     },
                     {
                       "type": "Description",
@@ -2651,8 +2569,7 @@
                       },
                       "data": {
                         "text": "4.5L digital air fryer with 8 presets, dishwasher-safe basket and rapid heat circulation"
-                      },
-                      "id": "description_9iwonu4ra"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -2676,18 +2593,15 @@
                           "data": {
                             "text": "4.3",
                             "out of": "5"
-                          },
-                          "id": "score_9iwohvsj9"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "8,912"
-                          },
-                          "id": "reviewcount_9iwodfw44"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwovft8s"
+                      ]
                     },
                     {
                       "type": "PriceBlock",
@@ -2711,8 +2625,7 @@
                         "sellingPrice": "₹5,499",
                         "mrp": "₹8,999",
                         "discount": "39%"
-                      },
-                      "id": "priceblock_9iwoyzsz9"
+                      }
                     },
                     {
                       "type": "OfferText",
@@ -2732,8 +2645,7 @@
                       },
                       "data": {
                         "text": "Save ₹500 with coupon SAVE20"
-                      },
-                      "id": "offertext_9iwoqa4e7"
+                      }
                     },
                     {
                       "type": "DeliveryInfo",
@@ -2752,8 +2664,7 @@
                       "data": {
                         "prefix": "Free delivery",
                         "daysOffset": 3
-                      },
-                      "id": "deliveryinfo_9iwof6ppd"
+                      }
                     },
                     {
                       "type": "Button",
@@ -2791,8 +2702,7 @@
                           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                           "actionName": "ADD_TO_CART"
                         }
-                      },
-                      "id": "button_9iwodawjx"
+                      }
                     },
                     {
                       "type": "ShareButton",
@@ -2861,11 +2771,9 @@
                             ]
                           }
                         }
-                      },
-                      "id": "sharebutton_9iwomqnc5"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwod0shh"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -2915,8 +2823,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/1078/600/600",
                         "altText": "Volt 65W GaN charger"
-                      },
-                      "id": "image_9iwoaqvel"
+                      }
                     },
                     {
                       "type": "Label",
@@ -2941,11 +2848,9 @@
                           "type": "Sponsored",
                           "data": {
                             "text": " "
-                          },
-                          "id": "sponsored_9iwooqrcy"
+                          }
                         }
-                      ],
-                      "id": "label_9iwofb9kx"
+                      ]
                     },
                     {
                       "type": "Badge",
@@ -2969,8 +2874,7 @@
                       },
                       "data": {
                         "text": "Bestseller"
-                      },
-                      "id": "badge_9iwov332t"
+                      }
                     },
                     {
                       "type": "Title",
@@ -2991,8 +2895,7 @@
                       },
                       "data": {
                         "text": "Volt"
-                      },
-                      "id": "title_9iwoh5y62"
+                      }
                     },
                     {
                       "type": "Description",
@@ -3016,8 +2919,7 @@
                       },
                       "data": {
                         "text": "65W GaN fast charger with two USB-C ports and one USB-A, foldable pins"
-                      },
-                      "id": "description_9iwoc3nze"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3041,18 +2943,15 @@
                           "data": {
                             "text": "4.5",
                             "out of": "5"
-                          },
-                          "id": "score_9iwo7cq8z"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "5,204"
-                          },
-                          "id": "reviewcount_9iwoyoyid"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwogrr7e"
+                      ]
                     },
                     {
                       "type": "PriceBlock",
@@ -3076,8 +2975,7 @@
                         "sellingPrice": "₹1,899",
                         "mrp": "₹2,999",
                         "discount": "37%"
-                      },
-                      "id": "priceblock_9iwo1jlqf"
+                      }
                     },
                     {
                       "type": "OfferText",
@@ -3097,8 +2995,7 @@
                       },
                       "data": {
                         "text": "Free 1 m braided cable included"
-                      },
-                      "id": "offertext_9iwo6rdr7"
+                      }
                     },
                     {
                       "type": "DeliveryInfo",
@@ -3117,8 +3014,7 @@
                       "data": {
                         "prefix": "Free delivery",
                         "daysOffset": 2
-                      },
-                      "id": "deliveryinfo_9iwouefok"
+                      }
                     },
                     {
                       "type": "Button",
@@ -3156,8 +3052,7 @@
                           "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
                           "actionName": "ADD_TO_CART"
                         }
-                      },
-                      "id": "button_9iwokvzhw"
+                      }
                     },
                     {
                       "type": "ShareButton",
@@ -3226,14 +3121,11 @@
                             ]
                           }
                         }
-                      },
-                      "id": "sharebutton_9iwoplqmq"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwoi2q93"
+                  ]
                 }
-              ],
-              "id": "productlist_9iwosnzty"
+              ]
             },
             {
               "type": "Box",
@@ -3292,8 +3184,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/20/400/400",
                         "altText": "Gas Stove"
-                      },
-                      "id": "image_9iwoq0z7p"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3302,25 +3193,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.3"
-                          },
-                          "id": "score_9iwo9mjm3"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "84"
-                          },
-                          "id": "reviewcount_9iwoqjb5x"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwobyre5"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "BIGFLAME Power Hexa..."
-                      },
-                      "id": "title_9iwobotyv"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3328,18 +3215,15 @@
                         "sellingPrice": "₹6,632",
                         "mrp": "₹12,800",
                         "discount": "48%"
-                      },
-                      "id": "priceblock_9iwove1au"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "₹6,512 with Bank offer"
-                      },
-                      "id": "offertext_9iwovznup"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwoefw89"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3365,8 +3249,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/10/400/400",
                         "altText": "Men Cargos"
-                      },
-                      "id": "image_9iwoyumpm"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3375,25 +3258,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.1"
-                          },
-                          "id": "score_9iwod153b"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "120"
-                          },
-                          "id": "reviewcount_9iwo3to53"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwohjmio"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "VeBNoR Men Cargos"
-                      },
-                      "id": "title_9iwo0ew1m"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3401,18 +3280,15 @@
                         "sellingPrice": "₹524",
                         "mrp": "₹1,999",
                         "discount": "73%"
-                      },
-                      "id": "priceblock_9iwocvk9u"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Special discount"
-                      },
-                      "id": "offertext_9iwoo7ytk"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwokfvid"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3438,8 +3314,7 @@
                       "data": {
                         "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80",
                         "altText": "Shoes"
-                      },
-                      "id": "image_9iwou28hg"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3448,25 +3323,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.5"
-                          },
-                          "id": "score_9iwoof0qp"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "210"
-                          },
-                          "id": "reviewcount_9iwo3pl3f"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwoep6oz"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "RED TAPE Lifestyle Sneakers"
-                      },
-                      "id": "title_9iwohz1b5"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3474,18 +3345,15 @@
                         "sellingPrice": "₹1,391",
                         "mrp": "₹9,099",
                         "discount": "84%"
-                      },
-                      "id": "priceblock_9iwolr240"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Limited time deal"
-                      },
-                      "id": "offertext_9iwor7xs8"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwowfi16"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3511,8 +3379,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/30/400/400",
                         "altText": "T-Shirt"
-                      },
-                      "id": "image_9iwowq108"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3521,25 +3388,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.0"
-                          },
-                          "id": "score_9iwowpq1p"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "56"
-                          },
-                          "id": "reviewcount_9iwowdfk4"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwowwvef"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Anime Printed Cotton Tee"
-                      },
-                      "id": "title_9iwoieu67"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3547,18 +3410,15 @@
                         "sellingPrice": "₹399",
                         "mrp": "₹999",
                         "discount": "60%"
-                      },
-                      "id": "priceblock_9iwo8n2vz"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Trending on campus"
-                      },
-                      "id": "offertext_9iwo7w2yk"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwocmvhi"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3584,8 +3444,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/40/400/400",
                         "altText": "Smart Watch"
-                      },
-                      "id": "image_9iwopanzk"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3594,25 +3453,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.2"
-                          },
-                          "id": "score_9iwoli20e"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "340"
-                          },
-                          "id": "reviewcount_9iwozsp7n"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwox5xwz"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Noise Pulse 2 Max Display"
-                      },
-                      "id": "title_9iwo7eex3"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3620,18 +3475,15 @@
                         "sellingPrice": "₹1,499",
                         "mrp": "₹5,999",
                         "discount": "75%"
-                      },
-                      "id": "priceblock_9iwoktkwy"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Lowest price ever"
-                      },
-                      "id": "offertext_9iwod1hi2"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwoiqqed"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3657,8 +3509,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/50/400/400",
                         "altText": "Backpack"
-                      },
-                      "id": "image_9iwoy4ykv"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3667,25 +3518,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.6"
-                          },
-                          "id": "score_9iwo9astf"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "1.2k"
-                          },
-                          "id": "reviewcount_9iwo9tql6"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwolb4yg"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Skybags 25L Campus Bag"
-                      },
-                      "id": "title_9iwoibcpw"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3693,18 +3540,15 @@
                         "sellingPrice": "₹899",
                         "mrp": "₹2,100",
                         "discount": "57%"
-                      },
-                      "id": "priceblock_9iwo0lpmo"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Bestseller"
-                      },
-                      "id": "offertext_9iwoqoixh"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwoznezu"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3730,8 +3574,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/60/400/400",
                         "altText": "Headphones"
-                      },
-                      "id": "image_9iwoqaxm7"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3740,25 +3583,21 @@
                           "type": "Score",
                           "data": {
                             "text": "4.4"
-                          },
-                          "id": "score_9iwoqdodq"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "800"
-                          },
-                          "id": "reviewcount_9iworxpie"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwovb3nq"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "boAt Rockerz 450 Wireless"
-                      },
-                      "id": "title_9iwo15ys1"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3766,18 +3605,15 @@
                         "sellingPrice": "₹1,299",
                         "mrp": "₹3,990",
                         "discount": "67%"
-                      },
-                      "id": "priceblock_9iwo11c6q"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Mega savings"
-                      },
-                      "id": "offertext_9iwo8vrlg"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwo92xoh"
+                  ]
                 },
                 {
                   "type": "ProductCard",
@@ -3803,8 +3639,7 @@
                       "data": {
                         "imageUrl": "https://picsum.photos/id/70/400/400",
                         "altText": "Sunglasses"
-                      },
-                      "id": "image_9iwor2lx0"
+                      }
                     },
                     {
                       "type": "Rating",
@@ -3813,25 +3648,21 @@
                           "type": "Score",
                           "data": {
                             "text": "3.9"
-                          },
-                          "id": "score_9iwowmtm9"
+                          }
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "23"
-                          },
-                          "id": "reviewcount_9iwoa33px"
+                          }
                         }
-                      ],
-                      "id": "rating_9iwoxjdkm"
+                      ]
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Fastrack UV Protect Shades"
-                      },
-                      "id": "title_9iwotkrea"
+                      }
                     },
                     {
                       "type": "PriceBlock",
@@ -3839,21 +3670,17 @@
                         "sellingPrice": "₹599",
                         "mrp": "₹999",
                         "discount": "40%"
-                      },
-                      "id": "priceblock_9iwowbd8m"
+                      }
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Hot Deal"
-                      },
-                      "id": "offertext_9iwog8ugx"
+                      }
                     }
-                  ],
-                  "id": "productcard_9iwoylf48"
+                  ]
                 }
-              ],
-              "id": "box_9iwodampx"
+              ]
             },
             {
               "type": "Footer",
@@ -3948,11 +3775,9 @@
                   }
                 ],
                 "copyrightText": "© 2024–2026, SDUI-Commerce, Inc. or its affiliates"
-              },
-              "id": "footer_9iwodh3tu"
+              }
             }
-          ],
-          "id": "page_9iwoob5cz"
+          ]
         },
         {
           "type": "NavBar",
@@ -4013,11 +3838,9 @@
                 }
               }
             ]
-          },
-          "id": "navbar_9iwo99y5t"
+          }
         }
-      ],
-      "id": "home_9iwngp67c"
+      ]
     },
     "createdAt": "2026-08-26T09:03:25.990Z",
     "updatedAt": "2026-08-26T09:14:31.372Z"

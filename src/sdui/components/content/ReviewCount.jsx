@@ -8,6 +8,7 @@ export const ReviewCount = ({ data = {}, style }) => (
       fontWeight: "500",
       margin: 0,
       padding: 0,
+      whiteSpace: "nowrap",
       boxSizing: "border-box",
       ...style,
     }}

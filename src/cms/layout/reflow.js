@@ -2,13 +2,17 @@
  * Reflow Engine for SDUI Components
  * Deterministically recalculates 2D grid coordinates (column packing & row heights)
  * to support responsive side-by-side multi-column layouts without accidental overlaps.
+ *
+ * Grid Model: 100 column tracks → 101 grid lines (1 to 101).
+ * Full-width: colStart=1, colEnd=101.
+ * Row tracks: each row ≈ 10px (via gridAutoRows in Page).
  */
 
 import { getDefaultRowSpan, getDefaultColSpan, allowsOverlayLayout } from "./layoutRules";
 
 const DEVICES = ["mobile", "tablet", "desktop"];
 const DEFAULT_ROW_GAP = 1;
-const MAX_GRID_COLUMNS = 100;
+const GRID_LINES = 101; // 100 column tracks = 101 grid lines
 
 /**
  * Reflows an array of children sequentially for a specific device view or all devices.
@@ -71,6 +75,7 @@ export function reflowChildren(children, targetDevice = "all", options = {}) {
     };
 
     updatedChildren.forEach((child, index) => {
+      // ── Column Calculation ──
       const existingPlacement = child.placement?.[device] || {};
       let colStart = Number(existingPlacement.colStart);
       let colEnd = Number(existingPlacement.colEnd);
@@ -78,35 +83,32 @@ export function reflowChildren(children, targetDevice = "all", options = {}) {
       if (isNaN(colStart) || colStart < 1) colStart = 1;
       if (isNaN(colEnd) || colEnd <= colStart) {
         const defaultColSpan = getDefaultColSpan(child.type);
-        colEnd = Math.min(MAX_GRID_COLUMNS + 1, colStart + defaultColSpan);
+        colEnd = Math.min(GRID_LINES, colStart + defaultColSpan);
       }
 
-      // Clamp columns to 1..101 range
-      colStart = Math.max(1, Math.min(MAX_GRID_COLUMNS, colStart));
-      colEnd = Math.max(colStart + 1, Math.min(MAX_GRID_COLUMNS + 1, colEnd));
+      // Clamp to valid grid-line range [1, 101]
+      colStart = Math.max(1, Math.min(GRID_LINES - 1, colStart));
+      colEnd = Math.max(colStart + 1, Math.min(GRID_LINES, colEnd));
 
-      // Calculate rowSpan for this specific device
-      const defaultSpan = getDefaultRowSpan(child, device);
-      let rowSpan = defaultSpan;
-      if (
-        typeof existingPlacement.rowStart === "number" &&
-        typeof existingPlacement.rowEnd === "number" &&
-        existingPlacement.rowEnd > existingPlacement.rowStart
-      ) {
-        rowSpan = Math.max(defaultSpan, existingPlacement.rowEnd - existingPlacement.rowStart);
+      // Full-width normalisation: if starting at col 1 and spanning ≥99 tracks, snap to 101
+      if (colStart === 1 && colEnd >= 100) {
+        colEnd = GRID_LINES;
       }
-      rowSpan = Math.max(1, rowSpan);
 
-      // Check if this child can fit in the current row band without horizontal overlap
+      // ── Row Span Calculation ──
+      // ALWAYS compute from content/type defaults. Never read back old rowStart/rowEnd,
+      // that creates a circular dependency where stale values persist forever.
+      const rowSpan = Math.max(1, getDefaultRowSpan(child, device));
+
+      // ── Horizontal Overlap Detection ──
       const hasHorizontalOverlap = currentBand.some(
         (bandItem) => colStart < bandItem.colEnd && colEnd > bandItem.colStart
       );
 
-      // On mobile, full-width components (colStart 1, colEnd 100) automatically get their own row
-      const isMobileFullWidth = device === "mobile" && colStart === 1 && colEnd >= 100;
+      // Full-width components always get their own row band
+      const isFullWidth = colStart === 1 && colEnd >= GRID_LINES;
 
-      if (currentBand.length > 0 && (hasHorizontalOverlap || isMobileFullWidth)) {
-        // Must start a new row band
+      if (currentBand.length > 0 && (hasHorizontalOverlap || isFullWidth)) {
         commitBand();
       }
 

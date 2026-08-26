@@ -280,8 +280,11 @@ export const fullPageJSON = {
             "background": "linear-gradient(180deg, #0D3540 0%, #08242A 100%)",
             "backgroundImage": "linear-gradient(180deg, #0D3540 0%, #08242A 100%)",
             "backgroundColor": "#08242A",
-            "flexWrap": "wrap",
-            "justifyContent": "flex-start",
+            "display": "flex",
+            "flexWrap": "nowrap",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "gap": "12px",
             "padding": "12px max(16px, calc((100% - 1180px) / 2))",
             "boxSizing": "border-box",
             "position": "sticky",
@@ -291,12 +294,29 @@ export const fullPageJSON = {
             "borderBottom": "none",
             "boxShadow": "0 4px 14px rgba(10,42,49,0.18)"
           },
+          "responsiveContainerStyle": {
+            "mobile": {
+              "flexWrap": "wrap",
+              "gap": "8px",
+              "padding": "10px 14px"
+            },
+            "tablet": {
+              "flexWrap": "nowrap",
+              "gap": "10px",
+              "padding": "12px 16px"
+            },
+            "desktop": {
+              "flexWrap": "nowrap",
+              "gap": "12px",
+              "padding": "12px max(16px, calc((100% - 1180px) / 2))"
+            }
+          },
           "placement": {
             "mobile": {
               "colStart": 1,
               "colEnd": 100,
               "rowStart": 6,
-              "rowEnd": 10
+              "rowEnd": 11
             },
             "tablet": {
               "colStart": 1,
@@ -315,7 +335,8 @@ export const fullPageJSON = {
             {
               "type": "SearchBar",
               "containerStyle": {
-                "width": "340px",
+                "flex": "1 1 auto",
+                "width": "auto",
                 "alignItems": "center",
                 "border": "1px solid #E4E7E4",
                 "borderRadius": "12px",
@@ -326,6 +347,23 @@ export const fullPageJSON = {
                 "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
                 "backgroundColor": "#FFFFFF"
+              },
+              "responsiveContainerStyle": {
+                "mobile": {
+                  "width": "100%",
+                  "flex": "1 0 100%",
+                  "minWidth": "100%"
+                },
+                "tablet": {
+                  "width": "auto",
+                  "flex": "1 1 auto",
+                  "minWidth": "160px"
+                },
+                "desktop": {
+                  "width": "auto",
+                  "flex": "1 1 auto",
+                  "minWidth": "240px"
+                }
               },
               "data": {
                 "placeholder": "Search products, brands and more"
@@ -360,7 +398,9 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "width" : "300px",
+                "width": "auto",
+                "flex": "0 0 auto",
+                "padding": "6px 12px",
                 "borderRadius": "12px",
                 "fontSize": "12px",
                 "fontWeight": "600",
@@ -374,6 +414,27 @@ export const fullPageJSON = {
                 "border": "1px solid #C4185F",
                 "color": "#FFFFFF",
                 "boxShadow": "0 2px 10px rgba(196,24,95,0.28)"
+              },
+              "responsiveContainerStyle": {
+                "mobile": {
+                  "flex": "1 1 0px",
+                  "minWidth": "0",
+                  "width": "100%",
+                  "padding": "7px 4px",
+                  "fontSize": "11px"
+                },
+                "tablet": {
+                  "flex": "0 0 auto",
+                  "width": "auto",
+                  "padding": "6px 12px",
+                  "fontSize": "12px"
+                },
+                "desktop": {
+                  "flex": "0 0 auto",
+                  "width": "auto",
+                  "padding": "6px 14px",
+                  "fontSize": "12px"
+                }
               },
               "data": {
                 "id": "cart",
@@ -395,7 +456,9 @@ export const fullPageJSON = {
                 "display": "inline-flex",
                 "alignItems": "center",
                 "justifyContent": "center",
-                "width" : "300px",
+                "width": "auto",
+                "flex": "0 0 auto",
+                "padding": "6px 12px",
                 "borderRadius": "12px",
                 "fontSize": "12px",
                 "fontWeight": "600",
@@ -408,6 +471,27 @@ export const fullPageJSON = {
                 "backgroundColor": "#123A44",
                 "border": "1px solid rgba(255,255,255,0.16)",
                 "color": "#FFFFFF"
+              },
+              "responsiveContainerStyle": {
+                "mobile": {
+                  "flex": "1 1 0px",
+                  "minWidth": "0",
+                  "width": "100%",
+                  "padding": "7px 4px",
+                  "fontSize": "11px"
+                },
+                "tablet": {
+                  "flex": "0 0 auto",
+                  "width": "auto",
+                  "padding": "6px 12px",
+                  "fontSize": "12px"
+                },
+                "desktop": {
+                  "flex": "0 0 auto",
+                  "width": "auto",
+                  "padding": "6px 14px",
+                  "fontSize": "12px"
+                }
               },
               "data": {
                 "id": "wishlist",
@@ -428,8 +512,10 @@ export const fullPageJSON = {
               "containerStyle": {
                 "display": "inline-flex",
                 "alignItems": "center",
-                "width" : "100px",
                 "justifyContent": "center",
+                "width": "auto",
+                "flex": "0 0 auto",
+                "padding": "6px 12px",
                 "borderRadius": "12px",
                 "fontSize": "12px",
                 "fontWeight": "600",
@@ -442,6 +528,27 @@ export const fullPageJSON = {
                 "backgroundColor": "#123A44",
                 "border": "1px solid rgba(255,255,255,0.16)",
                 "color": "#FFFFFF"
+              },
+              "responsiveContainerStyle": {
+                "mobile": {
+                  "flex": "1 1 0px",
+                  "minWidth": "0",
+                  "width": "100%",
+                  "padding": "7px 4px",
+                  "fontSize": "11px"
+                },
+                "tablet": {
+                  "flex": "0 0 auto",
+                  "width": "auto",
+                  "padding": "6px 12px",
+                  "fontSize": "12px"
+                },
+                "desktop": {
+                  "flex": "0 0 auto",
+                  "width": "auto",
+                  "padding": "6px 14px",
+                  "fontSize": "12px"
+                }
               },
               "data": {
                 "id": "favourites",

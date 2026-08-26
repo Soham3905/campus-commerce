@@ -324,7 +324,10 @@ export const SDUIRenderer = ({
   const isRootContainer = schema.type === "Home" || schema.type === "Page";
 
   if (isDirectGridChild && !isRootContainer && currentPlacement) {
-    const colEnd = resizeState?.type === "width" && resizeState.preview?.colEnd ? resizeState.preview.colEnd : currentPlacement.colEnd;
+    let colEnd = resizeState?.type === "width" && resizeState.preview?.colEnd ? resizeState.preview.colEnd : currentPlacement.colEnd;
+    if (colEnd >= 100 && currentPlacement.colStart === 1) {
+      colEnd = 101;
+    }
     const rowEnd = resizeState?.type === "height" && resizeState.preview?.rowEnd ? resizeState.preview.rowEnd : currentPlacement.rowEnd;
 
     placementStyle = {
@@ -340,69 +343,74 @@ export const SDUIRenderer = ({
   const isGhost = schema.__isDragGhost === true;
   const def = isEditable ? ComponentRegistry[schema.type] : null;
 
+  // Merge device-specific responsive styles if present (e.g. mobile vs desktop)
+  const effectiveContainerStyle = {
+    ...schema.containerStyle,
+    ...(schema.responsiveContainerStyle?.[deviceType] || schema.responsiveStyles?.[deviceType] || {}),
+  };
+
   // Decide if child components should be grid children
-  const nextIsDirectGridChild = isRootContainer || (schema.type === "Box" && schema.containerStyle?.display === "grid");
+  const nextIsDirectGridChild = isRootContainer || (schema.type === "Box" && effectiveContainerStyle?.display === "grid");
 
   // Extract positioning styles from containerStyle
-  const isAbsolute = schema.containerStyle?.position === "absolute";
-  const isFixed = schema.containerStyle?.position === "fixed";
-  const isSticky = schema.containerStyle?.position === "sticky";
+  const isAbsolute = effectiveContainerStyle?.position === "absolute";
+  const isFixed = effectiveContainerStyle?.position === "fixed";
+  const isSticky = effectiveContainerStyle?.position === "sticky";
 
   const wrapperPositionStyle = isAbsolute
     ? {
         position: "absolute",
-        top: schema.containerStyle.top,
-        bottom: schema.containerStyle.bottom,
-        left: schema.containerStyle.left,
-        right: schema.containerStyle.right,
-        zIndex: schema.containerStyle.zIndex ?? (isSelected ? 30 : 3),
-        width: schema.containerStyle.width,
-        height: schema.containerStyle.height,
-        minWidth: schema.containerStyle.minWidth,
-        maxWidth: schema.containerStyle.maxWidth,
-        margin: schema.containerStyle.margin,
-        padding: 0,
+        top: effectiveContainerStyle.top,
+        bottom: effectiveContainerStyle.bottom,
+        left: effectiveContainerStyle.left,
+        right: effectiveContainerStyle.right,
+        zIndex: effectiveContainerStyle.zIndex || 10,
+        width: effectiveContainerStyle.width,
+        height: effectiveContainerStyle.height,
       }
     : isFixed
     ? {
         position: "fixed",
-        top: schema.containerStyle.top,
-        bottom: schema.containerStyle.bottom,
-        left: schema.containerStyle.left,
-        right: schema.containerStyle.right,
-        zIndex: schema.containerStyle.zIndex || 100,
+        top: effectiveContainerStyle.top,
+        bottom: effectiveContainerStyle.bottom,
+        left: effectiveContainerStyle.left,
+        right: effectiveContainerStyle.right,
+        zIndex: effectiveContainerStyle.zIndex || 100,
       }
     : isSticky
     ? {
         position: "sticky",
-        top: schema.containerStyle.top,
-        bottom: schema.containerStyle.bottom,
-        zIndex: schema.containerStyle.zIndex || 10,
+        top: effectiveContainerStyle.top,
+        bottom: effectiveContainerStyle.bottom,
+        zIndex: effectiveContainerStyle.zIndex || 100,
       }
     : {
         position: isEditable || !isDirectGridChild ? "relative" : undefined,
       };
 
+  const sanitizedComponentStyle = effectiveContainerStyle;
+
   // Forward flex child styles to wrapper div if not a direct grid child and not root container
+  const isFlexProductCard = !isDirectGridChild && !isAbsolute && !isRootContainer && schema.type === "ProductCard";
   const flexChildStyle = !isDirectGridChild && !isAbsolute && !isRootContainer
     ? {
-        flex: schema.containerStyle?.flex,
-        flexShrink: schema.containerStyle?.flexShrink,
-        flexGrow: schema.containerStyle?.flexGrow,
-        alignSelf: schema.containerStyle?.alignSelf,
-        marginTop: schema.containerStyle?.marginTop,
-        marginBottom: schema.containerStyle?.marginBottom,
-        marginLeft: schema.containerStyle?.marginLeft,
-        marginRight: schema.containerStyle?.marginRight,
-        width: schema.containerStyle?.width,
-        minWidth: schema.containerStyle?.minWidth,
-        maxWidth: schema.containerStyle?.maxWidth,
-        height: schema.containerStyle?.height,
-        minHeight: schema.containerStyle?.minHeight,
-        maxHeight: schema.containerStyle?.maxHeight,
+        flex: effectiveContainerStyle?.flex ?? (isFlexProductCard ? "0 0 268px" : undefined),
+        flexShrink: effectiveContainerStyle?.flexShrink ?? (isFlexProductCard ? 0 : undefined),
+        flexGrow: effectiveContainerStyle?.flexGrow,
+        alignSelf: effectiveContainerStyle?.alignSelf,
+        marginTop: effectiveContainerStyle?.marginTop,
+        marginBottom: effectiveContainerStyle?.marginBottom,
+        marginLeft: effectiveContainerStyle?.marginLeft,
+        marginRight: effectiveContainerStyle?.marginRight,
+        width: effectiveContainerStyle?.width ?? (isFlexProductCard ? "268px" : undefined),
+        minWidth: effectiveContainerStyle?.minWidth ?? (isFlexProductCard ? "268px" : undefined),
+        maxWidth: effectiveContainerStyle?.maxWidth,
+        height: effectiveContainerStyle?.height,
+        minHeight: effectiveContainerStyle?.minHeight,
+        maxHeight: effectiveContainerStyle?.maxHeight,
         display:
-          schema.containerStyle?.display === "flex" ||
-          schema.containerStyle?.display === "inline-flex"
+          effectiveContainerStyle?.display === "flex" ||
+          effectiveContainerStyle?.display === "inline-flex"
             ? "flex"
             : undefined,
       }
@@ -645,7 +653,7 @@ export const SDUIRenderer = ({
       <ActionWrapper actions={schema.actions}>
         <TargetComponent
           data={schema.data}
-          style={schema.containerStyle}
+          style={sanitizedComponentStyle}
           actions={schema.actions}
           isHovered={isHovered}
           onError={() =>

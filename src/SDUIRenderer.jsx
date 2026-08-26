@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { SDUIRenderer as ModularRenderer } from "./sdui/SDUIRenderer";
+import { SDUIRenderer as Renderer } from "./sdui/SDUIRenderer";
 import { ContextMenu } from "./sdui/components/overlays/ContextMenu";
 import { BottomSheet } from "./sdui/components/overlays/BottomSheet";
 import { ImagePreviewModal } from "./sdui/components/overlays/ImagePreviewModal";
 import { executeOptionAction } from "./sdui/actions/actionExecutor";
-import { fullPageJSON } from "./schema/landingSchema";
+import { IFrameDeviceFrame } from "./cms/components/canvas/IFrameDeviceFrame";
+import { fullPageJSON } from "./landingSchema";
 
 const createDummyPage = (titleText, routeName) => {
   // Deep clone the NavBar so we can modify it without breaking the original
@@ -21,15 +22,12 @@ const createDummyPage = (titleText, routeName) => {
   }
 
   return {
-    id: `dummy_${routeName}`,
     type: "Home",
     children: [
       {
-        id: `page_${routeName}`,
         type: "Page",
         children: [
           {
-            id: `title_${routeName}`,
             type: "Title",
             placement: {
               mobile: { colStart: 1, colEnd: 100, rowStart: 1, rowEnd: 5 },
@@ -84,7 +82,6 @@ const DeviceButton = ({ label, active, onClick }) => (
       cursor: "pointer",
       fontWeight: "bold",
       fontSize: "12px",
-      transition: "all 0.2s ease",
     }}
   >
     {label}
@@ -138,6 +135,12 @@ export default function SDUIRenderer() {
     return "100%";
   };
 
+  const getPreviewHeight = () => {
+    if (deviceView === "mobile") return "100%";
+    if (deviceView === "tablet") return "100%";
+    return "100%";
+  };
+
   const closeMenu = () => setMenu(null);
   const closeSheet = () => setSheetData(null);
   const closeImageModal = () => setImageModal(null);
@@ -156,10 +159,7 @@ export default function SDUIRenderer() {
         return;
       }
 
-      if (
-        action.type === "SHOW_IMAGE_MODAL" ||
-        action.type === "SHOW_IMAGE_PREVIEW"
-      ) {
+      if (action.type === "SHOW_IMAGE_MODAL" || action.type === "SHOW_IMAGE_PREVIEW") {
         closeMenu();
         closeSheet();
         setImageModal({
@@ -178,7 +178,7 @@ export default function SDUIRenderer() {
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "sans-serif" }}>
+    <div style={{ display: "flex", height: "100vh" }}>
       {/* -- LEFT PANEL: JSON EDITOR -- */}
       {isSidebarOpen && (
         <div
@@ -202,9 +202,7 @@ export default function SDUIRenderer() {
               borderBottom: "1px solid #2a2a35",
             }}
           >
-            <h3 style={{ fontSize: "14px", color: "#cdd6f4", margin: 0 }}>
-              ⚙️ SDUI Studio
-            </h3>
+            <h3 style={{ fontSize: "14px", color: "#cdd6f4", margin: 0 }}>⚙️ SDUI Studio</h3>
             <button
               onClick={handleApplyJson}
               style={{
@@ -231,7 +229,6 @@ export default function SDUIRenderer() {
               background: "#1e1e2e",
               borderBottom: "1px solid #2a2a35",
               overflowX: "auto",
-              scrollbarWidth: "none",
             }}
           >
             {Object.keys(TEMPLATES).map((tab) => (
@@ -240,8 +237,7 @@ export default function SDUIRenderer() {
                 onClick={() => loadTemplate(tab)}
                 style={{
                   padding: "6px 12px",
-                  backgroundColor:
-                    activeTab === tab ? "#4f46e5" : "transparent",
+                  backgroundColor: activeTab === tab ? "#4f46e5" : "transparent",
                   color: activeTab === tab ? "#fff" : "#a6accd",
                   border: activeTab === tab ? "none" : "1px solid #444",
                   borderRadius: "16px",
@@ -364,44 +360,26 @@ export default function SDUIRenderer() {
           </div>
         </div>
 
-        {/* Simulated Device Canvas */}
+        {/* Simulated Device Canvas with IFrame Portal */}
         <div
           style={{
             flex: 1,
             display: "flex",
             justifyContent: "center",
-            alignItems: "flex-start",
-            padding: "15px",
+            alignItems: "center",
+            padding: "16px",
             overflowY: "auto",
           }}
         >
-          <div
-            style={{
-              width: getPreviewWidth(),
-              height: "100%",
-              position: "relative",
-              overflow: "hidden",
-              transition: "width 0.3s ease",
-            }}
-          >
-            {/* Screen Content Container */}
-            <div
-              style={{
-                backgroundColor: "#f3f3f3",
-                height: "100%",
-                overflowY: "auto",
-                scrollbarWidth: "none",
-              }}
-            >
-              <ModularRenderer
-                schema={schema}
-                deviceType={deviceView}
-                openMenu={setMenu}
-                openSheet={setSheetData}
-                openImageModal={setImageModal}
-                onNavigate={handleNavigate}
-              />
-            </div>
+          <IFrameDeviceFrame device={deviceView}>
+            <Renderer
+              schema={schema}
+              deviceType={deviceView}
+              openMenu={setMenu}
+              openSheet={setSheetData}
+              openImageModal={setImageModal}
+              onNavigate={handleNavigate}
+            />
             <ContextMenu
               data={menu}
               onClose={closeMenu}
@@ -416,8 +394,9 @@ export default function SDUIRenderer() {
             <ImagePreviewModal
               data={imageModal}
               onClose={closeImageModal}
+              onSelect={handleOptionSelect}
             />
-          </div>
+          </IFrameDeviceFrame>
         </div>
       </div>
     </div>

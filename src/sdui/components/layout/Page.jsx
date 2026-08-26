@@ -5,7 +5,7 @@ export const Page = ({ children, style }) => (
     style={{
       display: "grid",
       gridTemplateColumns: "repeat(100, 1fr)",
-      gridAutoRows: "10px",
+      gridAutoRows: "minmax(10px, auto)",
       gap: "0px",
       padding: "0px",
       margin: "0px",

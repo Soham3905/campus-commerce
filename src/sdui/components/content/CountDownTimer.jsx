@@ -33,32 +33,42 @@ export const CountDownTimer = ({ data = {}, style, onExpire }) => {
   return (
     <div
       style={{
-        padding: "10px",
+        padding: "8px 14px",
         backgroundColor: "#fff3cd",
         borderRadius: "12px",
         border: "1px solid #ffeeba",
-        display: "flex",
+        display: "inline-flex",
         flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
         textAlign: "center",
+        whiteSpace: "nowrap",
+        boxSizing: "border-box",
         ...style,
       }}
     >
-      <h3
-        style={{
-          color: style?.color || "#856404",
-          fontSize: "16px",
-          margin: "0 0 5px 0",
-        }}
-      >
-        {data.label}
-      </h3>
+      {data.label && (
+        <span
+          style={{
+            color: style?.color || "#856404",
+            fontSize: "12px",
+            fontWeight: "600",
+            margin: "0 0 3px 0",
+            letterSpacing: "0.02em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {data.label}
+        </span>
+      )}
       <div
         style={{
-          fontSize: "20px",
-          fontWeight: "600",
+          fontSize: "15px",
+          fontWeight: "700",
           color: style?.color || "#856404",
-          fontFamily: "monospace",
+          fontFamily: "'IBM Plex Mono', monospace, ui-monospace",
+          letterSpacing: "0.03em",
+          whiteSpace: "nowrap",
         }}
       >
         {timeLeft || "Loading..."}

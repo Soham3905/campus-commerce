@@ -17,93 +17,7 @@ import { canAddChild, getDropMode } from "../../utils/validation";
  *  3. "clean"            — Pure customer live preview.
  */
 
-// ─── Device Frame Chrome ───────────────────────────────────────────────────────
-const DeviceFrame = ({ device, children }) => {
-  if (device === "mobile") {
-    return (
-      <div
-        style={{
-          width: "390px",
-          borderRadius: "48px",
-          border: "10px solid #1e293b",
-          boxShadow: "0 24px 48px rgba(0,0,0,0.3), 0 0 0 2px #334155 inset",
-          overflow: "hidden",
-          backgroundColor: "#ffffff",
-          flexShrink: 0,
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          height: "800px",
-          maxHeight: "calc(100vh - 140px)",
-        }}
-      >
-        {/* Status bar */}
-        <div
-          style={{
-            height: "26px",
-            backgroundColor: "#1e293b",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 20px",
-            flexShrink: 0,
-            userSelect: "none",
-          }}
-        >
-          <span style={{ color: "#ffffff", fontSize: "10px", fontWeight: "700" }}>9:41</span>
-          <div style={{ width: "70px", height: "14px", backgroundColor: "#334155", borderRadius: "7px" }} />
-          <span style={{ color: "#ffffff", fontSize: "10px" }}>▲ ■</span>
-        </div>
-        <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#ffffff" }}>
-          {children}
-        </div>
-        {/* Home indicator */}
-        <div
-          style={{
-            height: "18px",
-            backgroundColor: "#f8fafc",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <div style={{ width: "100px", height: "4px", backgroundColor: "#cbd5e1", borderRadius: "2px" }} />
-        </div>
-      </div>
-    );
-  }
-
-  if (device === "tablet") {
-    return (
-      <div
-        style={{
-          width: "min(768px, 100%)",
-          borderRadius: "28px",
-          border: "8px solid #1e293b",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
-          overflow: "hidden",
-          backgroundColor: "#ffffff",
-          height: "820px",
-          maxHeight: "calc(100vh - 140px)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {children}
-        </div>
-      </div>
-    );
-  }
-
-  // Desktop
-  return (
-    <div style={{ width: "100%", backgroundColor: "#ffffff", flex: 1, overflowY: "auto" }}>
-      {children}
-    </div>
-  );
-};
+import { IFrameDeviceFrame } from "./IFrameDeviceFrame";
 
 // ─── List-style tree view (recursive) ─────────────────────────────────────────
 const ListNodeTree = ({
@@ -455,14 +369,16 @@ export const VisualCanvas = ({
       <div
         style={{
           flex: 1,
-          overflowY: mode === "visual" ? "hidden" : "auto",
+          overflowY: "auto",
+          overflowX: "hidden",
           display: "flex",
           flexDirection: "column",
-          alignItems: mode === "visual" ? "center" : "stretch",
-          justifyContent: mode === "visual" ? "center" : undefined,
+          alignItems: "center",
+          justifyContent: "flex-start",
           backgroundColor: mode === "visual" ? "#f1f5f9" : "#ffffff",
           padding: mode === "visual" ? "16px" : "0",
           position: "relative",
+          height: "100%",
         }}
         onDragOver={handleCanvasDragOver}
         onDrop={handleCanvasDrop}
@@ -472,7 +388,12 @@ export const VisualCanvas = ({
       >
         {/* ══ VISUAL EDITOR MODE (100% Native SDUI Grid + Interactive Overlays + Live Reflow) ══ */}
         {mode === "visual" && (
-          <DeviceFrame device={activeDevice}>
+          <IFrameDeviceFrame
+            device={activeDevice}
+            onCanvasDrop={handleCanvasDrop}
+            onCanvasDragOver={handleCanvasDragOver}
+            onSelectComponent={onSelectComponent}
+          >
             {renderedSchema ? (
               <SDUIRenderer
                 schema={renderedSchema}
@@ -510,7 +431,7 @@ export const VisualCanvas = ({
                 <div>No schema loaded</div>
               </div>
             )}
-          </DeviceFrame>
+          </IFrameDeviceFrame>
         )}
 
         {/* ══ LIST VIEW MODE ════════════════════════════════════════════════ */}
@@ -541,7 +462,7 @@ export const VisualCanvas = ({
         {/* ══ CLEAN PREVIEW MODE ════════════════════════════════════════════ */}
         {mode === "clean" && (
           <div style={{ flex: 1, display: "flex", justifyContent: "center", padding: "16px", backgroundColor: "#f1f5f9" }}>
-            <DeviceFrame device={activeDevice}>
+            <IFrameDeviceFrame device={activeDevice}>
               {schema ? (
                 <SDUIRenderer
                   schema={schema}
@@ -551,7 +472,7 @@ export const VisualCanvas = ({
               ) : (
                 <div style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>No schema loaded</div>
               )}
-            </DeviceFrame>
+            </IFrameDeviceFrame>
           </div>
         )}
       </div>

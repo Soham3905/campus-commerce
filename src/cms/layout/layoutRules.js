@@ -1,23 +1,46 @@
 /**
  * Layout Rules & Defaults for SDUI Components
  * Defines realistic device-specific column spans, row spans, and overlay permissions.
+ *
+ * Grid Model: gridAutoRows ≈ 10px, so rowSpan = ceil(pixelHeight / 10).
  */
 
+/**
+ * Parse a CSS height string like "48px" into a number of pixels.
+ * Returns null for relative / calc / percentage / unparseable values.
+ */
+function parsePx(value) {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (trimmed.endsWith("px")) {
+    const n = parseFloat(trimmed);
+    return isNaN(n) ? null : n;
+  }
+  return null;
+}
+
+/**
+ * Row-span lookup table keyed by component type.
+ * These are used as FALLBACKS when the component's containerStyle
+ * does not declare an explicit pixel height.
+ *
+ * Values represent grid rows (each ≈ 10px).
+ */
 export const DEVICE_ROW_SPANS = {
-  Header: { mobile: 15, tablet: 10, desktop: 6 },
-  SearchBar: { mobile: 6, tablet: 6, desktop: 5 },
-  StoryRow: { mobile: 14, tablet: 13, desktop: 12 },
-  CategoryGrid: { mobile: 14, tablet: 12, desktop: 11 },
-  Carousel: { mobile: 26, tablet: 24, desktop: 22 },
-  HeroBanner: { mobile: 32, tablet: 28, desktop: 24 },
-  CouponCode: { mobile: 13, tablet: 12, desktop: 11 },
-  CountDownTimer: { mobile: 13, tablet: 12, desktop: 11 },
-  ProductList: { mobile: 57, tablet: 56, desktop: 55 },
-  ProductCard: { mobile: 44, tablet: 42, desktop: 40 },
-  Footer: { mobile: 40, tablet: 35, desktop: 30 },
+  Header: { mobile: 5, tablet: 5, desktop: 5 },
+  SearchBar: { mobile: 6, tablet: 5, desktop: 5 },
+  StoryRow: { mobile: 12, tablet: 11, desktop: 11 },
+  CategoryGrid: { mobile: 10, tablet: 8, desktop: 8 },
+  Carousel: { mobile: 24, tablet: 23, desktop: 23 },
+  HeroBanner: { mobile: 40, tablet: 40, desktop: 40 },
+  CouponCode: { mobile: 11, tablet: 11, desktop: 11 },
+  CountDownTimer: { mobile: 8, tablet: 8, desktop: 8 },
+  ProductList: { mobile: 57, tablet: 57, desktop: 57 },
+  ProductCard: { mobile: 52, tablet: 52, desktop: 52 },
+  Footer: { mobile: 28, tablet: 28, desktop: 28 },
   NavBar: { mobile: 7, tablet: 7, desktop: 6 },
   IFrame: { mobile: 24, tablet: 22, desktop: 20 },
-  Box: { mobile: 26, tablet: 25, desktop: 24 },
+  Box: { mobile: 20, tablet: 20, desktop: 20 },
   Title: { mobile: 5, tablet: 5, desktop: 4 },
   Description: { mobile: 6, tablet: 5, desktop: 4 },
   Text: { mobile: 4, tablet: 4, desktop: 3 },
@@ -38,20 +61,20 @@ export const DEVICE_ROW_SPANS = {
 };
 
 export const DEFAULT_DEVICE_SPANS = {
-  Header: { rowSpan: 6, colSpan: 100 },
+  Header: { rowSpan: 5, colSpan: 100 },
   SearchBar: { rowSpan: 5, colSpan: 100 },
-  StoryRow: { rowSpan: 12, colSpan: 100 },
-  CategoryGrid: { rowSpan: 11, colSpan: 100 },
-  Carousel: { rowSpan: 22, colSpan: 100 },
-  HeroBanner: { rowSpan: 24, colSpan: 100 },
+  StoryRow: { rowSpan: 11, colSpan: 100 },
+  CategoryGrid: { rowSpan: 8, colSpan: 100 },
+  Carousel: { rowSpan: 23, colSpan: 100 },
+  HeroBanner: { rowSpan: 40, colSpan: 100 },
   CouponCode: { rowSpan: 11, colSpan: 100 },
-  CountDownTimer: { rowSpan: 11, colSpan: 100 },
-  ProductList: { rowSpan: 55, colSpan: 100 },
-  ProductCard: { rowSpan: 40, colSpan: 100 },
-  Footer: { rowSpan: 30, colSpan: 100 },
+  CountDownTimer: { rowSpan: 8, colSpan: 100 },
+  ProductList: { rowSpan: 57, colSpan: 100 },
+  ProductCard: { rowSpan: 52, colSpan: 100 },
+  Footer: { rowSpan: 28, colSpan: 100 },
   NavBar: { rowSpan: 6, colSpan: 100 },
   IFrame: { rowSpan: 20, colSpan: 100 },
-  Box: { rowSpan: 24, colSpan: 100 },
+  Box: { rowSpan: 20, colSpan: 100 },
   Title: { rowSpan: 4, colSpan: 100 },
   Description: { rowSpan: 4, colSpan: 100 },
   Text: { rowSpan: 3, colSpan: 100 },
@@ -73,26 +96,80 @@ export const DEFAULT_DEVICE_SPANS = {
 
 /**
  * Gets default height (in grid rows) for a component type and device.
- * @param {string|Object} component - Component type or node object
+ *
+ * Priority:
+ *   1. containerStyle.height in pixels  → ceil(px / 10)
+ *   2. Content-aware heuristic per type  → custom logic
+ *   3. DEVICE_ROW_SPANS fallback table   → static lookup
+ *
+ * IMPORTANT: This function must NOT read component.placement.
+ * Doing so creates a circular dependency where stale row values persist forever.
+ *
+ * @param {string|Object} component - Component type string or schema node object
  * @param {string} [device='desktop'] - 'mobile' | 'tablet' | 'desktop'
- * @returns {number} Default row span
+ * @returns {number} Row span (each row ≈ 10px)
  */
 export function getDefaultRowSpan(component, device = "desktop") {
   const type = typeof component === "object" && component ? component.type : component;
-  const deviceSpans = DEVICE_ROW_SPANS[type] || { mobile: 10, tablet: 10, desktop: 10 };
-  let baseSpan = deviceSpans[device] || deviceSpans.desktop || 10;
 
-  if (typeof component === "object" && component) {
-    if (type === "Header" && Array.isArray(component.children) && component.children.length >= 3) {
-      if (device === "mobile") baseSpan = Math.max(baseSpan, 15);
-      else if (device === "tablet") baseSpan = Math.max(baseSpan, 10);
-    }
-    if (type === "ProductList" && Array.isArray(component.children) && component.children.length > 0) {
-      baseSpan = Math.max(baseSpan, device === "mobile" ? 57 : device === "tablet" ? 56 : 55);
+  // ── 1. Try explicit CSS pixel height from containerStyle ──
+  if (typeof component === "object" && component?.containerStyle) {
+    const cs = component.containerStyle;
+    const px = parsePx(cs.height) || parsePx(cs.minHeight);
+    if (px !== null && px > 0) {
+      // Account for vertical padding if parseable
+      let paddingPx = 0;
+      const padTop = parsePx(cs.paddingTop);
+      const padBot = parsePx(cs.paddingBottom);
+      if (padTop !== null) paddingPx += padTop;
+      if (padBot !== null) paddingPx += padBot;
+      // If padding shorthand is a single px value (all sides), use top+bottom
+      if (paddingPx === 0) {
+        const padAll = parsePx(cs.padding);
+        if (padAll !== null) paddingPx = padAll * 2;
+      }
+      return Math.ceil((px + paddingPx) / 10);
     }
   }
 
-  return baseSpan;
+  // ── 2. Content-aware heuristic for compound types ──
+  if (typeof component === "object" && component) {
+    if (type === "ProductList") {
+      // Horizontal scroll of 516px product cards + vertical padding
+      return 57;
+    }
+
+    if (type === "Box") {
+      const cs = component.containerStyle || {};
+      const childCount = Array.isArray(component.children) ? component.children.length : 0;
+
+      // Grid box (product card grid)
+      if (cs.display === "grid" && childCount > 0) {
+        const cols = device === "mobile" ? 2 : device === "tablet" ? 3 : 4;
+        const rowsOfCards = Math.ceil(childCount / cols);
+        return rowsOfCards * 30 + 4; // ~300px per row of cards + padding
+      }
+
+      // Horizontal flex row (coupons, countdown timers)
+      if (cs.display === "flex" && cs.overflowX) {
+        return 11;
+      }
+
+      return 20;
+    }
+
+    if (type === "HeroBanner") {
+      return 40; // ~400px hero image
+    }
+
+    if (type === "Footer") {
+      return 28;
+    }
+  }
+
+  // ── 3. Static lookup fallback ──
+  const deviceSpans = DEVICE_ROW_SPANS[type] || { mobile: 10, tablet: 10, desktop: 10 };
+  return deviceSpans[device] || deviceSpans.desktop || 10;
 }
 
 /**

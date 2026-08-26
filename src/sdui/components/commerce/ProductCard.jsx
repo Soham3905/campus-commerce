@@ -13,6 +13,8 @@ export const ProductCard = ({ children, style, isHovered }) => {
         flexDirection: "column",
         gap: "8px",
         overflow: "hidden",
+        width: "100%",
+        height: "100%",
         ...style,
       }}
     >
