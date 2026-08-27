@@ -343,11 +343,7 @@ export const SDUIRenderer = ({
   const isGhost = schema.__isDragGhost === true;
   const def = isEditable ? ComponentRegistry[schema.type] : null;
 
-  // Merge device-specific responsive styles if present (e.g. mobile vs desktop)
-  const effectiveContainerStyle = {
-    ...schema.containerStyle,
-    ...(schema.responsiveContainerStyle?.[deviceType] || schema.responsiveStyles?.[deviceType] || {}),
-  };
+  const effectiveContainerStyle = schema.containerStyle || {};
 
   // Decide if child components should be grid children
   const nextIsDirectGridChild = isRootContainer || (schema.type === "Box" && effectiveContainerStyle?.display === "grid");
