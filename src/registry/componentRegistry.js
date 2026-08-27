@@ -42,6 +42,7 @@ export const ComponentRegistry = {
     icon: "📐",
     canHaveChildren: true,
     allowedChildren: null, // Any child allowed
+    forbiddenChildren: ["Home", "Page"], // A page grid shouldn't nest another root/page inside it
     defaultData: {},
     defaultPlacement: {},
     defaultContainerStyle: {},
@@ -57,6 +58,7 @@ export const ComponentRegistry = {
     icon: "📦",
     canHaveChildren: true,
     allowedChildren: null,
+    forbiddenChildren: ["Home", "Page"], // A wrapper box shouldn't contain a full root/page
     defaultData: {},
     defaultPlacement: {
       mobile: { colStart: 1, colEnd: 100, rowStart: 1, rowEnd: 20 },
@@ -420,6 +422,7 @@ export const ComponentRegistry = {
     icon: "🎠",
     canHaveChildren: true,
     allowedChildren: ["HeroBanner", "ProductCard", "Image", "Box"],
+    maxChildren: 10,
     defaultData: {
       autoPlay: true,
       autoPlayInterval: 3500,
@@ -473,6 +476,7 @@ export const ComponentRegistry = {
     icon: "⭕",
     canHaveChildren: true,
     allowedChildren: ["StoryCircle"],
+    maxChildren: 20,
     defaultData: {},
     defaultPlacement: {
       mobile: { colStart: 1, colEnd: 100, rowStart: 10, rowEnd: 18 },
@@ -685,6 +689,7 @@ export const ComponentRegistry = {
     icon: "⭐",
     canHaveChildren: true,
     allowedChildren: ["Score", "ReviewCount"],
+    maxChildren: 2,
     defaultData: {},
     defaultPlacement: {},
     defaultContainerStyle: {},

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { SDUIRenderer } from "../../../sdui/SDUIRenderer";
 import { ComponentRow } from "./ComponentRow";
 import { DropSlot } from "./DropSlot";
@@ -128,7 +128,34 @@ export const VisualCanvas = ({
     previewTree,
     updateDropSlot,
     clearDropSlot,
+    pointerPosition,
   } = useDragDrop();
+
+  const canvasBodyRef = useRef(null);
+
+  // Auto-scroll the canvas when dragging near its top/bottom edge, so long
+  // pages remain reachable without the drag ever losing its drop target.
+  useEffect(() => {
+    if (!isDragging || !pointerPosition) return;
+    const container = canvasBodyRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const EDGE = 60;
+    const MAX_SPEED = 18;
+    const distTop = pointerPosition.y - rect.top;
+    const distBottom = rect.bottom - pointerPosition.y;
+
+    let delta = 0;
+    if (distTop >= 0 && distTop < EDGE) {
+      delta = -MAX_SPEED * (1 - distTop / EDGE);
+    } else if (distBottom >= 0 && distBottom < EDGE) {
+      delta = MAX_SPEED * (1 - distBottom / EDGE);
+    }
+    if (delta !== 0) {
+      container.scrollTop += delta;
+    }
+  }, [pointerPosition, isDragging]);
 
   const toggleExpand = (id) => {
     setExpandedIds((prev) => {
@@ -199,7 +226,7 @@ export const VisualCanvas = ({
     if (!targetNode || !src) return;
 
     if (position === "inside") {
-      const check = canAddChild(targetNode.type, src.type);
+      const check = canAddChild(targetNode, src.type, src.nodeId ? { excludeChildId: src.nodeId } : undefined);
       if (!check.valid) {
         onInvalidDrop?.({
           source: src,
@@ -367,6 +394,7 @@ export const VisualCanvas = ({
 
       {/* ── Canvas Body ─────────────────────────────────────────────────── */}
       <div
+        ref={canvasBodyRef}
         style={{
           flex: 1,
           overflowY: "auto",
@@ -393,6 +421,7 @@ export const VisualCanvas = ({
             onCanvasDrop={handleCanvasDrop}
             onCanvasDragOver={handleCanvasDragOver}
             onSelectComponent={onSelectComponent}
+            isolate={false}
           >
             {renderedSchema ? (
               <SDUIRenderer

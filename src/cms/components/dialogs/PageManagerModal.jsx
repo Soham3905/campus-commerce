@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PageRepository } from "../../services/pageRepository";
 import { defaultInterfaces } from "../../../schema/defaultInterfaces";
 import { ensureStableIds } from "../../utils/idUtils";
 import { cloneTree } from "../../utils/treeUtils";
@@ -8,28 +7,26 @@ import { colors, commonStyles } from "../../theme";
 export const PageManagerModal = ({
   isOpen,
   onClose,
+  pages = [],
   activePageId,
   onSwitchPage,
-  onRefresh,
+  onCreatePage,
+  onDuplicatePage,
+  onRenamePage,
+  onDeletePage,
 }) => {
-  const [pages, setPages] = useState(() => PageRepository.getAll());
   const [isCreating, setIsCreating] = useState(false);
   const [newPageName, setNewPageName] = useState("");
   const [selectedInterfaceId, setSelectedInterfaceId] = useState("ecommerce-home");
   const [editingId, setEditingId] = useState(null);
   const [editingName, setEditingName] = useState("");
+  const [isBusy, setIsBusy] = useState(false);
 
   if (!isOpen) return null;
 
-  const refreshList = () => {
-    const list = PageRepository.getAll();
-    setPages(list);
-    if (onRefresh) onRefresh();
-  };
-
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
-    if (!newPageName.trim()) return;
+    if (!newPageName.trim() || isBusy) return;
 
     const blueprint = defaultInterfaces.find((i) => i.id === selectedInterfaceId);
     const newPage = {
@@ -39,34 +36,41 @@ export const PageManagerModal = ({
       schema: ensureStableIds(cloneTree(blueprint?.schema || {})),
     };
 
-    const saved = PageRepository.save(newPage);
-    refreshList();
-    setIsCreating(false);
-    setNewPageName("");
-    if (saved) {
-      onSwitchPage(saved.id);
-      onClose();
+    setIsBusy(true);
+    try {
+      const saved = await onCreatePage(newPage);
+      setIsCreating(false);
+      setNewPageName("");
+      if (saved) {
+        onSwitchPage(saved.id);
+        onClose();
+      }
+    } finally {
+      setIsBusy(false);
     }
   };
 
-  const handleDuplicate = (id) => {
-    PageRepository.duplicate(id);
-    refreshList();
+  const handleDuplicate = async (page) => {
+    if (isBusy) return;
+    setIsBusy(true);
+    try {
+      await onDuplicatePage(page);
+    } finally {
+      setIsBusy(false);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (pages.length <= 1) {
       alert("You cannot delete the only remaining page.");
       return;
     }
     if (confirm("Are you sure you want to delete this page?")) {
-      PageRepository.delete(id);
-      refreshList();
-      if (activePageId === id) {
-        const remaining = PageRepository.getAll();
-        if (remaining[0]) {
-          onSwitchPage(remaining[0].id);
-        }
+      setIsBusy(true);
+      try {
+        await onDeletePage(id);
+      } finally {
+        setIsBusy(false);
       }
     }
   };
@@ -76,10 +80,14 @@ export const PageManagerModal = ({
     setEditingName(page.name);
   };
 
-  const handleSaveRename = (id) => {
-    if (editingName.trim()) {
-      PageRepository.rename(id, editingName.trim());
-      refreshList();
+  const handleSaveRename = async (page) => {
+    if (editingName.trim() && editingName.trim() !== page.name) {
+      setIsBusy(true);
+      try {
+        await onRenamePage(page, editingName.trim());
+      } finally {
+        setIsBusy(false);
+      }
     }
     setEditingId(null);
   };
@@ -166,11 +174,12 @@ export const PageManagerModal = ({
                   type="button"
                   style={{ ...commonStyles.btn, ...commonStyles.btnSecondary }}
                   onClick={() => setIsCreating(false)}
+                  disabled={isBusy}
                 >
                   Cancel
                 </button>
-                <button type="submit" style={{ ...commonStyles.btn, ...commonStyles.btnPrimary }}>
-                  Create Page
+                <button type="submit" style={{ ...commonStyles.btn, ...commonStyles.btnPrimary }} disabled={isBusy}>
+                  {isBusy ? "Creating..." : "Create Page"}
                 </button>
               </div>
             </form>
@@ -224,7 +233,8 @@ export const PageManagerModal = ({
                           />
                           <button
                             style={{ ...commonStyles.btn, ...commonStyles.btnPrimary, padding: "4px 8px", fontSize: "11px" }}
-                            onClick={() => handleSaveRename(page.id)}
+                            onClick={() => handleSaveRename(page)}
+                            disabled={isBusy}
                           >
                             Save
                           </button>
@@ -278,8 +288,9 @@ export const PageManagerModal = ({
                     </button>
                     <button
                       style={{ ...commonStyles.btnIcon, width: "28px", height: "28px" }}
-                      onClick={() => handleDuplicate(page.id)}
+                      onClick={() => handleDuplicate(page)}
                       title="Duplicate"
+                      disabled={isBusy}
                     >
                       ⧉
                     </button>
@@ -287,6 +298,7 @@ export const PageManagerModal = ({
                       style={{ ...commonStyles.btnIcon, width: "28px", height: "28px", color: colors.danger }}
                       onClick={() => handleDelete(page.id)}
                       title="Delete"
+                      disabled={isBusy}
                     >
                       🗑️
                     </button>

@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import countReducer from "./countSlice";
 import journeyReducer from "./slices/journeySlice";
 import pageReducer from "./slices/pageSlice";
 import branchReducer from "./slices/branchSlice";
@@ -17,7 +16,6 @@ export const store = configureStore({
     themes: themeReducer,
     editor: editorReducer,
     ui: uiReducer,
-    count: countReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

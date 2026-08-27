@@ -13,6 +13,8 @@ import {
   fetchJourneys,
   setActiveJourneyId,
 } from "../../store/slices/journeySlice";
+import { FoundationRepository } from "../services/foundationRepository";
+import { applyFoundationTheme } from "../utils/themeApply";
 import {
   fetchBranches,
   setActiveBranch,
@@ -68,7 +70,7 @@ export function useCmsState() {
   const [saveStatus, setSaveStatus] = useState("idle"); // 'idle' | 'saving' | 'saved' | 'error'
 
   const initialSchema = activePage?.schema
-    ? ensureStableIds(cloneTree(activePage.schema))
+    ? ensureStableIds(cloneTree(applyFoundationTheme(activePage.schema, FoundationRepository.get())))
     : defaultPages[0].schema;
 
   // Undo / Redo history
@@ -106,7 +108,8 @@ export function useCmsState() {
       const targetSchema = branchSchema || activePage.schema;
 
       if (targetSchema) {
-        resetHistory(ensureStableIds(cloneTree(targetSchema)));
+        const themedSchema = applyFoundationTheme(targetSchema, FoundationRepository.get());
+        resetHistory(ensureStableIds(cloneTree(themedSchema)));
         setIsDirty(false);
         setSaveStatus("idle");
       }
@@ -205,7 +208,7 @@ export function useCmsState() {
         return { ok: false, reason: `Target node not found.` };
       }
 
-      const check = canAddChild(parentNode.type, type);
+      const check = canAddChild(parentNode, type);
       if (!check.valid) {
         return { ok: false, reason: check.reason };
       }
@@ -516,6 +519,68 @@ export function useCmsState() {
     [dispatch]
   );
 
+  // Applies a reusable interface blueprint's schema to the current canvas
+  const applyInterface = useCallback(
+    (interfaceId, interfaceSchema) => {
+      if (interfaceSchema) {
+        applyJsonSchema(interfaceSchema);
+      }
+      setActiveInterfaceId(interfaceId);
+    },
+    [applyJsonSchema]
+  );
+
+  // Journey switcher
+  const switchJourney = useCallback(
+    (journeyOrId) => {
+      const id = typeof journeyOrId === "string" ? journeyOrId : journeyOrId?.id;
+      if (id) dispatch(setActiveJourneyId(id));
+    },
+    [dispatch]
+  );
+
+  // Page management (create / duplicate / rename / delete) via the real API
+  const createPageInstance = useCallback(
+    async (pageData) => {
+      const result = await dispatch(createPage(pageData)).unwrap();
+      setSelectedComponentId(null);
+      return result;
+    },
+    [dispatch]
+  );
+
+  const duplicatePageInstance = useCallback(
+    async (page) => {
+      const result = await dispatch(
+        createPage({
+          name: `${page.name} (Copy)`,
+          route: `${page.route || "page"}-copy-${Date.now()}`,
+          interfaceId: page.interfaceId,
+          schema: ensureStableIds(cloneTree(page.schema)),
+        })
+      ).unwrap();
+      return result;
+    },
+    [dispatch]
+  );
+
+  const renamePageInstance = useCallback(
+    async (page, newName) => {
+      const result = await dispatch(
+        savePage({ id: page.id, pageData: { ...page, name: newName } })
+      ).unwrap();
+      return result;
+    },
+    [dispatch]
+  );
+
+  const deletePageInstance = useCallback(
+    async (id) => {
+      await dispatch(deletePageAction(id)).unwrap();
+    },
+    [dispatch]
+  );
+
   const selectedNode = selectedComponentId
     ? findNodeById(schema, selectedComponentId)
     : null;
@@ -567,6 +632,12 @@ export function useCmsState() {
     saveCurrentPage,
     switchBranch,
     switchPage,
+    switchJourney,
+    applyInterface,
+    createPageInstance,
+    duplicatePageInstance,
+    renamePageInstance,
+    deletePageInstance,
     setActiveDevice,
     openComponentEditor,
     exitComponentEditor,

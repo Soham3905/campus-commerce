@@ -6,6 +6,7 @@ import { useSwipe } from "./hooks/useSwipe";
 import { useLongPress } from "./hooks/useLongPress";
 import { ComponentRegistry } from "../registry/componentRegistry";
 import { canAddChild, getDropMode } from "../cms/utils/validation";
+import { suppressNativeDragImage } from "../cms/dragdrop/dragImage";
 
 /**
  * SDUI Renderer — Clean, Direct Visual Drag & Drop Grid Renderer
@@ -211,6 +212,7 @@ export const SDUIRenderer = ({
     e.dataTransfer.setData("application/sdui-type", schema.type);
     e.dataTransfer.setData("application/sdui-id", schema.id);
     e.dataTransfer.setData("text/plain", schema.id);
+    suppressNativeDragImage(e.dataTransfer);
     onDragStartNode?.(schema);
   };
 
@@ -234,11 +236,11 @@ export const SDUIRenderer = ({
 
     const draggedType = dragSource?.type || e.dataTransfer.getData("application/sdui-type");
     if (!draggedType) return;
-    const mode = getDropMode(e.clientY, rect, schema.type, draggedType);
+    const mode = getDropMode(e.clientY, rect, schema.type, draggedType, schema);
 
     let check = { valid: true };
     if (mode === "inside") {
-      check = canAddChild(schema.type, draggedType);
+      check = canAddChild(schema, draggedType, dragSource?.nodeId ? { excludeChildId: dragSource.nodeId } : undefined);
     }
 
     setDragZone(mode);

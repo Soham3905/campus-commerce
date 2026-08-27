@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useCmsState } from "../../hooks/useCmsState";
 import { useToasts } from "../../hooks/useToasts";
 import { DragDropProvider } from "../../dragdrop/DragDropContext";
+import { DragOverlay } from "../../dragdrop/DragOverlay";
 import { ToastContainer } from "../../../components/common/Toast";
 import { CmsHeader } from "./CmsHeader";
 import { ComponentLibrary } from "../library/ComponentLibrary";
@@ -9,8 +10,9 @@ import { VisualCanvas } from "../canvas/VisualCanvas";
 import { Inspector } from "../inspector/Inspector";
 import { JsonEditorModal } from "../dialogs/JsonEditorModal";
 import { PageManagerModal } from "../dialogs/PageManagerModal";
+import { InterfaceManagerModal } from "../dialogs/InterfaceManagerModal";
+import { InterfaceRepository } from "../../services/interfaceRepository";
 import { BranchModal } from "../../branch/BranchModal";
-import { BranchRepository } from "../../services/branchRepository";
 import { JourneyDashboard } from "../../journey/JourneyDashboard";
 import { colors } from "../../theme";
 
@@ -24,23 +26,25 @@ const RIGHT_TABS = [
 export const CmsLayout = ({ onLogout, user }) => {
   const {
     schema, selectedComponentId, selectedNode, activeDevice,
-    activePage, activeJourney, activeBranch, editingContext,
+    activePage, activeJourney, activeBranch, editingContext, pages, activeInterfaceId,
     isDirty, saveStatus, canUndo, canRedo,
-    setActiveDevice, setActiveJourney, setActiveBranch, setEditingContext,
+    setActiveDevice,
     selectComponent, clearSelection, updateComponent,
     addComponent, deleteComponent, duplicateComponent,
     moveComponent, addComponentAtSlot, moveComponentToSlot,
-    applyJsonSchema, switchPage, openComponentEditor, switchBranch,
-    saveCurrentPage, undo, redo,
+    applyJsonSchema, switchPage, openComponentEditor, switchBranch, switchJourney,
+    createPageInstance, duplicatePageInstance, renamePageInstance, deletePageInstance,
+    applyInterface, saveCurrentPage, undo, redo,
   } = useCmsState();
 
   const { toasts, removeToast, showSuccess, showWarning } = useToasts();
 
   const [currentView, setCurrentView] = useState("dashboard"); // 'dashboard' | 'editor'
-  const [leftTab, setLeftTab] = useState("library"); // 'library'
+  const [leftTab, setLeftTab] = useState("canvas"); // 'library' | 'canvas' | 'inspect' (mobile panel switcher)
   const [rightTab, setRightTab] = useState("properties"); // 'properties' | 'json'
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 900);
   const [isPagesOpen, setIsPagesOpen] = useState(false);
+  const [isInterfacesOpen, setIsInterfacesOpen] = useState(false);
   const [isJsonOpen, setIsJsonOpen] = useState(false);
   const [isBranchOpen, setIsBranchOpen] = useState(false);
 
@@ -58,10 +62,19 @@ export const CmsLayout = ({ onLogout, user }) => {
       if (cmd && e.key === "y") { e.preventDefault(); redo(); }
       if (cmd && e.key === "s") { e.preventDefault(); saveCurrentPage(); showSuccess("Saved ✓"); }
       if (e.key === "Escape") clearSelection();
+
+      // Keyboard alternative to dragging: reorder the selected component among
+      // its siblings with Ctrl/Cmd+Arrow, without requiring a pointer drag.
+      // Skip while typing in a field so normal text-cursor navigation still works.
+      const isTyping = ["INPUT", "TEXTAREA"].includes(e.target?.tagName) || e.target?.isContentEditable;
+      if (cmd && !isTyping && selectedComponentId && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        e.preventDefault();
+        moveComponent(selectedComponentId, e.key === "ArrowUp" ? "up" : "down");
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [undo, redo, saveCurrentPage, clearSelection, showSuccess]);
+  }, [undo, redo, saveCurrentPage, clearSelection, showSuccess, selectedComponentId, moveComponent]);
 
   // ── Drop Handler ────────────────────────────────────────────────────────────
   const handleDropItem = useCallback(({ source, slot }) => {
@@ -106,10 +119,10 @@ export const CmsLayout = ({ onLogout, user }) => {
         <JourneyDashboard
           activeJourneyId={activeJourney?.id}
           activeBranchId={activeBranch}
-          onSelectJourney={(j) => setActiveJourney(j)}
+          onSelectJourney={(j) => switchJourney(j)}
           onOpenPageEditor={handleOpenPageEditor}
           onOpenComponentEditor={handleOpenComponentEditor}
-          onSwitchBranch={(branch) => { switchBranch(branch); setActiveBranch(branch); }}
+          onSwitchBranch={(branch) => switchBranch(branch)}
           onLogout={onLogout}
           user={user}
         />
@@ -134,6 +147,7 @@ export const CmsLayout = ({ onLogout, user }) => {
         {/* ── TOP HEADER ─────────────────────────────────────────────────── */}
         <CmsHeader
           activePage={activePage}
+          activeInterfaceId={activeInterfaceId}
           activeDevice={activeDevice}
           activeBranch={activeBranch}
           editingContext={editingContext}
@@ -146,6 +160,7 @@ export const CmsLayout = ({ onLogout, user }) => {
           onDeviceChange={setActiveDevice}
           onSave={() => { saveCurrentPage(); showSuccess("Saved ✓"); }}
           onOpenPages={() => setIsPagesOpen(true)}
+          onOpenInterfaces={() => setIsInterfacesOpen(true)}
           onOpenJson={() => setIsJsonOpen(true)}
           onOpenBranches={() => setIsBranchOpen(true)}
           onBackToDashboard={() => setCurrentView("dashboard")}
@@ -190,10 +205,10 @@ export const CmsLayout = ({ onLogout, user }) => {
         <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
 
           {/* ─── LEFT PANEL: Toolbox + Layers ─────────────────────────────── */}
-          {!isMobile && (
+          {(!isMobile || leftTab === "library") && (
             <aside style={{
-              width: `${sidebarW}px`, flexShrink: 0, backgroundColor: "#ffffff",
-              borderRight: "1px solid #e2e8f0", display: "flex", flexDirection: "column",
+              width: isMobile ? "100%" : `${sidebarW}px`, flexShrink: 0, backgroundColor: "#ffffff",
+              borderRight: isMobile ? "none" : "1px solid #e2e8f0", display: "flex", flexDirection: "column",
               overflow: "hidden",
             }}>
               <ComponentLibrary
@@ -208,33 +223,35 @@ export const CmsLayout = ({ onLogout, user }) => {
           )}
 
           {/* ─── CENTER PANEL: Visual Canvas ─────────────────────────────── */}
-          <main style={{
-            flex: 1, display: "flex", flexDirection: "column",
-            overflow: "hidden", minWidth: 0,
-            backgroundColor: "#f8fafc",
-          }}>
-            <VisualCanvas
-              schema={schema}
-              activeDevice={activeDevice}
-              selectedId={selectedComponentId}
-              selectedNode={selectedNode}
-              onSelectComponent={selectComponent}
-              onDuplicateComponent={duplicateComponent}
-              onDeleteComponent={deleteComponent}
-              onMoveComponent={moveComponent}
-              onOpenInspector={() => setRightTab("properties")}
-              onDropItem={handleDropItem}
-              onInvalidDrop={handleInvalidDrop}
-              editingContext={editingContext}
-              onNavigate={(route) => console.log("[CMS navigate]", route)}
-            />
-          </main>
+          {(!isMobile || leftTab === "canvas") && (
+            <main style={{
+              flex: 1, display: "flex", flexDirection: "column",
+              overflow: "hidden", minWidth: 0,
+              backgroundColor: "#f8fafc",
+            }}>
+              <VisualCanvas
+                schema={schema}
+                activeDevice={activeDevice}
+                selectedId={selectedComponentId}
+                selectedNode={selectedNode}
+                onSelectComponent={selectComponent}
+                onDuplicateComponent={duplicateComponent}
+                onDeleteComponent={deleteComponent}
+                onMoveComponent={moveComponent}
+                onOpenInspector={() => setRightTab("properties")}
+                onDropItem={handleDropItem}
+                onInvalidDrop={handleInvalidDrop}
+                editingContext={editingContext}
+                onNavigate={(route) => console.log("[CMS navigate]", route)}
+              />
+            </main>
+          )}
 
           {/* ─── RIGHT PANEL: Inspector + JSON ───────────────────────────── */}
-          {!isMobile && (
+          {(!isMobile || leftTab === "inspect") && (
             <aside style={{
-              width: `${inspectorW}px`, flexShrink: 0, backgroundColor: "#ffffff",
-              borderLeft: "1px solid #e2e8f0", display: "flex", flexDirection: "column",
+              width: isMobile ? "100%" : `${inspectorW}px`, flexShrink: 0, backgroundColor: "#ffffff",
+              borderLeft: isMobile ? "none" : "1px solid #e2e8f0", display: "flex", flexDirection: "column",
               overflow: "hidden",
             }}>
               {/* Right Panel Tab Strip */}
@@ -312,8 +329,23 @@ export const CmsLayout = ({ onLogout, user }) => {
         <PageManagerModal
           isOpen={isPagesOpen}
           onClose={() => setIsPagesOpen(false)}
+          pages={pages}
           activePageId={activePage?.id}
           onSwitchPage={switchPage}
+          onCreatePage={createPageInstance}
+          onDuplicatePage={duplicatePageInstance}
+          onRenamePage={renamePageInstance}
+          onDeletePage={deletePageInstance}
+        />
+        <InterfaceManagerModal
+          isOpen={isInterfacesOpen}
+          onClose={() => setIsInterfacesOpen(false)}
+          activeInterfaceId={activeInterfaceId}
+          onApplyInterface={(interfaceId) => {
+            const blueprint = InterfaceRepository.getById(interfaceId);
+            applyInterface(interfaceId, blueprint?.schema);
+            showSuccess(`Applied ${blueprint?.name || "blueprint"} ✓`);
+          }}
         />
         <JsonEditorModal
           isOpen={isJsonOpen}
@@ -323,23 +355,15 @@ export const CmsLayout = ({ onLogout, user }) => {
         />
         <BranchModal
           isOpen={isBranchOpen}
+          journeyId={activeJourney?.id}
           onClose={() => setIsBranchOpen(false)}
-          currentBranch={activeBranch}
-          onSwitchBranch={(b) => {
-            switchBranch(b);
-            setActiveBranch(b);
+          onBranchCreated={(branch) => {
             setIsBranchOpen(false);
-            showSuccess(`Switched to branch ${b}`);
-          }}
-          onCreateBranch={(name) => {
-            BranchRepository.create(name, activeBranch);
-            switchBranch(name);
-            setActiveBranch(name);
-            setIsBranchOpen(false);
-            showSuccess(`Created and switched to branch ${name}`);
+            showSuccess(`Created and switched to branch ${branch.name}`);
           }}
         />
         <ToastContainer toasts={toasts} onDismiss={removeToast} />
+        <DragOverlay />
       </div>
     </DragDropProvider>
   );

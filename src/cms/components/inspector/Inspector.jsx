@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { ComponentRegistry } from "../../../registry/componentRegistry";
+import { ThemeRepository } from "../../services/themeRepository";
 import { ContentTab } from "./ContentTab";
 import { LayoutTab } from "./LayoutTab";
 import { ActionTab } from "./ActionTab";
 import { StyleTab } from "./StyleTab";
+import { ThemeTab } from "./ThemeTab";
 import { JsonTab } from "./JsonTab";
 import { colors, commonStyles } from "../../theme";
 
@@ -63,6 +65,10 @@ export const Inspector = ({
   }
 
   const def = ComponentRegistry[selectedNode.type];
+  const hasThemes = ThemeRepository.getByComponentType(selectedNode.type).length > 0;
+  const tabKeys = hasThemes
+    ? ["content", "layout", "actions", "style", "theme", "json"]
+    : ["content", "layout", "actions", "style", "json"];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
@@ -131,12 +137,13 @@ export const Inspector = ({
           flexShrink: 0,
         }}
       >
-        {["content", "layout", "actions", "style", "json"].map((tabKey) => {
+        {tabKeys.map((tabKey) => {
           const labels = {
             content: "Content",
             layout: "Layout",
             actions: "Actions",
             style: "Style",
+            theme: "Theme",
             json: "{ }",
           };
           const isActive = activeTab === tabKey;
@@ -192,6 +199,12 @@ export const Inspector = ({
         )}
         {activeTab === "style" && (
           <StyleTab
+            node={selectedNode}
+            onUpdate={onUpdateComponent}
+          />
+        )}
+        {activeTab === "theme" && hasThemes && (
+          <ThemeTab
             node={selectedNode}
             onUpdate={onUpdateComponent}
           />

@@ -208,7 +208,7 @@ export function canMoveNodeToSlot(tree, nodeId, targetParentId) {
     return { valid: false, reason: "A component cannot be dropped into one of its own children." };
   }
 
-  return canAddChild(targetParent, sourceNode);
+  return canAddChild(targetParent, sourceNode, { excludeChildId: sourceNode.id });
 }
 
 /**

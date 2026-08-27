@@ -34,6 +34,8 @@ const DEFAULT_FOUNDATION = {
   },
 };
 
+export { DEFAULT_FOUNDATION };
+
 export const FoundationRepository = {
   /**
    * Retrieves the active foundation configuration.

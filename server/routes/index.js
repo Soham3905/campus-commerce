@@ -25,35 +25,4 @@ router.get("/interfaces", async (req, res, next) => {
   }
 });
 
-// Demo state preservation (cart/wishlist demo)
-let serverState = {
-  cartCount: 3,
-  wishlistCount: 2,
-  favouritesCount: 1,
-};
-
-router.get("/state", (req, res) => {
-  res.json(serverState);
-});
-
-router.post("/action", (req, res) => {
-  const { actionName, payload } = req.body;
-  const quantity = Number(payload?.quantity) || 1;
-  if (actionName === "ADD_TO_CART") {
-    serverState.cartCount += quantity;
-  }
-  if (actionName === "ADD_TO_WISHLIST") {
-    serverState.wishlistCount += quantity;
-  }
-  if (actionName === "ADD_TO_FAVOURITE") {
-    serverState.favouritesCount += quantity;
-  }
-  return res.json({
-    ok: true,
-    actionName,
-    payload,
-    state: serverState,
-  });
-});
-
 export default router;

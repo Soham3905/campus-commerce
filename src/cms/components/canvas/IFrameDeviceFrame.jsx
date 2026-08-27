@@ -3,10 +3,245 @@ import { createPortal } from "react-dom";
 
 /**
  * IFrameDeviceFrame
- * Renders Mobile, Tablet, and Desktop viewport previews inside an isolated <iframe> portal.
- * Ensures natural, unrestricted scrolling from top to footer across all devices.
+ * Renders Mobile, Tablet, and Desktop viewport previews.
+ *
+ * By default (`isolate=true`) content is rendered inside an isolated <iframe>
+ * portal — used for the read-only "Clean Preview" mode where full style/DOM
+ * isolation from the editor chrome is desirable.
+ *
+ * With `isolate=false`, content renders directly in the main document instead
+ * of being portaled cross-document into an <iframe>. This is required for the
+ * interactive Visual Editor: React's synthetic event delegation is rooted on
+ * the container passed to createRoot() in the outer document, so native
+ * drag/drop/click events fired inside a portaled <iframe>'s own document
+ * never reach React's per-node handlers (onDragOver/onDrop/onClick on each
+ * SDUI node). Rendering in the same document lets those handlers fire
+ * normally, which is what makes real inside/before/after drop targeting and
+ * click-to-select work.
  */
 export const IFrameDeviceFrame = ({
+  device = "desktop",
+  children,
+  onCanvasDrop,
+  onCanvasDragOver,
+  onSelectComponent,
+  isolate = true,
+}) => {
+  if (!isolate) {
+    return (
+      <DirectDeviceFrame
+        device={device}
+        onCanvasDrop={onCanvasDrop}
+        onCanvasDragOver={onCanvasDragOver}
+        onSelectComponent={onSelectComponent}
+      >
+        {children}
+      </DirectDeviceFrame>
+    );
+  }
+
+  return (
+    <IsolatedIFrameDeviceFrame device={device} onCanvasDrop={onCanvasDrop} onCanvasDragOver={onCanvasDragOver} onSelectComponent={onSelectComponent}>
+      {children}
+    </IsolatedIFrameDeviceFrame>
+  );
+};
+
+// ─── Same-document device frame (interactive Visual Editor) ──────────────────
+const FRAME_BODY_STYLE = {
+  width: "100%",
+  height: "100%",
+  overflowY: "auto",
+  overflowX: "hidden",
+  backgroundColor: "#F6F6F4",
+};
+
+const DirectDeviceFrame = ({ device, children, onCanvasDrop, onCanvasDragOver, onSelectComponent }) => {
+  const handleWrapperClick = (e) => {
+    if (e.target === e.currentTarget) onSelectComponent?.(null);
+  };
+
+  const contentArea = (
+    <div
+      style={FRAME_BODY_STYLE}
+      onDragOver={onCanvasDragOver}
+      onDrop={onCanvasDrop}
+      onClick={handleWrapperClick}
+    >
+      {children}
+    </div>
+  );
+
+  if (device === "mobile") {
+    return (
+      <div
+        style={{
+          width: "390px",
+          borderRadius: "44px",
+          border: "10px solid #1e293b",
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.28), 0 0 0 2px #334155 inset",
+          overflow: "hidden",
+          backgroundColor: "#ffffff",
+          flexShrink: 0,
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          height: "800px",
+          maxHeight: "calc(100vh - 150px)",
+          transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        <div
+          style={{
+            height: "28px",
+            backgroundColor: "#1e293b",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 22px",
+            flexShrink: 0,
+            userSelect: "none",
+            zIndex: 10,
+          }}
+        >
+          <span style={{ color: "#ffffff", fontSize: "11px", fontWeight: "700", letterSpacing: "0.02em" }}>9:41</span>
+          <div style={{ width: "80px", height: "14px", backgroundColor: "#0f172a", borderRadius: "8px" }} />
+          <span style={{ color: "#ffffff", fontSize: "10px", letterSpacing: "1px" }}>▲ ■ 100%</span>
+        </div>
+
+        <div style={{ flex: 1, position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+          {contentArea}
+        </div>
+
+        <div
+          style={{
+            height: "18px",
+            backgroundColor: "#f8fafc",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            borderTop: "1px solid #e2e8f0",
+          }}
+        >
+          <div style={{ width: "110px", height: "4px", backgroundColor: "#94a3b8", borderRadius: "2px" }} />
+        </div>
+      </div>
+    );
+  }
+
+  if (device === "tablet") {
+    return (
+      <div
+        style={{
+          width: "min(768px, 100%)",
+          borderRadius: "28px",
+          border: "8px solid #1e293b",
+          boxShadow: "0 20px 45px -10px rgba(0, 0, 0, 0.22), 0 0 0 1px #334155 inset",
+          overflow: "hidden",
+          backgroundColor: "#ffffff",
+          height: "820px",
+          maxHeight: "calc(100vh - 150px)",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+          transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        <div
+          style={{
+            height: "26px",
+            backgroundColor: "#1e293b",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 20px",
+            flexShrink: 0,
+            userSelect: "none",
+          }}
+        >
+          <span style={{ color: "#94a3b8", fontSize: "10px", fontWeight: "600" }}>iPad 10.9" · 768 × 1024</span>
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#334155" }} />
+          <span style={{ color: "#94a3b8", fontSize: "10px" }}>🔋 100%</span>
+        </div>
+
+        <div style={{ flex: 1, position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+          {contentArea}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "1280px",
+        height: "100%",
+        maxHeight: "calc(100vh - 140px)",
+        borderRadius: "14px",
+        border: "1px solid #cbd5e1",
+        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)",
+        overflow: "hidden",
+        backgroundColor: "#ffffff",
+        display: "flex",
+        flexDirection: "column",
+        transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+      }}
+    >
+      <div
+        style={{
+          height: "36px",
+          backgroundColor: "#f8fafc",
+          borderBottom: "1px solid #e2e8f0",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 12px",
+          gap: "10px",
+          flexShrink: 0,
+          userSelect: "none",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ef4444" }} />
+          <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#f59e0b" }} />
+          <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#10b981" }} />
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            maxWidth: "460px",
+            height: "22px",
+            backgroundColor: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "6px",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 10px",
+            gap: "6px",
+            fontSize: "11px",
+            color: "#64748b",
+          }}
+        >
+          <span style={{ fontSize: "10px", color: "#10b981" }}>🔒</span>
+          <span style={{ color: "#334155", fontWeight: "500" }}>https://campuscommerce.store/home</span>
+        </div>
+
+        <div style={{ fontSize: "11px", color: "#94a3b8", fontWeight: "600", marginLeft: "auto" }}>
+          Desktop Viewport (100%)
+        </div>
+      </div>
+
+      <div style={{ flex: 1, position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+        {contentArea}
+      </div>
+    </div>
+  );
+};
+
+// ─── Cross-document isolated iframe device frame (non-interactive Clean Preview) ──
+const IsolatedIFrameDeviceFrame = ({
   device = "desktop",
   children,
   onCanvasDrop,

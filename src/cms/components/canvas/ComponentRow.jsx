@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ComponentRegistry } from "../../../registry/componentRegistry";
 import { useDragDrop } from "../../dragdrop/DragDropContext";
+import { suppressNativeDragImage } from "../../dragdrop/dragImage";
 import { colors } from "../../theme";
 
 /**
@@ -47,6 +48,7 @@ export const ComponentRow = ({
       onDragStart={(e) => {
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("text/plain", node.id);
+        suppressNativeDragImage(e.dataTransfer);
         onRowDragStart?.(node);
       }}
       onDragEnd={() => onRowDragEnd?.()}

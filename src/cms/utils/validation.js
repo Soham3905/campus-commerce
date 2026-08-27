@@ -21,13 +21,20 @@ export function getAllowedChildren(parentType) {
  * Checks whether a child component type or node can be added to a parent component.
  * Generic single-source-of-truth validation rule.
  *
- * @param {string|Object} parent - Parent type string or node object
+ * @param {string|Object} parent - Parent type string or node object (pass the full node,
+ *   not just its type, to get accurate maxChildren enforcement)
  * @param {string|Object} child - Child type string or node object
+ * @param {Object} [options]
+ * @param {string} [options.excludeChildId] - When checking a move within the same parent
+ *   (reordering), exclude this existing child ID from the maxChildren count so the item
+ *   being moved doesn't count against its own capacity.
  * @returns {{ valid: boolean, reason?: string }}
  */
-export function canAddChild(parent, child) {
-  const parentType = typeof parent === "object" && parent ? parent.type : parent;
+export function canAddChild(parent, child, options = {}) {
+  const parentNode = typeof parent === "object" && parent ? parent : null;
+  const parentType = parentNode ? parentNode.type : parent;
   const childType = typeof child === "object" && child ? child.type : child;
+  const { excludeChildId = null } = options;
 
   if (!parentType || !childType) {
     return { valid: false, reason: "Parent and child component types must be specified." };
@@ -61,12 +68,32 @@ export function canAddChild(parent, child) {
     }
   }
 
-  // 3. Check child's allowedParents list (if restricted)
+  // 3. Check parent's forbiddenChildren list (explicit exclusions, even when allowedChildren is permissive)
+  if (Array.isArray(parentDef.forbiddenChildren) && parentDef.forbiddenChildren.includes(childType)) {
+    return {
+      valid: false,
+      reason: `${childDef.label || childType} cannot be placed inside ${parentDef.label || parentType}.`,
+    };
+  }
+
+  // 4. Check child's allowedParents list (if restricted)
   if (Array.isArray(childDef.allowedParents) && childDef.allowedParents.length > 0) {
     if (!childDef.allowedParents.includes(parentType)) {
       return {
         valid: false,
         reason: `${childDef.label || childType} can only be placed inside: [${childDef.allowedParents.join(", ")}].`,
+      };
+    }
+  }
+
+  // 5. Check parent's maxChildren capacity (only enforceable when the actual parent node,
+  // with its current children, is passed rather than a bare type string)
+  if (typeof parentDef.maxChildren === "number" && parentNode && Array.isArray(parentNode.children)) {
+    const currentCount = parentNode.children.filter((c) => c.id !== excludeChildId).length;
+    if (currentCount >= parentDef.maxChildren) {
+      return {
+        valid: false,
+        reason: `${parentDef.label || parentType} can contain at most ${parentDef.maxChildren} item${parentDef.maxChildren === 1 ? "" : "s"} (already has ${currentCount}).`,
       };
     }
   }
@@ -92,9 +119,10 @@ export function canDrop(draggedType, targetParentType, mode = "inside") {
  * @param {DOMRect} rect - Target element DOMRect
  * @param {string} targetType - Target component type
  * @param {string} [draggedType=null] - Dragged component type
+ * @param {Object} [targetNode=null] - Full target node (enables accurate maxChildren checks)
  * @returns {'before'|'inside'|'after'}
  */
-export function getDropMode(clientY, rect, targetType, draggedType = null) {
+export function getDropMode(clientY, rect, targetType, draggedType = null, targetNode = null) {
   if (!rect || rect.height <= 0) return "inside";
 
   const offsetY = clientY - rect.top;
@@ -103,7 +131,7 @@ export function getDropMode(clientY, rect, targetType, draggedType = null) {
 
   const canAcceptInside =
     targetDef?.canHaveChildren !== false &&
-    (!draggedType || canAddChild(targetType, draggedType).valid);
+    (!draggedType || canAddChild(targetNode || targetType, draggedType).valid);
 
   // If container can accept this child inside
   if (canAcceptInside) {
@@ -136,7 +164,7 @@ export function canMoveNode(node, targetParent) {
     return { valid: false, reason: "Cannot move a component inside itself." };
   }
 
-  return canAddChild(targetParent, node);
+  return canAddChild(targetParent, node, { excludeChildId: node.id });
 }
 
 /**

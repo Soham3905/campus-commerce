@@ -3,10 +3,9 @@
  * drop mode resolution, footprint placeholders, and contract validations during drag.
  */
 
-import { canAddChild, getDropMode } from "../utils/validation";
-import { findNodeById, findParentById, insertNodeAtIndex, moveNodeToSlot, canMoveNodeToSlot, removeNode, cloneTree } from "../utils/treeUtils";
+import { canAddChild } from "../utils/validation";
+import { findNodeById, insertNodeAtIndex, moveNodeToSlot, canMoveNodeToSlot } from "../utils/treeUtils";
 import { createComponent } from "../utils/componentFactory";
-import { GridEngine } from "../layout/gridEngine";
 
 /**
  * Computes a temporary preview tree for live visual reflow during drag.
@@ -29,7 +28,7 @@ export function computePreviewTree(baseSchema, source, slot) {
 
   if (source.isNew) {
     // Check validation
-    const check = canAddChild(parentNode.type, source.type);
+    const check = canAddChild(parentNode, source.type);
     if (!check.valid) return baseSchema;
 
     // Create a realistic ghost blueprint for live preview
@@ -51,75 +50,6 @@ export function computePreviewTree(baseSchema, source, slot) {
   return baseSchema;
 }
 
-/**
- * Resolves drop slot details from a DOM dragover event on a target node.
- *
- * @param {Object} params
- * @param {MouseEvent|DragEvent} params.event
- * @param {DOMRect} params.rect
- * @param {Object} params.targetNode
- * @param {Object} params.fullSchema
- * @param {Object} params.dragSource
- * @returns {Object} Target slot object with mode, parentId, parentType, afterIndex, isValid, reason
- */
-export function resolveDropSlot({ event, rect, targetNode, fullSchema, dragSource }) {
-  if (!targetNode || !dragSource) {
-    return null;
-  }
-
-  const draggedType = dragSource.type;
-  const dropMode = getDropMode(event.clientY, rect, targetNode.type, draggedType);
-
-  if (dropMode === "inside") {
-    const check = canAddChild(targetNode.type, draggedType);
-    const childrenCount = targetNode.children?.length || 0;
-
-    return {
-      parentId: targetNode.id,
-      parentType: targetNode.type,
-      targetNodeId: targetNode.id,
-      dropMode: "inside",
-      afterIndex: childrenCount - 1, // Append at end of children or start (-1)
-      isValid: check.valid,
-      reason: check.reason || null,
-      label: `Drop inside ${targetNode.type}`,
-    };
-  }
-
-  // Before or After: target is the parent of targetNode
-  const parentInfo = findParentById(fullSchema, targetNode.id);
-  if (!parentInfo) {
-    // If targetNode is root
-    return {
-      parentId: targetNode.id,
-      parentType: targetNode.type,
-      targetNodeId: targetNode.id,
-      dropMode: "inside",
-      afterIndex: (targetNode.children?.length || 1) - 1,
-      isValid: true,
-      reason: null,
-      label: `Drop inside ${targetNode.type}`,
-    };
-  }
-
-  const parent = parentInfo.parent;
-  const index = parentInfo.index;
-  const check = canAddChild(parent.type, draggedType);
-  const afterIndex = dropMode === "before" ? index - 1 : index;
-
-  return {
-    parentId: parent.id,
-    parentType: parent.type,
-    targetNodeId: targetNode.id,
-    dropMode,
-    afterIndex,
-    isValid: check.valid,
-    reason: check.reason || null,
-    label: dropMode === "before" ? `Insert before ${targetNode.type}` : `Insert after ${targetNode.type}`,
-  };
-}
-
 export default {
   computePreviewTree,
-  resolveDropSlot,
 };

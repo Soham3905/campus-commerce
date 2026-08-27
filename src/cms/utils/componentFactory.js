@@ -63,6 +63,7 @@ export function createComponent(type, overrides = {}) {
   const baseNode = {
     id: rootId,
     type,
+    themeId: themeId || undefined,
     data: {
       ...blueprintData,
       ...(overrides.data || {}),

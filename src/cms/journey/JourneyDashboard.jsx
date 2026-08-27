@@ -25,7 +25,6 @@ import {
 import { createJourney } from "../../store/slices/journeySlice";
 import { FoundationRepository } from "../services/foundationRepository";
 import { ComponentRegistry } from "../../registry/componentRegistry";
-import { BranchRepository } from "../services/branchRepository";
 import { BranchModal } from "../branch/BranchModal";
 import { PullRequestModal } from "../pr/PullRequestModal";
 import { SDUIRenderer } from "../../sdui/SDUIRenderer";
@@ -861,11 +860,22 @@ export const JourneyDashboard = ({
       )}
 
       {isBranchModalOpen && (
-        <BranchModal isOpen onClose={() => setIsBranchModalOpen(false)} currentBranch={activeBranchId} onSwitchBranch={onSwitchBranch} onCreateBranch={(name) => { BranchRepository.create(name, activeBranchId); setIsBranchModalOpen(false); }} />
+        <BranchModal
+          isOpen
+          journeyId={activeJourneyId}
+          onClose={() => setIsBranchModalOpen(false)}
+          onBranchCreated={(branch) => setIsBranchModalOpen(false)}
+        />
       )}
 
       {isPrModalOpen && (
-        <PullRequestModal isOpen pr={selectedPr} onClose={() => { setIsPrModalOpen(false); setSelectedPr(null); }} />
+        <PullRequestModal
+          isOpen
+          journeyId={activeJourneyId}
+          activeBranchId={activeBranchId}
+          selectedPr={selectedPr}
+          onClose={() => { setIsPrModalOpen(false); setSelectedPr(null); }}
+        />
       )}
 
       <style>{`

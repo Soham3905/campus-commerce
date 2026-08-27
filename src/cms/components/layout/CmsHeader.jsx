@@ -144,6 +144,40 @@ export const CmsHeader = ({
           </button>
         )}
 
+        {!editingContext && onOpenInterfaces && (
+          <button
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "#ffffff",
+              border: `1px solid ${colors.borderMedium}`,
+              padding: "6px 12px",
+              borderRadius: "8px",
+              fontSize: "12px",
+              fontWeight: 600,
+              color: colors.textPrimary,
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              outline: "none",
+              transition: "all 0.15s ease",
+            }}
+            onClick={onOpenInterfaces}
+            title="Apply a reusable interface blueprint"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#4f46e5";
+              e.currentTarget.style.backgroundColor = "rgba(79,70,229,0.02)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = colors.borderMedium;
+              e.currentTarget.style.backgroundColor = "#ffffff";
+            }}
+          >
+            <span>📐</span>
+            <span>{defaultInterfaces.find((i) => i.id === activeInterfaceId)?.name || "Blueprints"}</span>
+          </button>
+        )}
+
         {/* Clickable Branch Switcher Button */}
         <button
           onClick={onOpenBranches}

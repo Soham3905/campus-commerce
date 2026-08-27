@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ComponentRegistry, ComponentCategories } from "../../../registry/componentRegistry";
 import { colors } from "../../theme";
 import { useDragDrop } from "../../dragdrop/DragDropContext";
+import { suppressNativeDragImage } from "../../dragdrop/dragImage";
 import { canAddChild } from "../../utils/validation";
 
 export const ComponentLibrary = ({ onAddComponent, selectedNode, editingContext = null }) => {
@@ -10,7 +11,8 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode, editingContext 
   const { startDrag, endDrag, isDragging } = useDragDrop();
 
   // Active target context (e.g. 'ProductCard' or 'Header' if selected or in studio)
-  const targetParentType = editingContext || (selectedNode && ComponentRegistry[selectedNode.type]?.canHaveChildren !== false ? selectedNode.type : null);
+  const targetParentNode = !editingContext && selectedNode && ComponentRegistry[selectedNode.type]?.canHaveChildren !== false ? selectedNode : null;
+  const targetParentType = editingContext || targetParentNode?.type || null;
 
   const allTypes = Object.keys(ComponentRegistry).filter(
     (type) => type !== "Home" && type !== "Page"
@@ -36,8 +38,8 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode, editingContext 
   // Sort components: compatible items first if targeting a container
   const sortedComponents = [...filteredComponents].sort((a, b) => {
     if (targetParentType) {
-      const aValid = canAddChild(targetParentType, a.type).valid;
-      const bValid = canAddChild(targetParentType, b.type).valid;
+      const aValid = canAddChild(targetParentNode || targetParentType, a.type).valid;
+      const bValid = canAddChild(targetParentNode || targetParentType, b.type).valid;
       if (aValid && !bValid) return -1;
       if (!aValid && bValid) return 1;
     }
@@ -50,6 +52,7 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode, editingContext 
     e.dataTransfer.effectAllowed = "all";
     e.dataTransfer.setData("application/sdui-type", def.type);
     e.dataTransfer.setData("text/plain", def.type);
+    suppressNativeDragImage(e.dataTransfer);
     startDrag({
       type: def.type,
       isNew: true,
@@ -213,7 +216,7 @@ export const ComponentLibrary = ({ onAddComponent, selectedNode, editingContext 
           </div>
         ) : (
           sortedComponents.map((def) => {
-            const isCompatible = !targetParentType || canAddChild(targetParentType, def.type).valid;
+            const isCompatible = !targetParentType || canAddChild(targetParentNode || targetParentType, def.type).valid;
 
             return (
               <div

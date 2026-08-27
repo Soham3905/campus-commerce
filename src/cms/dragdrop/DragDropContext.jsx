@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
 import { canAddChild } from "../utils/validation";
+import { findNodeById } from "../utils/treeUtils";
 import { computePreviewTree } from "./dragSession";
 
 const DragDropCtx = createContext(null);
@@ -16,6 +17,8 @@ export const DragDropProvider = ({ children, schema, onDropItem, onInvalidDrop }
   const [dropSlot, setDropSlot] = useState(null);
   // Temporary preview tree during drag
   const [previewTree, setPreviewTree] = useState(null);
+  // Live cursor position while dragging, for the DragOverlay to follow
+  const [pointerPosition, setPointerPosition] = useState(null);
 
   const dropSlotRef = useRef(null);
   const dragSourceRef = useRef(null);
@@ -24,6 +27,22 @@ export const DragDropProvider = ({ children, schema, onDropItem, onInvalidDrop }
   useEffect(() => {
     schemaRef.current = schema;
   }, [schema]);
+
+  // Track the pointer during an active drag so the overlay can follow it.
+  // Registered on the capture phase: per-node handlers call stopPropagation()
+  // on dragover (to keep their own hover-zone logic isolated), which would
+  // otherwise prevent a bubble-phase window listener from ever firing.
+  useEffect(() => {
+    if (!dragSource) {
+      setPointerPosition(null);
+      return;
+    }
+    const handleWindowDragOver = (e) => {
+      setPointerPosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("dragover", handleWindowDragOver, true);
+    return () => window.removeEventListener("dragover", handleWindowDragOver, true);
+  }, [dragSource]);
 
   const startDrag = useCallback((item) => {
     const src = {
@@ -47,15 +66,24 @@ export const DragDropProvider = ({ children, schema, onDropItem, onInvalidDrop }
     const src = dragSourceRef.current;
     if (!src || !slot) return;
 
-    const parentType = slot.parentType || "Page";
-    const childType = src.type;
-    const check = canAddChild(parentType, childType);
-
-    const resolved = {
-      ...slot,
-      isValid: check.valid,
-      reason: check.reason || null,
-    };
+    let resolved;
+    if (typeof slot.isValid === "boolean") {
+      // Caller already ran an accurate, node-aware validity check (e.g. the live
+      // per-node hover resolution in SDUIRenderer) — trust it rather than
+      // re-deriving from a bare parent type string below, which can't see the
+      // parent's current children and would silently ignore maxChildren.
+      resolved = { ...slot };
+    } else {
+      const parentType = slot.parentType || "Page";
+      const parentNode = findNodeById(schemaRef.current, slot.parentId) || parentType;
+      const childType = src.type;
+      const check = canAddChild(parentNode, childType, src.nodeId ? { excludeChildId: src.nodeId } : undefined);
+      resolved = {
+        ...slot,
+        isValid: check.valid,
+        reason: check.reason || null,
+      };
+    }
 
     setDropSlot(resolved);
     dropSlotRef.current = resolved;
@@ -125,6 +153,7 @@ export const DragDropProvider = ({ children, schema, onDropItem, onInvalidDrop }
         dragSource,
         dropSlot,
         previewTree,
+        pointerPosition,
         startDrag,
         updateDropSlot,
         clearDropSlot,
