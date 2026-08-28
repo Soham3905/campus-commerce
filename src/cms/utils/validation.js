@@ -113,6 +113,172 @@ export function canDrop(draggedType, targetParentType, mode = "inside") {
 }
 
 /**
+ * Recursively finds the parent of a node by ID in a schema tree.
+ */
+function findParent(tree, id) {
+  if (!tree || !id || tree.id === id) return null;
+  if (Array.isArray(tree.children)) {
+    const idx = tree.children.findIndex((c) => c.id === id);
+    if (idx !== -1) return { parent: tree, index: idx };
+    for (const child of tree.children) {
+      const res = findParent(child, id);
+      if (res) return res;
+    }
+  }
+  return null;
+}
+
+/**
+ * Intelligently resolves the optimal drop target and slot for dragging any component
+ * onto the canvas or over an existing node.
+ *
+ * If dropping inside the target is valid, chooses 'inside'.
+ * If dropping before/after the target is valid within its immediate parent, chooses that.
+ * If the immediate parent cannot accept the child (e.g., hovering over Title inside ProductCard
+ * while dragging a HeroBanner), automatically bubbles up the ancestor tree to find the nearest
+ * valid parent (e.g. Page or Box), enabling smooth drag-and-drop anywhere without false rejections.
+ *
+ * @param {Object} rootTree - Full root schema tree
+ * @param {Object} targetNode - The node directly hovered over
+ * @param {string} draggedType - Type of component being dragged
+ * @param {number} clientY - Cursor Y coordinate
+ * @param {DOMRect} rect - Bounding rectangle of target element
+ * @param {Object} [options] - Optional settings ({ excludeChildId })
+ * @returns {{
+ *   isValid: boolean,
+ *   dropMode: 'before'|'inside'|'after',
+ *   parentId: string,
+ *   parentType: string,
+ *   targetNodeId: string,
+ *   afterIndex: number,
+ *   label: string,
+ *   reason?: string
+ * }}
+ */
+export function resolveDropTarget(rootTree, targetNode, draggedType, clientY, rect, options = {}) {
+  if (!targetNode || !draggedType) {
+    return {
+      isValid: false,
+      dropMode: "inside",
+      parentId: null,
+      parentType: null,
+      targetNodeId: null,
+      afterIndex: 0,
+      label: "Cannot drop here",
+    };
+  }
+
+  const targetDef = ComponentRegistry[targetNode.type];
+  const draggedDef = ComponentRegistry[draggedType];
+  const draggedLabel = draggedDef?.label || draggedType;
+  const targetLabel = targetDef?.label || targetNode.type;
+
+  const height = rect?.height || 50;
+  const offsetY = rect ? clientY - rect.top : height * 0.5;
+
+  // 1. Can it be placed INSIDE the target node itself?
+  const canGoInside =
+    targetDef?.canHaveChildren !== false &&
+    canAddChild(targetNode, draggedType, options).valid;
+
+  // If inside is supported and cursor is within the central container zone
+  if (canGoInside) {
+    const isInsideZone =
+      targetNode.type === "Home" ||
+      targetNode.type === "Page" ||
+      (offsetY >= height * 0.15 && offsetY <= height * 0.85);
+
+    if (isInsideZone) {
+      return {
+        isValid: true,
+        dropMode: "inside",
+        parentId: targetNode.id,
+        parentType: targetNode.type,
+        targetNodeId: targetNode.id,
+        afterIndex: (targetNode.children?.length || 0) - 1,
+        label: `↳ Drop inside ${targetLabel}`,
+      };
+    }
+  }
+
+  // 2. Relative insertion (BEFORE or AFTER)
+  const isBefore = offsetY < height * 0.5;
+  const relativeMode = isBefore ? "before" : "after";
+
+  // If targetNode is root (Home / Page) and cannot insert relative to root
+  if (targetNode.type === "Home" || targetNode.type === "Page") {
+    return {
+      isValid: canGoInside,
+      dropMode: "inside",
+      parentId: targetNode.id,
+      parentType: targetNode.type,
+      targetNodeId: targetNode.id,
+      afterIndex: (targetNode.children?.length || 0) - 1,
+      label: canGoInside ? `↳ Drop inside ${targetLabel}` : `🚫 Cannot place ${draggedLabel} here`,
+      reason: canGoInside ? null : `Cannot place ${draggedLabel} inside ${targetLabel}`,
+    };
+  }
+
+  // Find parent in the schema tree
+  let parentInfo = findParent(rootTree, targetNode.id);
+  if (!parentInfo) {
+    return {
+      isValid: canGoInside,
+      dropMode: "inside",
+      parentId: targetNode.id,
+      parentType: targetNode.type,
+      targetNodeId: targetNode.id,
+      afterIndex: (targetNode.children?.length || 0) - 1,
+      label: canGoInside ? `↳ Drop inside ${targetLabel}` : `🚫 Cannot place ${draggedLabel} here`,
+    };
+  }
+
+  let currentParent = parentInfo.parent;
+  let refNode = targetNode;
+  let refIndex = parentInfo.index;
+
+  // Bubble up if currentParent cannot accept draggedType
+  while (currentParent && !canAddChild(currentParent, draggedType, options).valid) {
+    const higherInfo = findParent(rootTree, currentParent.id);
+    if (higherInfo) {
+      refNode = currentParent;
+      refIndex = higherInfo.index;
+      currentParent = higherInfo.parent;
+    } else {
+      break;
+    }
+  }
+
+  if (currentParent && canAddChild(currentParent, draggedType, options).valid) {
+    const afterIndex = isBefore ? refIndex - 1 : refIndex;
+    const refDef = ComponentRegistry[refNode.type];
+    const refLabel = refDef?.label || refNode.type;
+    return {
+      isValid: true,
+      dropMode: relativeMode,
+      parentId: currentParent.id,
+      parentType: currentParent.type,
+      targetNodeId: refNode.id,
+      afterIndex,
+      label: isBefore ? `↑ Insert before ${refLabel}` : `↓ Insert after ${refLabel}`,
+    };
+  }
+
+  // Fallback if no ancestor accepts it
+  const fallbackCheck = canAddChild(parentInfo.parent, draggedType, options);
+  return {
+    isValid: false,
+    dropMode: relativeMode,
+    parentId: parentInfo.parent.id,
+    parentType: parentInfo.parent.type,
+    targetNodeId: targetNode.id,
+    afterIndex: isBefore ? parentInfo.index - 1 : parentInfo.index,
+    reason: fallbackCheck.reason || `${draggedLabel} cannot be placed here.`,
+    label: `🚫 ${fallbackCheck.reason || "Cannot drop here"}`,
+  };
+}
+
+/**
  * Calculates drop mode (BEFORE, INSIDE, AFTER) based on pointer position relative to bounding rectangle.
  *
  * @param {number} clientY - Pointer Y coordinate

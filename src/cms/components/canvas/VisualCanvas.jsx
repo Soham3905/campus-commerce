@@ -177,44 +177,15 @@ export const VisualCanvas = ({
 
   // Called when hovering over a node in visual mode
   const handleUpdateDropSlotFromRenderer = useCallback(
-    ({ targetNode, dropMode, draggedType, rect, clientY, isValid, reason }) => {
-      if (!targetNode || !dragSource) return;
-
-      if (dropMode === "inside") {
-        updateDropSlot({
-          parentId: targetNode.id,
-          parentType: targetNode.type,
-          targetNodeId: targetNode.id,
-          dropMode: "inside",
-          afterIndex: (targetNode.children?.length || 0) - 1,
-          isValid,
-          reason,
-          label: `Drop inside ${targetNode.type}`,
-        });
-        return;
-      }
-
-      const parentInfo = findParentById(schema, targetNode.id);
-      if (!parentInfo) return;
-
-      const afterIndex = dropMode === "before" ? parentInfo.index - 1 : parentInfo.index;
-
-      updateDropSlot({
-        parentId: parentInfo.parent.id,
-        parentType: parentInfo.parent.type,
-        targetNodeId: targetNode.id,
-        dropMode,
-        afterIndex,
-        isValid,
-        reason,
-        label: dropMode === "before" ? `Insert before ${targetNode.type}` : `Insert after ${targetNode.type}`,
-      });
+    (slotData) => {
+      if (!dragSource || !slotData) return;
+      updateDropSlot(slotData);
     },
-    [schema, dragSource, updateDropSlot]
+    [dragSource, updateDropSlot]
   );
 
   // Drop onto a node in live visual mode
-  const handleDropAtNode = ({ targetNode, position, draggedType, draggedId }) => {
+  const handleDropAtNode = ({ targetNode, position, resolvedSlot, draggedType, draggedId }) => {
     const src =
       dragSource ||
       (draggedId
@@ -223,8 +194,21 @@ export const VisualCanvas = ({
         ? { type: draggedType, isNew: true }
         : null);
 
-    if (!targetNode || !src) return;
+    if (!src) return;
 
+    // 1. If resolvedSlot is provided and valid, execute drop at that exact target parent & slot
+    if (resolvedSlot && resolvedSlot.isValid && resolvedSlot.parentId) {
+      onDropItem?.({
+        source: src,
+        slot: resolvedSlot,
+      });
+      endDrag(false);
+      return;
+    }
+
+    if (!targetNode) return;
+
+    // 2. Direct inside drop
     if (position === "inside") {
       const check = canAddChild(targetNode, src.type, src.nodeId ? { excludeChildId: src.nodeId } : undefined);
       if (!check.valid) {
@@ -249,6 +233,7 @@ export const VisualCanvas = ({
       return;
     }
 
+    // 3. Fallback relative insertion
     const parentInfo = findParentById(schema, targetNode.id);
     if (!parentInfo) return;
 
@@ -426,6 +411,7 @@ export const VisualCanvas = ({
             {renderedSchema ? (
               <SDUIRenderer
                 schema={renderedSchema}
+                rootSchema={renderedSchema}
                 deviceType={activeDevice}
                 selectedId={selectedId}
                 onSelect={onSelectComponent}
@@ -434,6 +420,9 @@ export const VisualCanvas = ({
                 onDuplicate={onDuplicateComponent}
                 onMoveUp={(id) => onMoveComponent?.(id, "up")}
                 onMoveDown={(id) => onMoveComponent?.(id, "down")}
+                onMoveLeft={(id) => onMoveComponent?.(id, "left")}
+                onMoveRight={(id) => onMoveComponent?.(id, "right")}
+                onMoveComponent={onMoveComponent}
                 onDropAtNode={handleDropAtNode}
                 onDragStartNode={(node) =>
                   startDrag({

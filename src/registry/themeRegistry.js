@@ -319,8 +319,8 @@ export const PredefinedThemes = {
           display: "block",
         },
         data: {
-          imageUrl: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&auto=format&fit=crop&q=80",
-          altText: "Aurora Smartwatch Ultra",
+          imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80",
+          altText: "AudioPro Wireless Studio Headphones",
         },
       },
       {
@@ -335,7 +335,7 @@ export const PredefinedThemes = {
           letterSpacing: "0.05em",
           alignSelf: "flex-start",
         },
-        data: { text: "TOP CAMPUS CHOICE" },
+        data: { text: "CAMPUS ESSENTIAL" },
       },
       {
         type: "Title",
@@ -347,7 +347,7 @@ export const PredefinedThemes = {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
         },
-        data: { text: "Aurora Smartwatch Ultra GPS 49mm" },
+        data: { text: "AudioPro Wireless Studio Headphones" },
       },
       {
         type: "Description",
@@ -358,7 +358,7 @@ export const PredefinedThemes = {
           lineHeight: "16px",
         },
         data: {
-          text: "Retina display, titanium casing, ECG, heart rate monitor, and 3-day extended battery.",
+          text: "Active noise cancellation, 40hr battery life, and ultra-comfortable memory-foam ear cushions.",
           maxLines: 2,
         },
       },
@@ -370,9 +370,9 @@ export const PredefinedThemes = {
           gap: "8px",
         },
         data: {
-          sellingPrice: "₹2,499",
-          mrp: "₹5,999",
-          discount: "58% OFF",
+          sellingPrice: "₹1,899",
+          mrp: "₹3,999",
+          discount: "52% OFF",
         },
       },
       {
@@ -390,7 +390,7 @@ export const PredefinedThemes = {
           marginTop: "4px",
           boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)",
         },
-        data: { label: "Add to Cart • ₹2,499" },
+        data: { label: "Add to Cart • ₹1,899" },
       },
     ],
   },

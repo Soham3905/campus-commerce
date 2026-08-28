@@ -15,6 +15,7 @@ export const Inspector = ({
   onUpdateComponent,
   onDeleteComponent,
   onDuplicateComponent,
+  onMoveComponent,
 }) => {
   const [activeTab, setActiveTab] = useState("content"); // 'content' | 'layout' | 'actions' | 'style' | 'json'
 
@@ -188,6 +189,7 @@ export const Inspector = ({
             node={selectedNode}
             activeDevice={activeDevice}
             onUpdate={onUpdateComponent}
+            onMoveComponent={onMoveComponent}
           />
         )}
         {activeTab === "actions" && (

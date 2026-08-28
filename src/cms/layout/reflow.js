@@ -29,6 +29,13 @@ export function reflowChildren(children, targetDevice = "all", options = {}) {
 
   const { gap = DEFAULT_ROW_GAP, parentType = "Page" } = options;
 
+  // 100-column grid reflow only applies to root Page or Home grid containers.
+  // Internal container children (like product cards inside a Box grid, buttons inside Header, etc.)
+  // must preserve their own CSS/flow layout without being given 100-column track coordinates.
+  if (parentType !== "Page" && parentType !== "Home") {
+    return children;
+  }
+
   // If parent intentionally allows overlays (e.g. HeroBanner), preserve exact coordinates
   if (allowsOverlayLayout(parentType)) {
     return children;

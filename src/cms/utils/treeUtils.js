@@ -265,30 +265,123 @@ export function removeNode(tree, id) {
 }
 
 /**
- * Immutably moves a node up or down among its siblings with automatic grid reflow.
+ * Immutably moves a component in 4 directions:
+ *  - 'up' / 'down': reorders child in its parent or adjusts row order
+ *  - 'left' / 'right': adjusts 100-col grid horizontal column bounds or swaps horizontal siblings
+ *
  * @param {Object} tree - Root SDUI component node
  * @param {string} id - Target component ID
- * @param {'up'|'down'} direction - Move direction
- * @returns {Object}
+ * @param {'up'|'down'|'left'|'right'} direction - Move direction
+ * @param {Object} [options] - Options ({ device, step })
+ * @returns {Object} Updated schema tree
  */
-export function moveNode(tree, id, direction) {
+export function moveNode(tree, id, direction, options = {}) {
+  if (!tree || !id) return tree;
+
+  const { device = "desktop", step = 5 } = options;
   const parentInfo = findParentById(tree, id);
   if (!parentInfo) return tree;
 
   const { parent, index } = parentInfo;
-  const newIndex = direction === "up" ? index - 1 : index + 1;
+  const targetNode = parent.children?.[index];
+  if (!targetNode) return tree;
 
-  if (newIndex < 0 || newIndex >= parent.children.length) {
-    return tree; // Already at edge
+  // ── 1. Vertical Up / Down Movement ──
+  if (direction === "up" || direction === "down") {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+
+    if (newIndex >= 0 && newIndex < parent.children.length) {
+      return updateNode(tree, parent.id, (parentNode) => {
+        const children = [...parentNode.children];
+        const [moved] = children.splice(index, 1);
+        children.splice(newIndex, 0, moved);
+        const reflowed = GridEngine.reflowChildren(children, "all", { parentType: parentNode.type });
+        return { ...parentNode, children: reflowed };
+      });
+    }
+
+    // If at edge of a nested container, bubble out to parent container
+    if (newIndex < 0 && parent.id !== tree.id) {
+      const grandParentInfo = findParentById(tree, parent.id);
+      if (grandParentInfo) {
+        return moveNodeToSlot(tree, id, grandParentInfo.parent.id, grandParentInfo.index);
+      }
+    } else if (newIndex >= parent.children.length && parent.id !== tree.id) {
+      const grandParentInfo = findParentById(tree, parent.id);
+      if (grandParentInfo) {
+        return moveNodeToSlot(tree, id, grandParentInfo.parent.id, grandParentInfo.index + 1);
+      }
+    }
+    return tree;
   }
 
-  return updateNode(tree, parent.id, (parentNode) => {
-    const children = [...parentNode.children];
-    const [moved] = children.splice(index, 1);
-    children.splice(newIndex, 0, moved);
-    const reflowed = GridEngine.reflowChildren(children, "all", { parentType: parentNode.type });
-    return { ...parentNode, children: reflowed };
-  });
+  // ── 2. Horizontal Left / Right Movement ──
+  if (direction === "left" || direction === "right") {
+    // If parent is a 100-column grid (Page or Home), adjust placement colStart / colEnd
+    if (parent.type === "Page" || parent.type === "Home") {
+      return updateNode(tree, id, (node) => {
+        const placement = node.placement || {};
+        const currentPlacement = placement[device] || {
+          colStart: 1,
+          colEnd: 101,
+          rowStart: 1,
+          rowEnd: 10,
+        };
+
+        let colStart = currentPlacement.colStart ?? 1;
+        let colEnd = currentPlacement.colEnd ?? 101;
+        let colSpan = Math.max(1, colEnd - colStart);
+
+        // If currently full width (100%), shrink to 50% so it can move left/right
+        if (colSpan >= 99) {
+          colSpan = 50;
+          if (direction === "left") {
+            colStart = 1;
+            colEnd = 51;
+          } else {
+            colStart = 51;
+            colEnd = 101;
+          }
+        } else {
+          const shift = Number(step) || 5;
+          if (direction === "left") {
+            colStart = Math.max(1, colStart - shift);
+            colEnd = Math.min(101, colStart + colSpan);
+          } else {
+            colEnd = Math.min(101, colEnd + shift);
+            colStart = Math.max(1, colEnd - colSpan);
+          }
+        }
+
+        const updatedPlacement = {
+          ...placement,
+          [device]: {
+            ...currentPlacement,
+            colStart,
+            colEnd,
+          },
+        };
+
+        return {
+          ...node,
+          placement: updatedPlacement,
+        };
+      });
+    }
+
+    // In a flex/horizontal list, swap with previous/next sibling
+    const newIndex = direction === "left" ? index - 1 : index + 1;
+    if (newIndex >= 0 && newIndex < parent.children.length) {
+      return updateNode(tree, parent.id, (parentNode) => {
+        const children = [...parentNode.children];
+        const [moved] = children.splice(index, 1);
+        children.splice(newIndex, 0, moved);
+        return { ...parentNode, children };
+      });
+    }
+  }
+
+  return tree;
 }
 
 /**

@@ -20,7 +20,7 @@ export function App() {
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
-    setPhase("welcome");
+    setPhase("onboarding");
   };
 
   const handleWelcomeProceed = () => {
@@ -32,7 +32,7 @@ export function App() {
   };
 
   const handleOnboardingBack = () => {
-    setPhase("welcome");
+    setPhase("login");
   };
 
   const handleOnboardingComplete = (foundationData) => {

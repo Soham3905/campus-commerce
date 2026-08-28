@@ -147,7 +147,7 @@ export function getDefaultRowSpan(component, device = "desktop") {
       if (cs.display === "grid" && childCount > 0) {
         const cols = device === "mobile" ? 2 : device === "tablet" ? 3 : 4;
         const rowsOfCards = Math.ceil(childCount / cols);
-        return rowsOfCards * 30 + 4; // ~300px per row of cards + padding
+        return rowsOfCards * 36 + 6; // ~360px per row of cards + padding
       }
 
       // Horizontal flex row (coupons, countdown timers)

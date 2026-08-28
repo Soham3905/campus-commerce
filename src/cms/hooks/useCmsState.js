@@ -203,19 +203,30 @@ export function useCmsState() {
         return { ok: false, reason: "Drop target is missing." };
       }
 
-      const parentNode = findNodeById(schema, slot.parentId);
-      if (!parentNode) {
+      let targetParent = findNodeById(schema, slot.parentId);
+      if (!targetParent) {
         return { ok: false, reason: `Target node not found.` };
       }
 
-      const check = canAddChild(parentNode, type);
-      if (!check.valid) {
-        return { ok: false, reason: check.reason };
+      let insertIndex = Math.max(0, slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0);
+
+      // If targetParent cannot directly accept type, bubble up to nearest valid ancestor
+      if (!canAddChild(targetParent, type).valid) {
+        let parentInfo = findParentById(schema, targetParent.id);
+        while (parentInfo && !canAddChild(parentInfo.parent, type).valid) {
+          parentInfo = findParentById(schema, parentInfo.parent.id);
+        }
+        if (parentInfo && canAddChild(parentInfo.parent, type).valid) {
+          insertIndex = parentInfo.index + 1;
+          targetParent = parentInfo.parent;
+        } else {
+          const check = canAddChild(targetParent, type);
+          return { ok: false, reason: check.reason };
+        }
       }
 
       const newNode = createComponent(type);
-      const insertIndex = Math.max(0, slot.afterIndex >= 0 ? slot.afterIndex + 1 : 0);
-      const updated = insertNodeAtIndex(schema, slot.parentId, newNode, insertIndex);
+      const updated = insertNodeAtIndex(schema, targetParent.id, newNode, insertIndex);
 
       setSchema(updated);
       setSelectedComponentId(newNode.id);
@@ -296,12 +307,16 @@ export function useCmsState() {
   );
 
   const moveComponent = useCallback(
-    (id, direction) => {
+    (id, direction, options = {}) => {
       if (!id) return;
-      const updated = moveNode(schema, id, direction);
+      const updated = moveNode(schema, id, direction, {
+        device: options.device || activeDevice,
+        step: options.step || 5,
+        ...options,
+      });
       setSchema(updated);
     },
-    [schema, setSchema]
+    [schema, setSchema, activeDevice]
   );
 
   const applyWidthPreset = useCallback(

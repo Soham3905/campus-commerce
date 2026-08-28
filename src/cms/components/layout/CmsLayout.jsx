@@ -63,13 +63,23 @@ export const CmsLayout = ({ onLogout, user }) => {
       if (cmd && e.key === "s") { e.preventDefault(); saveCurrentPage(); showSuccess("Saved ✓"); }
       if (e.key === "Escape") clearSelection();
 
-      // Keyboard alternative to dragging: reorder the selected component among
-      // its siblings with Ctrl/Cmd+Arrow, without requiring a pointer drag.
-      // Skip while typing in a field so normal text-cursor navigation still works.
-      const isTyping = ["INPUT", "TEXTAREA"].includes(e.target?.tagName) || e.target?.isContentEditable;
-      if (cmd && !isTyping && selectedComponentId && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
-        e.preventDefault();
-        moveComponent(selectedComponentId, e.key === "ArrowUp" ? "up" : "down");
+      // 4-Way Keyboard Navigation for selected component (Arrow keys Left, Right, Up, Down)
+      // Skip while typing in an input field so normal text editing works.
+      const isTyping = ["INPUT", "TEXTAREA", "SELECT"].includes(e.target?.tagName) || e.target?.isContentEditable;
+      if (!isTyping && selectedComponentId) {
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          moveComponent(selectedComponentId, "up");
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          moveComponent(selectedComponentId, "down");
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          moveComponent(selectedComponentId, "left", { step: e.shiftKey ? 10 : 5 });
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          moveComponent(selectedComponentId, "right", { step: e.shiftKey ? 10 : 5 });
+        }
       }
     };
     window.addEventListener("keydown", handler);
@@ -283,6 +293,7 @@ export const CmsLayout = ({ onLogout, user }) => {
                     onUpdateComponent={updateComponent}
                     onDeleteComponent={deleteComponent}
                     onDuplicateComponent={duplicateComponent}
+                    onMoveComponent={moveComponent}
                   />
                 ) : (
                   <JsonPanelInline

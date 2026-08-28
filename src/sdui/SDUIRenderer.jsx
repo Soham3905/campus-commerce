@@ -5,7 +5,7 @@ import { executeOptionAction } from "./actions/actionExecutor";
 import { useSwipe } from "./hooks/useSwipe";
 import { useLongPress } from "./hooks/useLongPress";
 import { ComponentRegistry } from "../registry/componentRegistry";
-import { canAddChild, getDropMode } from "../cms/utils/validation";
+import { canAddChild, getDropMode, resolveDropTarget } from "../cms/utils/validation";
 import { suppressNativeDragImage } from "../cms/dragdrop/dragImage";
 
 /**
@@ -20,6 +20,7 @@ import { suppressNativeDragImage } from "../cms/dragdrop/dragImage";
  */
 export const SDUIRenderer = ({
   schema,
+  rootSchema = null,
   deviceType = "desktop",
   openMenu,
   openSheet,
@@ -32,6 +33,9 @@ export const SDUIRenderer = ({
   onDuplicate,
   onMoveUp,
   onMoveDown,
+  onMoveLeft,
+  onMoveRight,
+  onMoveComponent,
   onDropAtNode,
   onDragStartNode,
   onDragEndNode,
@@ -45,6 +49,7 @@ export const SDUIRenderer = ({
   onUpdateDropSlot,
   onClearDropSlot,
   isDirectGridChild = true,
+  parentType = null,
 }) => {
   const nodeRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -236,24 +241,28 @@ export const SDUIRenderer = ({
 
     const draggedType = dragSource?.type || e.dataTransfer.getData("application/sdui-type");
     if (!draggedType) return;
-    const mode = getDropMode(e.clientY, rect, schema.type, draggedType, schema);
 
-    let check = { valid: true };
-    if (mode === "inside") {
-      check = canAddChild(schema, draggedType, dragSource?.nodeId ? { excludeChildId: dragSource.nodeId } : undefined);
-    }
+    const resolved = resolveDropTarget(
+      rootSchema || schema,
+      schema,
+      draggedType,
+      e.clientY,
+      rect,
+      dragSource?.nodeId ? { excludeChildId: dragSource.nodeId } : undefined
+    );
 
-    setDragZone(mode);
-    setDragValidation(check);
+    setDragZone(resolved.dropMode);
+    setDragValidation({
+      isValid: resolved.isValid,
+      reason: resolved.reason,
+      label: resolved.label,
+    });
 
     onUpdateDropSlot?.({
-      targetNode: schema,
-      dropMode: mode,
+      ...resolved,
       draggedType,
       rect,
       clientY: e.clientY,
-      isValid: check.valid,
-      reason: check.reason,
     });
   };
 
@@ -272,12 +281,22 @@ export const SDUIRenderer = ({
 
     const draggedType = e.dataTransfer.getData("application/sdui-type") || dragSource?.type;
     const draggedId = e.dataTransfer.getData("application/sdui-id") || dragSource?.nodeId;
-    const position = dragZone || "inside";
+    const rect = nodeRef.current?.getBoundingClientRect();
+
+    const resolved = resolveDropTarget(
+      rootSchema || schema,
+      schema,
+      draggedType,
+      e.clientY,
+      rect,
+      draggedId ? { excludeChildId: draggedId } : undefined
+    );
     setDragZone(null);
 
     onDropAtNode?.({
       targetNode: schema,
-      position,
+      position: resolved.dropMode,
+      resolvedSlot: resolved,
       draggedType,
       draggedId,
     });
@@ -347,8 +366,8 @@ export const SDUIRenderer = ({
 
   const effectiveContainerStyle = schema.containerStyle || {};
 
-  // Decide if child components should be grid children
-  const nextIsDirectGridChild = isRootContainer || (schema.type === "Box" && effectiveContainerStyle?.display === "grid");
+  // Decide if child components should be 100-column grid children (ONLY direct children of Page or Home)
+  const nextIsDirectGridChild = isRootContainer;
 
   // Extract positioning styles from containerStyle
   const isAbsolute = effectiveContainerStyle?.position === "absolute";
@@ -377,7 +396,7 @@ export const SDUIRenderer = ({
       }
     : isSticky
     ? {
-        position: "sticky",
+        position: isEditable ? "relative" : "sticky",
         top: effectiveContainerStyle.top,
         bottom: effectiveContainerStyle.bottom,
         zIndex: effectiveContainerStyle.zIndex || 100,
@@ -389,27 +408,50 @@ export const SDUIRenderer = ({
   const sanitizedComponentStyle = effectiveContainerStyle;
 
   // Forward flex child styles to wrapper div if not a direct grid child and not root container
-  const isFlexProductCard = !isDirectGridChild && !isAbsolute && !isRootContainer && schema.type === "ProductCard";
+  // Inline & flex items (HeaderButton, StoryCircle, CategoryItem, etc.) MUST have width: "auto" and flexShrink: 0.
+  const isInlineOrFlexItem =
+    schema.type === "HeaderButton" ||
+    schema.type === "StoryCircle" ||
+    schema.type === "CategoryItem" ||
+    schema.type === "Score" ||
+    schema.type === "ReviewCount" ||
+    schema.type === "Sponsored";
+
+  const isInsideProductList = parentType === "ProductList";
+  const isFlexProductCard = !isDirectGridChild && !isAbsolute && !isRootContainer && schema.type === "ProductCard" && isInsideProductList;
+  const isBoxProductCard = !isDirectGridChild && !isAbsolute && !isRootContainer && schema.type === "ProductCard" && !isInsideProductList;
+
+  const defaultChildWidth = isFlexProductCard
+    ? "268px"
+    : isBoxProductCard
+    ? "100%"
+    : isInlineOrFlexItem
+    ? "auto"
+    : effectiveContainerStyle?.width || (parentType === "Box" ? "100%" : "auto");
+
   const flexChildStyle = !isDirectGridChild && !isAbsolute && !isRootContainer
     ? {
-        flex: effectiveContainerStyle?.flex ?? (isFlexProductCard ? "0 0 268px" : undefined),
-        flexShrink: effectiveContainerStyle?.flexShrink ?? (isFlexProductCard ? 0 : undefined),
+        flex: effectiveContainerStyle?.flex ?? (isFlexProductCard ? "0 0 268px" : isInlineOrFlexItem ? "0 0 auto" : undefined),
+        flexShrink: effectiveContainerStyle?.flexShrink ?? (isFlexProductCard || isInlineOrFlexItem ? 0 : undefined),
         flexGrow: effectiveContainerStyle?.flexGrow,
         alignSelf: effectiveContainerStyle?.alignSelf,
         marginTop: effectiveContainerStyle?.marginTop,
         marginBottom: effectiveContainerStyle?.marginBottom,
         marginLeft: effectiveContainerStyle?.marginLeft,
         marginRight: effectiveContainerStyle?.marginRight,
-        width: effectiveContainerStyle?.width ?? (isFlexProductCard ? "268px" : undefined),
-        minWidth: effectiveContainerStyle?.minWidth ?? (isFlexProductCard ? "268px" : undefined),
-        maxWidth: effectiveContainerStyle?.maxWidth,
+        width: effectiveContainerStyle?.width ?? defaultChildWidth,
+        minWidth: effectiveContainerStyle?.minWidth ?? (isFlexProductCard ? "268px" : "0"),
+        maxWidth: effectiveContainerStyle?.maxWidth ?? (isFlexProductCard ? "268px" : undefined),
         height: effectiveContainerStyle?.height,
         minHeight: effectiveContainerStyle?.minHeight,
         maxHeight: effectiveContainerStyle?.maxHeight,
+        boxSizing: "border-box",
         display:
           effectiveContainerStyle?.display === "flex" ||
           effectiveContainerStyle?.display === "inline-flex"
             ? "flex"
+            : isInlineOrFlexItem
+            ? "inline-flex"
             : undefined,
       }
     : {};
@@ -451,7 +493,7 @@ export const SDUIRenderer = ({
         opacity: isBeingDragged ? 0.3 : isGhost ? 0.85 : 1,
         transition: resizeState ? "none" : "outline 0.12s ease, opacity 0.15s ease, background-color 0.15s ease",
         cursor: isEditable && !isRootContainer ? (isDragging ? "grabbing" : "grab") : undefined,
-        zIndex: isSelected ? 30 : dragZone ? 25 : wrapperPositionStyle.zIndex,
+        zIndex: isSelected ? 800 : dragZone ? 25 : (wrapperPositionStyle.zIndex || 1),
         userSelect: isEditable ? "none" : undefined,
       }}
     >
@@ -501,11 +543,12 @@ export const SDUIRenderer = ({
             }}
           >
             {dragValidation.isValid
-              ? dragZone === "before"
-                ? `↑ Insert Before ${def?.label || schema.type}`
-                : dragZone === "inside"
-                ? `↳ Drop Inside ${def?.label || schema.type}`
-                : `↓ Insert After ${def?.label || schema.type}`
+              ? dragValidation.label ||
+                (dragZone === "before"
+                  ? `↑ Insert Before ${def?.label || schema.type}`
+                  : dragZone === "inside"
+                  ? `↳ Drop Inside ${def?.label || schema.type}`
+                  : `↓ Insert After ${def?.label || schema.type}`)
               : `🚫 ${dragValidation.reason || "Cannot drop here"}`}
           </span>
         </div>
@@ -557,30 +600,232 @@ export const SDUIRenderer = ({
         </div>
       )}
 
-      {/* ── Clean Selection Badge ── */}
-      {isEditable && !isRootContainer && isDirectGridChild && !isGhost && (isSelected || (isHovered && !isDragging && !resizeState)) && (
+      {/* ── Interactive Selection & 4-Way Movement Toolbar ── */}
+      {isEditable && !isRootContainer && !isGhost && (isSelected || (isHovered && !isDragging && !resizeState)) && (
         <div
+          onClick={(e) => e.stopPropagation()}
           style={{
             position: "absolute",
-            top: "-22px",
+            top: isSelected ? "-34px" : "-22px",
             left: "0",
-            zIndex: 200,
+            zIndex: 250,
             display: "flex",
             alignItems: "center",
-            gap: "4px",
-            backgroundColor: isSelected ? "#4f46e5" : "rgba(15, 23, 42, 0.85)",
-            borderRadius: "4px 4px 0 0",
-            padding: "2px 8px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            gap: "3px",
+            backgroundColor: isSelected ? "#0f172a" : "rgba(15, 23, 42, 0.88)",
+            borderRadius: "6px 6px 0 0",
+            padding: isSelected ? "3px 6px" : "2px 8px",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.3)",
             color: "#ffffff",
-            fontSize: "10px",
+            fontSize: "11px",
             fontWeight: "700",
-            pointerEvents: "none",
+            userSelect: "none",
+            pointerEvents: "auto",
+            transition: "all 0.12s ease",
           }}
         >
-          <span>⠿</span>
-          <span>{def?.icon || "📦"}</span>
-          <span>{def?.label || schema.type}</span>
+          <span style={{ display: "flex", alignItems: "center", gap: "4px", paddingRight: isSelected ? "4px" : "0", borderRight: isSelected ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
+            <span>⠿</span>
+            <span>{def?.icon || "📦"}</span>
+            <span style={{ maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {def?.label || schema.type}
+            </span>
+          </span>
+
+          {isSelected && (
+            <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+              {/* 4-Way Movement Buttons */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveLeft ? onMoveLeft(schema.id) : onMoveComponent?.(schema.id, "left");
+                }}
+                title="Move Left (← / Arrow Left)"
+                style={{
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  borderRadius: "4px",
+                  color: "#ffffff",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "2px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+              >
+                <span>←</span>
+                <span>Left</span>
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveUp ? onMoveUp(schema.id) : onMoveComponent?.(schema.id, "up");
+                }}
+                title="Move Up (↑ / Arrow Up)"
+                style={{
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  borderRadius: "4px",
+                  color: "#ffffff",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "2px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+              >
+                <span>↑</span>
+                <span>Up</span>
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveDown ? onMoveDown(schema.id) : onMoveComponent?.(schema.id, "down");
+                }}
+                title="Move Down (↓ / Arrow Down)"
+                style={{
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  borderRadius: "4px",
+                  color: "#ffffff",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "2px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+              >
+                <span>↓</span>
+                <span>Down</span>
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveRight ? onMoveRight(schema.id) : onMoveComponent?.(schema.id, "right");
+                }}
+                title="Move Right (→ / Arrow Right)"
+                style={{
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  borderRadius: "4px",
+                  color: "#ffffff",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "2px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+              >
+                <span>Right</span>
+                <span>→</span>
+              </button>
+
+              {/* Quick Width Presets */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onApplyWidthPreset?.(schema.id, "half-left");
+                }}
+                title="Set to 50% Width"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: "4px",
+                  color: "#cbd5e1",
+                  padding: "2px 5px",
+                  fontSize: "10px",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+              >
+                50%
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onApplyWidthPreset?.(schema.id, "full");
+                }}
+                title="Set to 100% Full Width"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: "4px",
+                  color: "#cbd5e1",
+                  padding: "2px 5px",
+                  fontSize: "10px",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+              >
+                100%
+              </button>
+
+              {/* Duplicate & Delete */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDuplicate?.(schema.id);
+                }}
+                title="Duplicate Component"
+                style={{
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  borderRadius: "4px",
+                  color: "#ffffff",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+              >
+                ⧉
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete?.(schema.id);
+                }}
+                title="Delete Component"
+                style={{
+                  background: "rgba(239, 68, 68, 0.25)",
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                  borderRadius: "4px",
+                  color: "#fca5a5",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#ef4444")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.25)")}
+              >
+                🗑️
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -673,6 +918,7 @@ export const SDUIRenderer = ({
               <SDUIRenderer
                 key={child.id || idx}
                 schema={child}
+                rootSchema={rootSchema || schema}
                 deviceType={deviceType}
                 openMenu={openMenu}
                 openSheet={openSheet}
@@ -685,6 +931,9 @@ export const SDUIRenderer = ({
                 onDuplicate={onDuplicate}
                 onMoveUp={onMoveUp}
                 onMoveDown={onMoveDown}
+                onMoveLeft={onMoveLeft}
+                onMoveRight={onMoveRight}
+                onMoveComponent={onMoveComponent}
                 onDropAtNode={onDropAtNode}
                 onDragStartNode={onDragStartNode}
                 onDragEndNode={onDragEndNode}
@@ -698,6 +947,7 @@ export const SDUIRenderer = ({
                 onUpdateDropSlot={onUpdateDropSlot}
                 onClearDropSlot={onClearDropSlot}
                 isDirectGridChild={nextIsDirectGridChild}
+                parentType={schema.type}
               />
             ))
           ) : isEditable && def?.canHaveChildren && !isRootContainer && !isGhost ? (
