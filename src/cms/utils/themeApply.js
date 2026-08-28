@@ -27,7 +27,7 @@ import { ThemeRepository } from "../services/themeRepository";
 import { DEFAULT_FOUNDATION } from "../services/foundationRepository";
 import { createComponent } from "./componentFactory";
 
-function applyFoundationThemeInner(node, foundation, seenTypes) {
+function applyFoundationThemeInner(node, foundation, seenTypes, parentType) {
   if (!node || typeof node !== "object") return node;
 
   const chosenThemes = foundation?.chosenThemes || {};
@@ -35,10 +35,14 @@ function applyFoundationThemeInner(node, foundation, seenTypes) {
   const baselineThemeId = DEFAULT_FOUNDATION.chosenThemes[node.type];
   const isCustomized = themeId && themeId !== baselineThemeId;
 
+  // Never swap ProductCard nodes that live inside a ProductList — those are
+  // real product data entries and should always render their own content.
+  const isProductCardInList = node.type === "ProductCard" && parentType === "ProductList";
+
   // Claim the first occurrence of a customized type whether or not this
   // particular node ends up needing a swap (it may already match), so a
   // later same-type node on the page is never touched either way.
-  if (isCustomized && !seenTypes.has(node.type)) {
+  if (isCustomized && !seenTypes.has(node.type) && !isProductCardInList) {
     seenTypes.add(node.type);
     if (node.themeId !== themeId && ThemeRepository.getById(themeId)) {
       const replacement = createComponent(node.type, {
@@ -49,16 +53,16 @@ function applyFoundationThemeInner(node, foundation, seenTypes) {
       return {
         ...replacement,
         children: Array.isArray(replacement.children) && replacement.children.length > 0
-          ? replacement.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes))
+          ? replacement.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes, replacement.type))
           : Array.isArray(node.children) && node.children.length > 0
-          ? node.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes))
+          ? node.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes, node.type))
           : replacement.children,
       };
     }
   }
 
   const children = Array.isArray(node.children)
-    ? node.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes))
+    ? node.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes, node.type))
     : node.children;
 
   if (children === node.children) return node;
