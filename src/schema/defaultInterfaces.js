@@ -44,44 +44,6 @@ export const defaultInterfaces = [
                 }),
               ],
             }),
-            createComponent("ProductCard", {
-              placement: {
-                mobile: { colStart: 1, colEnd: 100, rowStart: 7, rowEnd: 65 },
-                tablet: { colStart: 20, colEnd: 80, rowStart: 7, rowEnd: 65 },
-                desktop: { colStart: 25, colEnd: 75, rowStart: 7, rowEnd: 65 },
-              },
-              containerStyle: { width: "100%", padding: "16px" },
-              children: [
-                createComponent("Image", {
-                  data: {
-                    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80",
-                    altText: "Wireless Headphones",
-                  },
-                }),
-                createComponent("Badge", { data: { text: "CAMPUS CHOICE" } }),
-                createComponent("Title", { data: { text: "AudioPro Wireless Noise-Cancelling Headphones" } }),
-                createComponent("Description", {
-                  data: {
-                    text: "40 hours battery life with ultra-low latency mode, active noise cancellation, and ergonomic memory-foam ear cushions.",
-                    maxLines: 4,
-                  },
-                }),
-                createComponent("Rating", {
-                  children: [
-                    createComponent("Score", { data: { text: "4.9", "out of": "5" } }),
-                    createComponent("ReviewCount", { data: { text: "2,480" } }),
-                  ],
-                }),
-                createComponent("PriceBlock", {
-                  data: { sellingPrice: "₹2,499", mrp: "₹4,999", discount: "50%" },
-                }),
-                createComponent("DeliveryInfo", { data: { prefix: "FREE express delivery", daysOffset: 2 } }),
-                createComponent("Button", {
-                  data: { label: "Buy Now with 1-Click" },
-                  actions: { onTap: { type: "API_CALL", endpoint: "https://jsonplaceholder.typicode.com/todos/1" } },
-                }),
-              ],
-            }),
           ],
         },
       ],

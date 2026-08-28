@@ -88,7 +88,7 @@
                       "actionName": "ON_TAP_LOGO"
                     }
                   },
-                  "id": "headerbutton_9iwowp91q"
+                  "id": "headerbutton_rkl02l2yo"
                 },
                 {
                   "type": "HeaderButton",
@@ -122,7 +122,7 @@
                       "actionName": "ON_TAP_NAV_HOME"
                     }
                   },
-                  "id": "headerbutton_9iwoncb9f"
+                  "id": "headerbutton_rkl0ytxpn"
                 },
                 {
                   "type": "HeaderButton",
@@ -155,7 +155,7 @@
                       "actionName": "ON_TAP_NAV_CATEGORIES"
                     }
                   },
-                  "id": "headerbutton_9iwoy00ep"
+                  "id": "headerbutton_rkl0rm0f6"
                 },
                 {
                   "type": "HeaderButton",
@@ -188,7 +188,7 @@
                       "actionName": "ON_TAP_NAV_DEALS"
                     }
                   },
-                  "id": "headerbutton_9iwo3g3dg"
+                  "id": "headerbutton_rkl0pnwzt"
                 },
                 {
                   "type": "HeaderButton",
@@ -221,7 +221,7 @@
                       "actionName": "ON_TAP_NAV_ORDERS"
                     }
                   },
-                  "id": "headerbutton_9iwosdtun"
+                  "id": "headerbutton_rkl0x7cjr"
                 },
                 {
                   "type": "HeaderButton",
@@ -252,7 +252,7 @@
                       "actionName": "ON_TAP_LOGIN"
                     }
                   },
-                  "id": "headerbutton_9iwo595l3"
+                  "id": "headerbutton_rkl0s28e6"
                 },
                 {
                   "type": "HeaderButton",
@@ -284,10 +284,10 @@
                       "actionName": "ON_TAP_SIGNUP"
                     }
                   },
-                  "id": "headerbutton_9iwo7a1tt"
+                  "id": "headerbutton_rkl0hkddy"
                 }
               ],
-              "id": "header_9iwotpkmf"
+              "id": "header_rkl0kygfp"
             },
             {
               "type": "Header",
@@ -295,9 +295,12 @@
                 "background": "linear-gradient(180deg, #0D3540 0%, #08242A 100%)",
                 "backgroundImage": "linear-gradient(180deg, #0D3540 0%, #08242A 100%)",
                 "backgroundColor": "#08242A",
+                "display": "flex",
                 "flexWrap": "wrap",
-                "justifyContent": "flex-start",
-                "padding": "12px max(16px, calc((100% - 1180px) / 2))",
+                "alignItems": "center",
+                "justifyContent": "space-between",
+                "gap": "8px",
+                "padding": "10px max(12px, calc((100% - 1180px) / 2))",
                 "boxSizing": "border-box",
                 "position": "sticky",
                 "top": "2px",
@@ -311,7 +314,7 @@
                   "colStart": 1,
                   "colEnd": 100,
                   "rowStart": 6,
-                  "rowEnd": 10
+                  "rowEnd": 11
                 },
                 "tablet": {
                   "colStart": 1,
@@ -330,7 +333,7 @@
                 {
                   "type": "SearchBar",
                   "containerStyle": {
-                    "width": "340px",
+                    "width": "280px",
                     "alignItems": "center",
                     "border": "1px solid #E4E7E4",
                     "borderRadius": "12px",
@@ -368,7 +371,7 @@
                       "actionName": "ON_BLUR_SEARCH"
                     }
                   },
-                  "id": "searchbar_9iwoqjdao"
+                  "id": "searchbar_rkl0qgq9k"
                 },
                 {
                   "type": "HeaderButton",
@@ -376,6 +379,9 @@
                     "display": "inline-flex",
                     "alignItems": "center",
                     "justifyContent": "center",
+                    "width": "auto",
+                    "flex": "0 0 auto",
+                    "padding": "6px 8px",
                     "borderRadius": "12px",
                     "fontSize": "12px",
                     "fontWeight": "600",
@@ -403,7 +409,7 @@
                       "actionName": "ON_TAP_CART_HEADER"
                     }
                   },
-                  "id": "headerbutton_9iwovu8db"
+                  "id": "headerbutton_rkl0ndvgt"
                 },
                 {
                   "type": "HeaderButton",
@@ -411,6 +417,9 @@
                     "display": "inline-flex",
                     "alignItems": "center",
                     "justifyContent": "center",
+                    "width": "auto",
+                    "flex": "0 0 auto",
+                    "padding": "6px 8px",
                     "borderRadius": "12px",
                     "fontSize": "12px",
                     "fontWeight": "600",
@@ -437,7 +446,7 @@
                       "actionName": "ON_TAP_WISHLIST_HEADER"
                     }
                   },
-                  "id": "headerbutton_9iwokib7d"
+                  "id": "headerbutton_rkl0l1iv4"
                 },
                 {
                   "type": "HeaderButton",
@@ -445,6 +454,9 @@
                     "display": "inline-flex",
                     "alignItems": "center",
                     "justifyContent": "center",
+                    "width": "auto",
+                    "flex": "0 0 auto",
+                    "padding": "6px 8px",
                     "borderRadius": "12px",
                     "fontSize": "12px",
                     "fontWeight": "600",
@@ -471,10 +483,10 @@
                       "actionName": "ON_TAP_FAVOURITES_HEADER"
                     }
                   },
-                  "id": "headerbutton_9iwoy33ps"
+                  "id": "headerbutton_rkl04vwvv"
                 }
               ],
-              "id": "header_9iwogv075"
+              "id": "header_rkl09q8jz"
             },
             {
               "type": "StoryRow",
@@ -531,7 +543,7 @@
                       "actionName": "ON_TAP_STORY_SALE"
                     }
                   },
-                  "id": "storycircle_9iwoggiu3"
+                  "id": "storycircle_rkl04tyhr"
                 },
                 {
                   "type": "StoryCircle",
@@ -555,7 +567,7 @@
                       }
                     }
                   },
-                  "id": "storycircle_9iwoox68r"
+                  "id": "storycircle_rkl0a7uht"
                 },
                 {
                   "type": "StoryCircle",
@@ -579,7 +591,7 @@
                       }
                     }
                   },
-                  "id": "storycircle_9iwosso2c"
+                  "id": "storycircle_rkl06wbvq"
                 },
                 {
                   "type": "StoryCircle",
@@ -603,7 +615,7 @@
                       }
                     }
                   },
-                  "id": "storycircle_9iwo8vfd6"
+                  "id": "storycircle_rkl0b9pr2"
                 },
                 {
                   "type": "StoryCircle",
@@ -627,7 +639,7 @@
                       }
                     }
                   },
-                  "id": "storycircle_9iwow07g0"
+                  "id": "storycircle_rkl0ev59t"
                 },
                 {
                   "type": "StoryCircle",
@@ -651,10 +663,10 @@
                       }
                     }
                   },
-                  "id": "storycircle_9iwos6vbh"
+                  "id": "storycircle_rkl0q5zwe"
                 }
               ],
-              "id": "storyrow_9iwoerw3h"
+              "id": "storyrow_rkl0m3a68"
             },
             {
               "type": "CategoryGrid",
@@ -710,7 +722,7 @@
                       "actionName": "ON_TAP_MOBILES"
                     }
                   },
-                  "id": "categoryitem_9iwod61qu"
+                  "id": "categoryitem_rkl0tuibe"
                 },
                 {
                   "type": "CategoryItem",
@@ -734,7 +746,7 @@
                       "actionName": "ON_TAP_FASHION"
                     }
                   },
-                  "id": "categoryitem_9iwo8eu1c"
+                  "id": "categoryitem_rkl0u1c0j"
                 },
                 {
                   "type": "CategoryItem",
@@ -758,7 +770,7 @@
                       "actionName": "ON_TAP_LAPTOPS"
                     }
                   },
-                  "id": "categoryitem_9iwo8ll70"
+                  "id": "categoryitem_rkl0uulae"
                 },
                 {
                   "type": "CategoryItem",
@@ -782,7 +794,7 @@
                       "actionName": "ON_TAP_HOME"
                     }
                   },
-                  "id": "categoryitem_9iwosv3pu"
+                  "id": "categoryitem_rkl0xl3td"
                 },
                 {
                   "type": "CategoryItem",
@@ -806,7 +818,7 @@
                       "actionName": "ON_TAP_BEAUTY"
                     }
                   },
-                  "id": "categoryitem_9iwoglabr"
+                  "id": "categoryitem_rkl06fzyp"
                 },
                 {
                   "type": "CategoryItem",
@@ -830,10 +842,10 @@
                       "actionName": "ON_TAP_GROCERY"
                     }
                   },
-                  "id": "categoryitem_9iwophn0c"
+                  "id": "categoryitem_rkl0o1kl4"
                 }
               ],
-              "id": "categorygrid_9iwo0yp25"
+              "id": "categorygrid_rkl08dza3"
             },
             {
               "type": "Carousel",
@@ -894,7 +906,7 @@
                     "imageUrl": "https://picsum.photos/id/1070/1600/500",
                     "altText": "Campus electronics fest"
                   },
-                  "id": "image_9iwoxanhb"
+                  "id": "image_rkl08sge5"
                 },
                 {
                   "type": "IFrame",
@@ -906,7 +918,7 @@
                     "src": "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&controls=0&showinfo=0&rel=0",
                     "title": "Special announcement"
                   },
-                  "id": "iframe_9iwootdeh"
+                  "id": "iframe_rkl098mh5"
                 },
                 {
                   "type": "Image",
@@ -919,10 +931,10 @@
                     "imageUrl": "https://picsum.photos/id/180/1600/500",
                     "altText": ""
                   },
-                  "id": "image_9iwoldz6g"
+                  "id": "image_rkl0njius"
                 }
               ],
-              "id": "carousel_9iwocvzly"
+              "id": "carousel_rkl0hcb79"
             },
             {
               "type": "HeroBanner",
@@ -998,10 +1010,10 @@
                       "actionName": "HERO_SALE_EXPIRED"
                     }
                   },
-                  "id": "countdowntimer_9iwopxiyp"
+                  "id": "countdowntimer_rkl02anl3"
                 }
               ],
-              "id": "herobanner_9iwoj7ikq"
+              "id": "herobanner_rkl0417vt"
             },
             {
               "type": "Box",
@@ -1069,7 +1081,7 @@
                       "value": "CAMPUS50"
                     }
                   },
-                  "id": "couponcode_9iwo8bo81"
+                  "id": "couponcode_rkl02rfcg"
                 },
                 {
                   "type": "CouponCode",
@@ -1103,7 +1115,7 @@
                       "value": "FREEDROP"
                     }
                   },
-                  "id": "couponcode_9iwojlnr1"
+                  "id": "couponcode_rkl0zabce"
                 },
                 {
                   "type": "CouponCode",
@@ -1137,10 +1149,10 @@
                       "value": "TECH30"
                     }
                   },
-                  "id": "couponcode_9iwo83ru0"
+                  "id": "couponcode_rkl0ceb63"
                 }
               ],
-              "id": "box_9iwoh74wv"
+              "id": "box_rkl0qa17h"
             },
             {
               "type": "Box",
@@ -1211,7 +1223,7 @@
                       "actionName": "DEAL_OF_THE_DAY_ENDED"
                     }
                   },
-                  "id": "countdowntimer_9iwo8g0g8"
+                  "id": "countdowntimer_rkl0rrzj5"
                 },
                 {
                   "type": "CountDownTimer",
@@ -1248,7 +1260,7 @@
                       "actionName": "FLASH_SALE_ENDED"
                     }
                   },
-                  "id": "countdowntimer_9iwodykm1"
+                  "id": "countdowntimer_rkl0sjvzx"
                 },
                 {
                   "type": "CountDownTimer",
@@ -1285,7 +1297,7 @@
                       "actionName": "TECH_DROP_ENDED"
                     }
                   },
-                  "id": "countdowntimer_9iwolxa22"
+                  "id": "countdowntimer_rkl0rto6l"
                 },
                 {
                   "type": "CountDownTimer",
@@ -1322,10 +1334,10 @@
                       "actionName": "LIMITED_STOCK_ENDED"
                     }
                   },
-                  "id": "countdowntimer_9iwo1zn5b"
+                  "id": "countdowntimer_rkl07z4ao"
                 }
               ],
-              "id": "box_9iwo9p4ux"
+              "id": "box_rkl0iya8b"
             },
             {
               "type": "ProductList",
@@ -1457,7 +1469,7 @@
                         "imageUrl": "https://m.media-amazon.com/images/I/816r5iLd4LL._AC_UL480_FMwebp_QL65_.jpg",
                         "altText": "SereneLife folding shopping cart"
                       },
-                      "id": "image_9iwo1526n"
+                      "id": "image_rkl064yc7"
                     },
                     {
                       "type": "Label",
@@ -1483,10 +1495,10 @@
                           "data": {
                             "text": "Sponsored"
                           },
-                          "id": "sponsored_9iwoxktqb"
+                          "id": "sponsored_rkl09de9s"
                         }
                       ],
-                      "id": "label_9iwocy59p"
+                      "id": "label_rkl0d9kyo"
                     },
                     {
                       "type": "Badge",
@@ -1511,7 +1523,7 @@
                       "data": {
                         "text": "Limited time offer"
                       },
-                      "id": "badge_9iwoxae4l"
+                      "id": "badge_rkl0x7btv"
                     },
                     {
                       "type": "Title",
@@ -1533,7 +1545,7 @@
                       "data": {
                         "text": "SereneLife"
                       },
-                      "id": "title_9iwo069dj"
+                      "id": "title_rkl0pzlzm"
                     },
                     {
                       "type": "Description",
@@ -1558,7 +1570,7 @@
                       "data": {
                         "text": "Compact folding shopping cart with waterproof liner, 360° swivel wheels and a 70 lb capacity"
                       },
-                      "id": "description_9iwo0gelr"
+                      "id": "description_rkl0nm928"
                     },
                     {
                       "type": "Rating",
@@ -1583,17 +1595,17 @@
                             "text": "4.4",
                             "out of": "5"
                           },
-                          "id": "score_9iwowti81"
+                          "id": "score_rkl0dbh1y"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "376"
                           },
-                          "id": "reviewcount_9iwooybd0"
+                          "id": "reviewcount_rkl028kd1"
                         }
                       ],
-                      "id": "rating_9iwoy7mq3"
+                      "id": "rating_rkl01gute"
                     },
                     {
                       "type": "PriceBlock",
@@ -1618,7 +1630,7 @@
                         "mrp": "₹12,250",
                         "discount": "42%"
                       },
-                      "id": "priceblock_9iwo5kdml"
+                      "id": "priceblock_rkl0mkkv8"
                     },
                     {
                       "type": "OfferText",
@@ -1639,7 +1651,7 @@
                       "data": {
                         "text": "Up to 5% back with Amazon Pay ICICI card"
                       },
-                      "id": "offertext_9iwo1w2c7"
+                      "id": "offertext_rkl0dsj4l"
                     },
                     {
                       "type": "DeliveryInfo",
@@ -1659,7 +1671,7 @@
                         "prefix": "Free delivery",
                         "daysOffset": 7
                       },
-                      "id": "deliveryinfo_9iwozqbe0"
+                      "id": "deliveryinfo_rkl0y5wb0"
                     },
                     {
                       "type": "Button",
@@ -1698,7 +1710,7 @@
                           "actionName": "ADD_TO_CART"
                         }
                       },
-                      "id": "button_9iwob8rq7"
+                      "id": "button_rkl0k0tvc"
                     },
                     {
                       "type": "ShareButton",
@@ -1768,375 +1780,10 @@
                           }
                         }
                       },
-                      "id": "sharebutton_9iwo9icx0"
+                      "id": "sharebutton_rkl0uy45t"
                     }
                   ],
-                  "id": "productcard_9iwovi335"
-                },
-                {
-                  "type": "ProductCard",
-                  "containerStyle": {
-                    "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
-                    "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
-                    "backgroundColor": "#FFFFFF",
-                    "position": "relative",
-                    "flex": "0 0 auto",
-                    "width": "clamp(236px, 74vw, 268px)",
-                    "height": "516px",
-                    "minHeight": "516px",
-                    "maxHeight": "516px",
-                    "alignSelf": "stretch",
-                    "display": "flex",
-                    "flexDirection": "column",
-                    "justifyContent": "flex-start",
-                    "gap": "8px",
-                    "padding": "14px",
-                    "border": "1px solid #E4E7E4",
-                    "borderRadius": "16px",
-                    "boxShadow": "0 1px 2px rgba(16,31,38,0.04)",
-                    "boxSizing": "border-box",
-                    "minWidth": "0",
-                    "overflow": "hidden",
-                    "scrollSnapAlign": "start"
-                  },
-                  "data": {
-                    "id": "aurora-buds-002"
-                  },
-                  "children": [
-                    {
-                      "type": "Image",
-                      "containerStyle": {
-                        "height": "176px",
-                        "minHeight": "176px",
-                        "maxHeight": "176px",
-                        "flex": "0 0 176px",
-                        "flexShrink": "0",
-                        "width": "100%",
-                        "objectFit": "contain",
-                        "backgroundColor": "#FAFAF8",
-                        "borderRadius": "10px",
-                        "display": "block",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "imageUrl": "https://picsum.photos/id/1010/600/600",
-                        "altText": "Aurora Buds Pro wireless earbuds"
-                      },
-                      "id": "image_9iwoz32hv"
-                    },
-                    {
-                      "type": "Label",
-                      "containerStyle": {
-                        "height": "16px",
-                        "minHeight": "16px",
-                        "flex": "0 0 16px",
-                        "flexShrink": "0",
-                        "display": "flex",
-                        "alignItems": "center",
-                        "gap": "4px",
-                        "overflow": "hidden",
-                        "fontSize": "10px",
-                        "fontWeight": "600",
-                        "letterSpacing": "0.10em",
-                        "textTransform": "uppercase",
-                        "color": "#8D9A9D",
-                        "boxSizing": "border-box"
-                      },
-                      "children": [
-                        {
-                          "type": "Sponsored",
-                          "data": {
-                            "text": " "
-                          },
-                          "id": "sponsored_9iwo4f30m"
-                        }
-                      ],
-                      "id": "label_9iwoj68kp"
-                    },
-                    {
-                      "type": "Badge",
-                      "containerStyle": {
-                        "height": "22px",
-                        "minHeight": "22px",
-                        "flex": "0 0 22px",
-                        "flexShrink": "0",
-                        "alignSelf": "flex-start",
-                        "display": "inline-flex",
-                        "alignItems": "center",
-                        "padding": "0 9px",
-                        "borderRadius": "999px",
-                        "fontSize": "11px",
-                        "fontWeight": "600",
-                        "letterSpacing": "0.01em",
-                        "whiteSpace": "nowrap",
-                        "boxSizing": "border-box",
-                        "backgroundColor": "#E7EEED",
-                        "color": "#0A2A31"
-                      },
-                      "data": {
-                        "text": "Bestseller"
-                      },
-                      "id": "badge_9iwo4z0h0"
-                    },
-                    {
-                      "type": "Title",
-                      "containerStyle": {
-                        "height": "16px",
-                        "minHeight": "16px",
-                        "flex": "0 0 16px",
-                        "flexShrink": "0",
-                        "overflow": "hidden",
-                        "whiteSpace": "nowrap",
-                        "textOverflow": "ellipsis",
-                        "fontSize": "11px",
-                        "fontWeight": "700",
-                        "letterSpacing": "0.10em",
-                        "textTransform": "uppercase",
-                        "color": "#5E6E72",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "text": "Aurora Audio"
-                      },
-                      "id": "title_9iwoanrrn"
-                    },
-                    {
-                      "type": "Description",
-                      "containerStyle": {
-                        "height": "60px",
-                        "minHeight": "60px",
-                        "flex": "0 0 60px",
-                        "flexShrink": "0",
-                        "display": "-webkit-box",
-                        "WebkitLineClamp": "3",
-                        "WebkitBoxOrient": "vertical",
-                        "overflow": "hidden",
-                        "maxHeight": "60px",
-                        "fontSize": "14px",
-                        "lineHeight": "20px",
-                        "fontWeight": "500",
-                        "letterSpacing": "-0.005em",
-                        "color": "#101F26",
-                        "overflowWrap": "anywhere",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "text": "Buds Pro ANC wireless earbuds — 42 hr battery, dual pairing, IPX5 water resistance"
-                      },
-                      "id": "description_9iwoa56ce"
-                    },
-                    {
-                      "type": "Rating",
-                      "containerStyle": {
-                        "height": "20px",
-                        "minHeight": "20px",
-                        "flex": "0 0 20px",
-                        "flexShrink": "0",
-                        "display": "flex",
-                        "alignItems": "center",
-                        "gap": "6px",
-                        "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                        "fontSize": "12px",
-                        "letterSpacing": "0.02em",
-                        "color": "#5E6E72",
-                        "boxSizing": "border-box"
-                      },
-                      "children": [
-                        {
-                          "type": "Score",
-                          "data": {
-                            "text": "4.2",
-                            "out of": "5"
-                          },
-                          "id": "score_9iwonum5i"
-                        },
-                        {
-                          "type": "ReviewCount",
-                          "data": {
-                            "text": "12,480"
-                          },
-                          "id": "reviewcount_9iwo2x7el"
-                        }
-                      ],
-                      "id": "rating_9iwoosmix"
-                    },
-                    {
-                      "type": "PriceBlock",
-                      "containerStyle": {
-                        "height": "28px",
-                        "minHeight": "28px",
-                        "flex": "0 0 28px",
-                        "flexShrink": "0",
-                        "display": "flex",
-                        "alignItems": "baseline",
-                        "gap": "8px",
-                        "overflow": "hidden",
-                        "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                        "fontSize": "18px",
-                        "fontWeight": "600",
-                        "letterSpacing": "-0.01em",
-                        "color": "#101F26",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "sellingPrice": "₹2,499",
-                        "mrp": "₹4,999",
-                        "discount": "50%"
-                      },
-                      "id": "priceblock_9iwosasq3"
-                    },
-                    {
-                      "type": "OfferText",
-                      "containerStyle": {
-                        "height": "16px",
-                        "minHeight": "16px",
-                        "flex": "0 0 16px",
-                        "flexShrink": "0",
-                        "display": "-webkit-box",
-                        "WebkitLineClamp": "1",
-                        "WebkitBoxOrient": "vertical",
-                        "overflow": "hidden",
-                        "fontSize": "12px",
-                        "fontWeight": "600",
-                        "color": "#C4185F",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "text": "No cost EMI on select cards"
-                      },
-                      "id": "offertext_9iwosl0g5"
-                    },
-                    {
-                      "type": "DeliveryInfo",
-                      "containerStyle": {
-                        "height": "18px",
-                        "minHeight": "18px",
-                        "flex": "0 0 18px",
-                        "flexShrink": "0",
-                        "overflow": "hidden",
-                        "whiteSpace": "nowrap",
-                        "textOverflow": "ellipsis",
-                        "fontSize": "12px",
-                        "color": "#5E6E72",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "prefix": "Free delivery",
-                        "daysOffset": 2
-                      },
-                      "id": "deliveryinfo_9iwonz5m1"
-                    },
-                    {
-                      "type": "Button",
-                      "containerStyle": {
-                        "height": "44px",
-                        "minHeight": "44px",
-                        "flex": "0 0 44px",
-                        "flexShrink": "0",
-                        "background": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-                        "backgroundImage": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-                        "backgroundColor": "#C4185F",
-                        "marginTop": "auto",
-                        "width": "calc(100% - 52px)",
-                        "alignSelf": "flex-start",
-                        "display": "flex",
-                        "alignItems": "center",
-                        "justifyContent": "center",
-                        "padding": "0 16px",
-                        "borderRadius": "12px",
-                        "border": "none",
-                        "color": "#FFFFFF",
-                        "fontSize": "14px",
-                        "fontWeight": "600",
-                        "letterSpacing": "0.01em",
-                        "cursor": "pointer",
-                        "boxSizing": "border-box",
-                        "boxShadow": "0 2px 10px rgba(196,24,95,0.24)"
-                      },
-                      "data": {
-                        "label": "Add to cart"
-                      },
-                      "actions": {
-                        "onTap": {
-                          "type": "API_CALL",
-                          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                          "actionName": "ADD_TO_CART"
-                        }
-                      },
-                      "id": "button_9iwo9t8td"
-                    },
-                    {
-                      "type": "ShareButton",
-                      "containerStyle": {
-                        "position": "absolute",
-                        "right": "14px",
-                        "bottom": "14px",
-                        "zIndex": "3",
-                        "width": "44px",
-                        "height": "44px",
-                        "minWidth": "44px",
-                        "padding": "0",
-                        "margin": "0",
-                        "borderRadius": "12px",
-                        "display": "inline-flex",
-                        "alignItems": "center",
-                        "justifyContent": "center",
-                        "gap": "0",
-                        "backgroundColor": "#FFFFFF",
-                        "border": "1px solid #E4E7E4",
-                        "color": "#101F26",
-                        "fontSize": "17px",
-                        "lineHeight": "1",
-                        "fontWeight": "600",
-                        "cursor": "pointer",
-                        "boxSizing": "border-box",
-                        "overflow": "hidden",
-                        "boxShadow": "none"
-                      },
-                      "data": {
-                        "label": "",
-                        "icon": "↗"
-                      },
-                      "actions": {
-                        "onTap": {
-                          "type": "OPEN_BOTTOM_SHEET",
-                          "data": {
-                            "title": "Share this product",
-                            "options": [
-                              {
-                                "label": "WhatsApp",
-                                "icon": "💬",
-                                "action": {
-                                  "type": "API_CALL",
-                                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                                  "actionName": "ON_TAP_SHARE_WHATSAPP"
-                                }
-                              },
-                              {
-                                "label": "Instagram",
-                                "icon": "📸",
-                                "action": {
-                                  "type": "API_CALL",
-                                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                                  "actionName": "ON_TAP_SHARE_INSTAGRAM"
-                                }
-                              },
-                              {
-                                "label": "Copy link",
-                                "icon": "🔗",
-                                "action": {
-                                  "type": "COPY_TO_CLIPBOARD",
-                                  "value": "https://example.com/p/aurora-buds-002"
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      "id": "sharebutton_9iwo5pdvr"
-                    }
-                  ],
-                  "id": "productcard_9iwopl9ez"
+                  "id": "productcard_rkl0t0k1g"
                 },
                 {
                   "type": "ProductCard",
@@ -2187,7 +1834,7 @@
                         "imageUrl": "https://picsum.photos/id/30/600/600",
                         "altText": "Kettleworks electric kettle"
                       },
-                      "id": "image_9iwovukoz"
+                      "id": "image_rkl0gc1x6"
                     },
                     {
                       "type": "Label",
@@ -2213,10 +1860,10 @@
                           "data": {
                             "text": " "
                           },
-                          "id": "sponsored_9iwo7xpg2"
+                          "id": "sponsored_rkl0nvy8w"
                         }
                       ],
-                      "id": "label_9iwoxoxb4"
+                      "id": "label_rkl01r764"
                     },
                     {
                       "type": "Badge",
@@ -2241,7 +1888,7 @@
                       "data": {
                         "text": "Only 3 left"
                       },
-                      "id": "badge_9iwoh6z5b"
+                      "id": "badge_rkl0gwwam"
                     },
                     {
                       "type": "Title",
@@ -2263,7 +1910,7 @@
                       "data": {
                         "text": "Kettleworks"
                       },
-                      "id": "title_9iwocp16o"
+                      "id": "title_rkl078x0i"
                     },
                     {
                       "type": "Description",
@@ -2288,7 +1935,7 @@
                       "data": {
                         "text": "1L stainless steel electric kettle with auto shut-off and boil-dry protection"
                       },
-                      "id": "description_9iwok3qju"
+                      "id": "description_rkl0lmonp"
                     },
                     {
                       "type": "Rating",
@@ -2313,17 +1960,17 @@
                             "text": "4.6",
                             "out of": "5"
                           },
-                          "id": "score_9iwodlzlb"
+                          "id": "score_rkl0uvoo8"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "2,043"
                           },
-                          "id": "reviewcount_9iwojiof7"
+                          "id": "reviewcount_rkl0se6ei"
                         }
                       ],
-                      "id": "rating_9iwoir362"
+                      "id": "rating_rkl01f9bi"
                     },
                     {
                       "type": "PriceBlock",
@@ -2348,7 +1995,7 @@
                         "mrp": "₹1,999",
                         "discount": "35%"
                       },
-                      "id": "priceblock_9iwonx7vi"
+                      "id": "priceblock_rkl000fua"
                     },
                     {
                       "type": "OfferText",
@@ -2369,7 +2016,7 @@
                       "data": {
                         "text": "Extra 5% off with bank cards"
                       },
-                      "id": "offertext_9iwo0286h"
+                      "id": "offertext_rkl0ex5y2"
                     },
                     {
                       "type": "DeliveryInfo",
@@ -2389,7 +2036,7 @@
                         "prefix": "Free delivery",
                         "daysOffset": 4
                       },
-                      "id": "deliveryinfo_9iwofflj3"
+                      "id": "deliveryinfo_rkl0cfcnt"
                     },
                     {
                       "type": "Button",
@@ -2428,7 +2075,7 @@
                           "actionName": "ADD_TO_CART"
                         }
                       },
-                      "id": "button_9iwoftays"
+                      "id": "button_rkl0dcuai"
                     },
                     {
                       "type": "ShareButton",
@@ -2498,10 +2145,10 @@
                           }
                         }
                       },
-                      "id": "sharebutton_9iwo10fj9"
+                      "id": "sharebutton_rkl0jmf02"
                     }
                   ],
-                  "id": "productcard_9iwosod5r"
+                  "id": "productcard_rkl0q115c"
                 },
                 {
                   "type": "ProductCard",
@@ -2552,7 +2199,7 @@
                         "imageUrl": "https://picsum.photos/id/292/600/600",
                         "altText": "Nimbus air fryer"
                       },
-                      "id": "image_9iwogxyq1"
+                      "id": "image_rkl06n5qv"
                     },
                     {
                       "type": "Label",
@@ -2578,10 +2225,10 @@
                           "data": {
                             "text": " "
                           },
-                          "id": "sponsored_9iwonuja0"
+                          "id": "sponsored_rkl0nzzdi"
                         }
                       ],
-                      "id": "label_9iwoiyy67"
+                      "id": "label_rkl0ehghv"
                     },
                     {
                       "type": "Badge",
@@ -2606,7 +2253,7 @@
                       "data": {
                         "text": "Deal of the day"
                       },
-                      "id": "badge_9iwolsmk1"
+                      "id": "badge_rkl0ju0yl"
                     },
                     {
                       "type": "Title",
@@ -2628,7 +2275,7 @@
                       "data": {
                         "text": "Nimbus"
                       },
-                      "id": "title_9iwolo0s4"
+                      "id": "title_rkl0wozb5"
                     },
                     {
                       "type": "Description",
@@ -2653,7 +2300,7 @@
                       "data": {
                         "text": "4.5L digital air fryer with 8 presets, dishwasher-safe basket and rapid heat circulation"
                       },
-                      "id": "description_9iwonu4ra"
+                      "id": "description_rkl0pox6j"
                     },
                     {
                       "type": "Rating",
@@ -2678,17 +2325,17 @@
                             "text": "4.3",
                             "out of": "5"
                           },
-                          "id": "score_9iwohvsj9"
+                          "id": "score_rkl00citg"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "8,912"
                           },
-                          "id": "reviewcount_9iwodfw44"
+                          "id": "reviewcount_rkl0bhpez"
                         }
                       ],
-                      "id": "rating_9iwovft8s"
+                      "id": "rating_rkl0faoh6"
                     },
                     {
                       "type": "PriceBlock",
@@ -2713,7 +2360,7 @@
                         "mrp": "₹8,999",
                         "discount": "39%"
                       },
-                      "id": "priceblock_9iwoyzsz9"
+                      "id": "priceblock_rkl0853ra"
                     },
                     {
                       "type": "OfferText",
@@ -2734,7 +2381,7 @@
                       "data": {
                         "text": "Save ₹500 with coupon SAVE20"
                       },
-                      "id": "offertext_9iwoqa4e7"
+                      "id": "offertext_rkl05mfal"
                     },
                     {
                       "type": "DeliveryInfo",
@@ -2754,7 +2401,7 @@
                         "prefix": "Free delivery",
                         "daysOffset": 3
                       },
-                      "id": "deliveryinfo_9iwof6ppd"
+                      "id": "deliveryinfo_rkl0352cc"
                     },
                     {
                       "type": "Button",
@@ -2793,7 +2440,7 @@
                           "actionName": "ADD_TO_CART"
                         }
                       },
-                      "id": "button_9iwodawjx"
+                      "id": "button_rkl0j54xx"
                     },
                     {
                       "type": "ShareButton",
@@ -2863,10 +2510,10 @@
                           }
                         }
                       },
-                      "id": "sharebutton_9iwomqnc5"
+                      "id": "sharebutton_rkl0tthjr"
                     }
                   ],
-                  "id": "productcard_9iwod0shh"
+                  "id": "productcard_rkl0cpkud"
                 },
                 {
                   "type": "ProductCard",
@@ -2917,7 +2564,7 @@
                         "imageUrl": "https://picsum.photos/id/1078/600/600",
                         "altText": "Volt 65W GaN charger"
                       },
-                      "id": "image_9iwoaqvel"
+                      "id": "image_rkl0ac0pa"
                     },
                     {
                       "type": "Label",
@@ -2943,10 +2590,10 @@
                           "data": {
                             "text": " "
                           },
-                          "id": "sponsored_9iwooqrcy"
+                          "id": "sponsored_rkl0tioxs"
                         }
                       ],
-                      "id": "label_9iwofb9kx"
+                      "id": "label_rkl0m9tfo"
                     },
                     {
                       "type": "Badge",
@@ -2971,7 +2618,7 @@
                       "data": {
                         "text": "Bestseller"
                       },
-                      "id": "badge_9iwov332t"
+                      "id": "badge_rkl0wqksi"
                     },
                     {
                       "type": "Title",
@@ -2993,7 +2640,7 @@
                       "data": {
                         "text": "Volt"
                       },
-                      "id": "title_9iwoh5y62"
+                      "id": "title_rkl0x9ni8"
                     },
                     {
                       "type": "Description",
@@ -3018,7 +2665,7 @@
                       "data": {
                         "text": "65W GaN fast charger with two USB-C ports and one USB-A, foldable pins"
                       },
-                      "id": "description_9iwoc3nze"
+                      "id": "description_rkl0a3hdg"
                     },
                     {
                       "type": "Rating",
@@ -3043,17 +2690,17 @@
                             "text": "4.5",
                             "out of": "5"
                           },
-                          "id": "score_9iwo7cq8z"
+                          "id": "score_rkl0rve94"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "5,204"
                           },
-                          "id": "reviewcount_9iwoyoyid"
+                          "id": "reviewcount_rkl03l0gi"
                         }
                       ],
-                      "id": "rating_9iwogrr7e"
+                      "id": "rating_rkl0crbla"
                     },
                     {
                       "type": "PriceBlock",
@@ -3078,7 +2725,7 @@
                         "mrp": "₹2,999",
                         "discount": "37%"
                       },
-                      "id": "priceblock_9iwo1jlqf"
+                      "id": "priceblock_rkl00nshr"
                     },
                     {
                       "type": "OfferText",
@@ -3099,7 +2746,7 @@
                       "data": {
                         "text": "Free 1 m braided cable included"
                       },
-                      "id": "offertext_9iwo6rdr7"
+                      "id": "offertext_rkl05ry5u"
                     },
                     {
                       "type": "DeliveryInfo",
@@ -3119,7 +2766,7 @@
                         "prefix": "Free delivery",
                         "daysOffset": 2
                       },
-                      "id": "deliveryinfo_9iwouefok"
+                      "id": "deliveryinfo_rkl0233ep"
                     },
                     {
                       "type": "Button",
@@ -3158,7 +2805,7 @@
                           "actionName": "ADD_TO_CART"
                         }
                       },
-                      "id": "button_9iwokvzhw"
+                      "id": "button_rkl0judpv"
                     },
                     {
                       "type": "ShareButton",
@@ -3228,13 +2875,13 @@
                           }
                         }
                       },
-                      "id": "sharebutton_9iwoplqmq"
+                      "id": "sharebutton_rkl0qfayv"
                     }
                   ],
-                  "id": "productcard_9iwoi2q93"
+                  "id": "productcard_rkl0ahshe"
                 }
               ],
-              "id": "productlist_9iwosnzty"
+              "id": "productlist_rkl00c267"
             },
             {
               "type": "Box",
@@ -3294,7 +2941,7 @@
                         "imageUrl": "https://picsum.photos/id/20/400/400",
                         "altText": "Gas Stove"
                       },
-                      "id": "image_9iwoq0z7p"
+                      "id": "image_rkl0avuxq"
                     },
                     {
                       "type": "Rating",
@@ -3304,24 +2951,24 @@
                           "data": {
                             "text": "4.3"
                           },
-                          "id": "score_9iwo9mjm3"
+                          "id": "score_rkl0a78tk"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "84"
                           },
-                          "id": "reviewcount_9iwoqjb5x"
+                          "id": "reviewcount_rkl06atwq"
                         }
                       ],
-                      "id": "rating_9iwobyre5"
+                      "id": "rating_rkl0u3hg4"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "BIGFLAME Power Hexa..."
                       },
-                      "id": "title_9iwobotyv"
+                      "id": "title_rkl0nsn6y"
                     },
                     {
                       "type": "PriceBlock",
@@ -3330,17 +2977,17 @@
                         "mrp": "₹12,800",
                         "discount": "48%"
                       },
-                      "id": "priceblock_9iwove1au"
+                      "id": "priceblock_rkl06twt7"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "₹6,512 with Bank offer"
                       },
-                      "id": "offertext_9iwovznup"
+                      "id": "offertext_rkl05li3w"
                     }
                   ],
-                  "id": "productcard_9iwoefw89"
+                  "id": "productcard_rkl0x8pdo"
                 },
                 {
                   "type": "ProductCard",
@@ -3367,7 +3014,7 @@
                         "imageUrl": "https://picsum.photos/id/10/400/400",
                         "altText": "Men Cargos"
                       },
-                      "id": "image_9iwoyumpm"
+                      "id": "image_rkl06y8ub"
                     },
                     {
                       "type": "Rating",
@@ -3377,24 +3024,24 @@
                           "data": {
                             "text": "4.1"
                           },
-                          "id": "score_9iwod153b"
+                          "id": "score_rkl06ivdl"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "120"
                           },
-                          "id": "reviewcount_9iwo3to53"
+                          "id": "reviewcount_rkl0mia3l"
                         }
                       ],
-                      "id": "rating_9iwohjmio"
+                      "id": "rating_rkl00yywe"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "VeBNoR Men Cargos"
                       },
-                      "id": "title_9iwo0ew1m"
+                      "id": "title_rkl01kplw"
                     },
                     {
                       "type": "PriceBlock",
@@ -3403,17 +3050,17 @@
                         "mrp": "₹1,999",
                         "discount": "73%"
                       },
-                      "id": "priceblock_9iwocvk9u"
+                      "id": "priceblock_rkl0hebcs"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Special discount"
                       },
-                      "id": "offertext_9iwoo7ytk"
+                      "id": "offertext_rkl0epj4u"
                     }
                   ],
-                  "id": "productcard_9iwokfvid"
+                  "id": "productcard_rkl0j9lpl"
                 },
                 {
                   "type": "ProductCard",
@@ -3440,7 +3087,7 @@
                         "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80",
                         "altText": "Shoes"
                       },
-                      "id": "image_9iwou28hg"
+                      "id": "image_rkl0xszq8"
                     },
                     {
                       "type": "Rating",
@@ -3450,24 +3097,24 @@
                           "data": {
                             "text": "4.5"
                           },
-                          "id": "score_9iwoof0qp"
+                          "id": "score_rkl09tkcj"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "210"
                           },
-                          "id": "reviewcount_9iwo3pl3f"
+                          "id": "reviewcount_rkl0cxe5l"
                         }
                       ],
-                      "id": "rating_9iwoep6oz"
+                      "id": "rating_rkl0l5nwi"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "RED TAPE Lifestyle Sneakers"
                       },
-                      "id": "title_9iwohz1b5"
+                      "id": "title_rkl0js09n"
                     },
                     {
                       "type": "PriceBlock",
@@ -3476,17 +3123,17 @@
                         "mrp": "₹9,099",
                         "discount": "84%"
                       },
-                      "id": "priceblock_9iwolr240"
+                      "id": "priceblock_rkl0qhtts"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Limited time deal"
                       },
-                      "id": "offertext_9iwor7xs8"
+                      "id": "offertext_rkl0rle3s"
                     }
                   ],
-                  "id": "productcard_9iwowfi16"
+                  "id": "productcard_rkl0bme25"
                 },
                 {
                   "type": "ProductCard",
@@ -3513,7 +3160,7 @@
                         "imageUrl": "https://picsum.photos/id/30/400/400",
                         "altText": "T-Shirt"
                       },
-                      "id": "image_9iwowq108"
+                      "id": "image_rkl0hdwcy"
                     },
                     {
                       "type": "Rating",
@@ -3523,24 +3170,24 @@
                           "data": {
                             "text": "4.0"
                           },
-                          "id": "score_9iwowpq1p"
+                          "id": "score_rkl0qkb92"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "56"
                           },
-                          "id": "reviewcount_9iwowdfk4"
+                          "id": "reviewcount_rkl0ug2gz"
                         }
                       ],
-                      "id": "rating_9iwowwvef"
+                      "id": "rating_rkl0ipig9"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Anime Printed Cotton Tee"
                       },
-                      "id": "title_9iwoieu67"
+                      "id": "title_rkl03q5pe"
                     },
                     {
                       "type": "PriceBlock",
@@ -3549,17 +3196,17 @@
                         "mrp": "₹999",
                         "discount": "60%"
                       },
-                      "id": "priceblock_9iwo8n2vz"
+                      "id": "priceblock_rkl0cxx7y"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Trending on campus"
                       },
-                      "id": "offertext_9iwo7w2yk"
+                      "id": "offertext_rkl0rmfeu"
                     }
                   ],
-                  "id": "productcard_9iwocmvhi"
+                  "id": "productcard_rkl0t3k1p"
                 },
                 {
                   "type": "ProductCard",
@@ -3586,7 +3233,7 @@
                         "imageUrl": "https://picsum.photos/id/40/400/400",
                         "altText": "Smart Watch"
                       },
-                      "id": "image_9iwopanzk"
+                      "id": "image_rkl06wrhc"
                     },
                     {
                       "type": "Rating",
@@ -3596,24 +3243,24 @@
                           "data": {
                             "text": "4.2"
                           },
-                          "id": "score_9iwoli20e"
+                          "id": "score_rkl0m95i6"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "340"
                           },
-                          "id": "reviewcount_9iwozsp7n"
+                          "id": "reviewcount_rkl0ywy7v"
                         }
                       ],
-                      "id": "rating_9iwox5xwz"
+                      "id": "rating_rkl078u7d"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Noise Pulse 2 Max Display"
                       },
-                      "id": "title_9iwo7eex3"
+                      "id": "title_rkl0r2fi7"
                     },
                     {
                       "type": "PriceBlock",
@@ -3622,17 +3269,17 @@
                         "mrp": "₹5,999",
                         "discount": "75%"
                       },
-                      "id": "priceblock_9iwoktkwy"
+                      "id": "priceblock_rkl0cmmd1"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Lowest price ever"
                       },
-                      "id": "offertext_9iwod1hi2"
+                      "id": "offertext_rkl0byec1"
                     }
                   ],
-                  "id": "productcard_9iwoiqqed"
+                  "id": "productcard_rkl0umbkg"
                 },
                 {
                   "type": "ProductCard",
@@ -3659,7 +3306,7 @@
                         "imageUrl": "https://picsum.photos/id/50/400/400",
                         "altText": "Backpack"
                       },
-                      "id": "image_9iwoy4ykv"
+                      "id": "image_rkl0l7mxz"
                     },
                     {
                       "type": "Rating",
@@ -3669,24 +3316,24 @@
                           "data": {
                             "text": "4.6"
                           },
-                          "id": "score_9iwo9astf"
+                          "id": "score_rkl09ebvy"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "1.2k"
                           },
-                          "id": "reviewcount_9iwo9tql6"
+                          "id": "reviewcount_rkl0y7goe"
                         }
                       ],
-                      "id": "rating_9iwolb4yg"
+                      "id": "rating_rkl0evert"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Skybags 25L Campus Bag"
                       },
-                      "id": "title_9iwoibcpw"
+                      "id": "title_rkl0sr84t"
                     },
                     {
                       "type": "PriceBlock",
@@ -3695,17 +3342,17 @@
                         "mrp": "₹2,100",
                         "discount": "57%"
                       },
-                      "id": "priceblock_9iwo0lpmo"
+                      "id": "priceblock_rkl0nsgq1"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Bestseller"
                       },
-                      "id": "offertext_9iwoqoixh"
+                      "id": "offertext_rkl026qbd"
                     }
                   ],
-                  "id": "productcard_9iwoznezu"
+                  "id": "productcard_rkl0hq58i"
                 },
                 {
                   "type": "ProductCard",
@@ -3732,7 +3379,7 @@
                         "imageUrl": "https://picsum.photos/id/60/400/400",
                         "altText": "Headphones"
                       },
-                      "id": "image_9iwoqaxm7"
+                      "id": "image_rkl0ag5l2"
                     },
                     {
                       "type": "Rating",
@@ -3742,24 +3389,24 @@
                           "data": {
                             "text": "4.4"
                           },
-                          "id": "score_9iwoqdodq"
+                          "id": "score_rkl0f77e6"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "800"
                           },
-                          "id": "reviewcount_9iworxpie"
+                          "id": "reviewcount_rkl0c8a6l"
                         }
                       ],
-                      "id": "rating_9iwovb3nq"
+                      "id": "rating_rkl0qbbkg"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "boAt Rockerz 450 Wireless"
                       },
-                      "id": "title_9iwo15ys1"
+                      "id": "title_rkl08ptc9"
                     },
                     {
                       "type": "PriceBlock",
@@ -3768,17 +3415,17 @@
                         "mrp": "₹3,990",
                         "discount": "67%"
                       },
-                      "id": "priceblock_9iwo11c6q"
+                      "id": "priceblock_rkl0ry3jx"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Mega savings"
                       },
-                      "id": "offertext_9iwo8vrlg"
+                      "id": "offertext_rkl0vcp3y"
                     }
                   ],
-                  "id": "productcard_9iwo92xoh"
+                  "id": "productcard_rkl0te4xj"
                 },
                 {
                   "type": "ProductCard",
@@ -3805,7 +3452,7 @@
                         "imageUrl": "https://picsum.photos/id/70/400/400",
                         "altText": "Sunglasses"
                       },
-                      "id": "image_9iwor2lx0"
+                      "id": "image_rkl0n03q2"
                     },
                     {
                       "type": "Rating",
@@ -3815,24 +3462,24 @@
                           "data": {
                             "text": "3.9"
                           },
-                          "id": "score_9iwowmtm9"
+                          "id": "score_rkl04wc87"
                         },
                         {
                           "type": "ReviewCount",
                           "data": {
                             "text": "23"
                           },
-                          "id": "reviewcount_9iwoa33px"
+                          "id": "reviewcount_rkl0dqop5"
                         }
                       ],
-                      "id": "rating_9iwoxjdkm"
+                      "id": "rating_rkl0mgfb2"
                     },
                     {
                       "type": "Title",
                       "data": {
                         "text": "Fastrack UV Protect Shades"
                       },
-                      "id": "title_9iwotkrea"
+                      "id": "title_rkl001kh4"
                     },
                     {
                       "type": "PriceBlock",
@@ -3841,20 +3488,20 @@
                         "mrp": "₹999",
                         "discount": "40%"
                       },
-                      "id": "priceblock_9iwowbd8m"
+                      "id": "priceblock_rkl0aywbm"
                     },
                     {
                       "type": "OfferText",
                       "data": {
                         "text": "Hot Deal"
                       },
-                      "id": "offertext_9iwog8ugx"
+                      "id": "offertext_rkl0gyn13"
                     }
                   ],
-                  "id": "productcard_9iwoylf48"
+                  "id": "productcard_rkl0f1aca"
                 }
               ],
-              "id": "box_9iwodampx"
+              "id": "box_rkl0w2xi1"
             },
             {
               "type": "Footer",
@@ -3950,10 +3597,10 @@
                 ],
                 "copyrightText": "© 2024–2026, SDUI-Commerce, Inc. or its affiliates"
               },
-              "id": "footer_9iwodh3tu"
+              "id": "footer_rkl07lc9w"
             }
           ],
-          "id": "page_9iwoob5cz"
+          "id": "page_rkl01hae7"
         },
         {
           "type": "NavBar",
@@ -4015,10 +3662,10 @@
               }
             ]
           },
-          "id": "navbar_9iwo99y5t"
+          "id": "navbar_rkl091nxe"
         }
       ],
-      "id": "home_9iwngp67c"
+      "id": "home_rkl0r7aud"
     }
   },
   {

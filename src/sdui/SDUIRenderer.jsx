@@ -418,6 +418,7 @@ export const SDUIRenderer = ({
     schema.type === "Sponsored";
 
   const isInsideProductList = parentType === "ProductList";
+  const isInsideProductCard = parentType === "ProductCard";
   const isFlexProductCard = !isDirectGridChild && !isAbsolute && !isRootContainer && schema.type === "ProductCard" && isInsideProductList;
   const isBoxProductCard = !isDirectGridChild && !isAbsolute && !isRootContainer && schema.type === "ProductCard" && !isInsideProductList;
 
@@ -427,7 +428,7 @@ export const SDUIRenderer = ({
     ? "100%"
     : isInlineOrFlexItem
     ? "auto"
-    : effectiveContainerStyle?.width || (parentType === "Box" ? "100%" : "auto");
+    : effectiveContainerStyle?.width || (parentType === "Box" || parentType === "ProductCard" ? "100%" : "auto");
 
   const flexChildStyle = !isDirectGridChild && !isAbsolute && !isRootContainer
     ? {
@@ -449,7 +450,7 @@ export const SDUIRenderer = ({
         display:
           effectiveContainerStyle?.display === "flex" ||
           effectiveContainerStyle?.display === "inline-flex"
-            ? "flex"
+            ? (isInsideProductCard ? "block" : "flex")
             : isInlineOrFlexItem
             ? "inline-flex"
             : undefined,
@@ -606,34 +607,38 @@ export const SDUIRenderer = ({
           onClick={(e) => e.stopPropagation()}
           style={{
             position: "absolute",
-            top: isSelected ? "-34px" : "-22px",
-            left: "0",
-            zIndex: 250,
+            top: (isDirectGridChild && (currentPlacement?.rowStart || 0) > 5) ? "-26px" : "2px",
+            left: "2px",
+            maxWidth: "calc(100% - 4px)",
+            zIndex: 1000,
             display: "flex",
             alignItems: "center",
-            gap: "3px",
+            gap: "2px",
             backgroundColor: isSelected ? "#0f172a" : "rgba(15, 23, 42, 0.88)",
-            borderRadius: "6px 6px 0 0",
-            padding: isSelected ? "3px 6px" : "2px 8px",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.3)",
+            borderRadius: "5px",
+            padding: "2px 5px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.35)",
             color: "#ffffff",
-            fontSize: "11px",
+            fontSize: "10px",
             fontWeight: "700",
             userSelect: "none",
             pointerEvents: "auto",
+            whiteSpace: "nowrap",
+            overflowX: "auto",
+            scrollbarWidth: "none",
             transition: "all 0.12s ease",
           }}
         >
-          <span style={{ display: "flex", alignItems: "center", gap: "4px", paddingRight: isSelected ? "4px" : "0", borderRight: isSelected ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: "3px", paddingRight: isSelected ? "3px" : "0", borderRight: isSelected ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
             <span>⠿</span>
             <span>{def?.icon || "📦"}</span>
-            <span style={{ maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <span style={{ maxWidth: "60px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {def?.label || schema.type}
             </span>
           </span>
 
           {isSelected && (
-            <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
               {/* 4-Way Movement Buttons */}
               <button
                 onClick={(e) => {
@@ -642,23 +647,21 @@ export const SDUIRenderer = ({
                 }}
                 title="Move Left (← / Arrow Left)"
                 style={{
-                  background: "rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.15)",
                   border: "1px solid rgba(255,255,255,0.25)",
-                  borderRadius: "4px",
+                  borderRadius: "3px",
                   color: "#ffffff",
-                  padding: "2px 6px",
-                  fontSize: "11px",
+                  padding: "1px 4px",
+                  fontSize: "10px",
                   fontWeight: "700",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: "2px",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
               >
-                <span>←</span>
-                <span>Left</span>
+                ←
               </button>
 
               <button
@@ -668,23 +671,21 @@ export const SDUIRenderer = ({
                 }}
                 title="Move Up (↑ / Arrow Up)"
                 style={{
-                  background: "rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.15)",
                   border: "1px solid rgba(255,255,255,0.25)",
-                  borderRadius: "4px",
+                  borderRadius: "3px",
                   color: "#ffffff",
-                  padding: "2px 6px",
-                  fontSize: "11px",
+                  padding: "1px 4px",
+                  fontSize: "10px",
                   fontWeight: "700",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: "2px",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
               >
-                <span>↑</span>
-                <span>Up</span>
+                ↑
               </button>
 
               <button
@@ -694,23 +695,21 @@ export const SDUIRenderer = ({
                 }}
                 title="Move Down (↓ / Arrow Down)"
                 style={{
-                  background: "rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.15)",
                   border: "1px solid rgba(255,255,255,0.25)",
-                  borderRadius: "4px",
+                  borderRadius: "3px",
                   color: "#ffffff",
-                  padding: "2px 6px",
-                  fontSize: "11px",
+                  padding: "1px 4px",
+                  fontSize: "10px",
                   fontWeight: "700",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: "2px",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
               >
-                <span>↓</span>
-                <span>Down</span>
+                ↓
               </button>
 
               <button
@@ -720,88 +719,21 @@ export const SDUIRenderer = ({
                 }}
                 title="Move Right (→ / Arrow Right)"
                 style={{
-                  background: "rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.15)",
                   border: "1px solid rgba(255,255,255,0.25)",
-                  borderRadius: "4px",
+                  borderRadius: "3px",
                   color: "#ffffff",
-                  padding: "2px 6px",
-                  fontSize: "11px",
+                  padding: "1px 4px",
+                  fontSize: "10px",
                   fontWeight: "700",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: "2px",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
               >
-                <span>Right</span>
-                <span>→</span>
-              </button>
-
-              {/* Quick Width Presets */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onApplyWidthPreset?.(schema.id, "half-left");
-                }}
-                title="Set to 50% Width"
-                style={{
-                  background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  borderRadius: "4px",
-                  color: "#cbd5e1",
-                  padding: "2px 5px",
-                  fontSize: "10px",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
-              >
-                50%
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onApplyWidthPreset?.(schema.id, "full");
-                }}
-                title="Set to 100% Full Width"
-                style={{
-                  background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  borderRadius: "4px",
-                  color: "#cbd5e1",
-                  padding: "2px 5px",
-                  fontSize: "10px",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
-              >
-                100%
-              </button>
-
-              {/* Duplicate & Delete */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDuplicate?.(schema.id);
-                }}
-                title="Duplicate Component"
-                style={{
-                  background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  borderRadius: "4px",
-                  color: "#ffffff",
-                  padding: "2px 6px",
-                  fontSize: "11px",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
-              >
-                ⧉
+                →
               </button>
 
               <button
@@ -811,16 +743,16 @@ export const SDUIRenderer = ({
                 }}
                 title="Delete Component"
                 style={{
-                  background: "rgba(239, 68, 68, 0.25)",
-                  border: "1px solid rgba(239, 68, 68, 0.4)",
-                  borderRadius: "4px",
+                  background: "rgba(239, 68, 68, 0.3)",
+                  border: "1px solid rgba(239, 68, 68, 0.5)",
+                  borderRadius: "3px",
                   color: "#fca5a5",
-                  padding: "2px 6px",
-                  fontSize: "11px",
+                  padding: "1px 4px",
+                  fontSize: "10px",
                   cursor: "pointer",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#ef4444")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.25)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.3)")}
               >
                 🗑️
               </button>
@@ -828,6 +760,7 @@ export const SDUIRenderer = ({
           )}
         </div>
       )}
+
 
       {/* ── Interactive On-Canvas Drag-Resize Handles ── */}
       {isEditable && isSelected && isDirectGridChild && !isRootContainer && !isGhost && (

@@ -1616,13 +1616,13 @@
                         "display": "flex",
                         "alignItems": "baseline",
                         "gap": "8px",
-                        "overflow": "hidden",
                         "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
                         "fontSize": "18px",
                         "fontWeight": "600",
                         "letterSpacing": "-0.01em",
                         "color": "#101F26",
-                        "boxSizing": "border-box"
+                        "boxSizing": "border-box",
+                        "width": "100%"
                       },
                       "data": {
                         "sellingPrice": "₹7,089",
@@ -1783,371 +1783,6 @@
                     }
                   ],
                   "id": "productcard_rkl0t0k1g"
-                },
-                {
-                  "type": "ProductCard",
-                  "containerStyle": {
-                    "background": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
-                    "backgroundImage": "linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%)",
-                    "backgroundColor": "#FFFFFF",
-                    "position": "relative",
-                    "flex": "0 0 auto",
-                    "width": "clamp(236px, 74vw, 268px)",
-                    "height": "516px",
-                    "minHeight": "516px",
-                    "maxHeight": "516px",
-                    "alignSelf": "stretch",
-                    "display": "flex",
-                    "flexDirection": "column",
-                    "justifyContent": "flex-start",
-                    "gap": "8px",
-                    "padding": "14px",
-                    "border": "1px solid #E4E7E4",
-                    "borderRadius": "16px",
-                    "boxShadow": "0 1px 2px rgba(16,31,38,0.04)",
-                    "boxSizing": "border-box",
-                    "minWidth": "0",
-                    "overflow": "hidden",
-                    "scrollSnapAlign": "start"
-                  },
-                  "data": {
-                    "id": "aurora-buds-002"
-                  },
-                  "children": [
-                    {
-                      "type": "Image",
-                      "containerStyle": {
-                        "height": "176px",
-                        "minHeight": "176px",
-                        "maxHeight": "176px",
-                        "flex": "0 0 176px",
-                        "flexShrink": "0",
-                        "width": "100%",
-                        "objectFit": "contain",
-                        "backgroundColor": "#FAFAF8",
-                        "borderRadius": "10px",
-                        "display": "block",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "imageUrl": "https://picsum.photos/id/1010/600/600",
-                        "altText": "Aurora Buds Pro wireless earbuds"
-                      },
-                      "id": "image_rkl08o63o"
-                    },
-                    {
-                      "type": "Label",
-                      "containerStyle": {
-                        "height": "16px",
-                        "minHeight": "16px",
-                        "flex": "0 0 16px",
-                        "flexShrink": "0",
-                        "display": "flex",
-                        "alignItems": "center",
-                        "gap": "4px",
-                        "overflow": "hidden",
-                        "fontSize": "10px",
-                        "fontWeight": "600",
-                        "letterSpacing": "0.10em",
-                        "textTransform": "uppercase",
-                        "color": "#8D9A9D",
-                        "boxSizing": "border-box"
-                      },
-                      "children": [
-                        {
-                          "type": "Sponsored",
-                          "data": {
-                            "text": " "
-                          },
-                          "id": "sponsored_rkl0ihryc"
-                        }
-                      ],
-                      "id": "label_rkl0uvgyy"
-                    },
-                    {
-                      "type": "Badge",
-                      "containerStyle": {
-                        "height": "22px",
-                        "minHeight": "22px",
-                        "flex": "0 0 22px",
-                        "flexShrink": "0",
-                        "alignSelf": "flex-start",
-                        "display": "inline-flex",
-                        "alignItems": "center",
-                        "padding": "0 9px",
-                        "borderRadius": "999px",
-                        "fontSize": "11px",
-                        "fontWeight": "600",
-                        "letterSpacing": "0.01em",
-                        "whiteSpace": "nowrap",
-                        "boxSizing": "border-box",
-                        "backgroundColor": "#E7EEED",
-                        "color": "#0A2A31"
-                      },
-                      "data": {
-                        "text": "Bestseller"
-                      },
-                      "id": "badge_rkl05zyi4"
-                    },
-                    {
-                      "type": "Title",
-                      "containerStyle": {
-                        "height": "16px",
-                        "minHeight": "16px",
-                        "flex": "0 0 16px",
-                        "flexShrink": "0",
-                        "overflow": "hidden",
-                        "whiteSpace": "nowrap",
-                        "textOverflow": "ellipsis",
-                        "fontSize": "11px",
-                        "fontWeight": "700",
-                        "letterSpacing": "0.10em",
-                        "textTransform": "uppercase",
-                        "color": "#5E6E72",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "text": "Aurora Audio"
-                      },
-                      "id": "title_rkl0jyscm"
-                    },
-                    {
-                      "type": "Description",
-                      "containerStyle": {
-                        "height": "60px",
-                        "minHeight": "60px",
-                        "flex": "0 0 60px",
-                        "flexShrink": "0",
-                        "display": "-webkit-box",
-                        "WebkitLineClamp": "3",
-                        "WebkitBoxOrient": "vertical",
-                        "overflow": "hidden",
-                        "maxHeight": "60px",
-                        "fontSize": "14px",
-                        "lineHeight": "20px",
-                        "fontWeight": "500",
-                        "letterSpacing": "-0.005em",
-                        "color": "#101F26",
-                        "overflowWrap": "anywhere",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "text": "Buds Pro ANC wireless earbuds — 42 hr battery, dual pairing, IPX5 water resistance"
-                      },
-                      "id": "description_rkl08exgs"
-                    },
-                    {
-                      "type": "Rating",
-                      "containerStyle": {
-                        "height": "20px",
-                        "minHeight": "20px",
-                        "flex": "0 0 20px",
-                        "flexShrink": "0",
-                        "display": "flex",
-                        "alignItems": "center",
-                        "gap": "6px",
-                        "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                        "fontSize": "12px",
-                        "letterSpacing": "0.02em",
-                        "color": "#5E6E72",
-                        "boxSizing": "border-box"
-                      },
-                      "children": [
-                        {
-                          "type": "Score",
-                          "data": {
-                            "text": "4.2",
-                            "out of": "5"
-                          },
-                          "id": "score_rkl0rwp58"
-                        },
-                        {
-                          "type": "ReviewCount",
-                          "data": {
-                            "text": "12,480"
-                          },
-                          "id": "reviewcount_rkl0l21rs"
-                        }
-                      ],
-                      "id": "rating_rkl04zlbx"
-                    },
-                    {
-                      "type": "PriceBlock",
-                      "containerStyle": {
-                        "height": "28px",
-                        "minHeight": "28px",
-                        "flex": "0 0 28px",
-                        "flexShrink": "0",
-                        "display": "flex",
-                        "alignItems": "baseline",
-                        "gap": "8px",
-                        "overflow": "hidden",
-                        "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                        "fontSize": "18px",
-                        "fontWeight": "600",
-                        "letterSpacing": "-0.01em",
-                        "color": "#101F26",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "sellingPrice": "₹2,499",
-                        "mrp": "₹4,999",
-                        "discount": "50%"
-                      },
-                      "id": "priceblock_rkl0kevqg"
-                    },
-                    {
-                      "type": "OfferText",
-                      "containerStyle": {
-                        "height": "16px",
-                        "minHeight": "16px",
-                        "flex": "0 0 16px",
-                        "flexShrink": "0",
-                        "display": "-webkit-box",
-                        "WebkitLineClamp": "1",
-                        "WebkitBoxOrient": "vertical",
-                        "overflow": "hidden",
-                        "fontSize": "12px",
-                        "fontWeight": "600",
-                        "color": "#C4185F",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "text": "No cost EMI on select cards"
-                      },
-                      "id": "offertext_rkl0nxe8x"
-                    },
-                    {
-                      "type": "DeliveryInfo",
-                      "containerStyle": {
-                        "height": "18px",
-                        "minHeight": "18px",
-                        "flex": "0 0 18px",
-                        "flexShrink": "0",
-                        "overflow": "hidden",
-                        "whiteSpace": "nowrap",
-                        "textOverflow": "ellipsis",
-                        "fontSize": "12px",
-                        "color": "#5E6E72",
-                        "boxSizing": "border-box"
-                      },
-                      "data": {
-                        "prefix": "Free delivery",
-                        "daysOffset": 2
-                      },
-                      "id": "deliveryinfo_rkl0qvp6g"
-                    },
-                    {
-                      "type": "Button",
-                      "containerStyle": {
-                        "height": "44px",
-                        "minHeight": "44px",
-                        "flex": "0 0 44px",
-                        "flexShrink": "0",
-                        "background": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-                        "backgroundImage": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-                        "backgroundColor": "#C4185F",
-                        "marginTop": "auto",
-                        "width": "calc(100% - 52px)",
-                        "alignSelf": "flex-start",
-                        "display": "flex",
-                        "alignItems": "center",
-                        "justifyContent": "center",
-                        "padding": "0 16px",
-                        "borderRadius": "12px",
-                        "border": "none",
-                        "color": "#FFFFFF",
-                        "fontSize": "14px",
-                        "fontWeight": "600",
-                        "letterSpacing": "0.01em",
-                        "cursor": "pointer",
-                        "boxSizing": "border-box",
-                        "boxShadow": "0 2px 10px rgba(196,24,95,0.24)"
-                      },
-                      "data": {
-                        "label": "Add to cart"
-                      },
-                      "actions": {
-                        "onTap": {
-                          "type": "API_CALL",
-                          "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                          "actionName": "ADD_TO_CART"
-                        }
-                      },
-                      "id": "button_rkl01vdxu"
-                    },
-                    {
-                      "type": "ShareButton",
-                      "containerStyle": {
-                        "position": "absolute",
-                        "right": "14px",
-                        "bottom": "14px",
-                        "zIndex": "3",
-                        "width": "44px",
-                        "height": "44px",
-                        "minWidth": "44px",
-                        "padding": "0",
-                        "margin": "0",
-                        "borderRadius": "12px",
-                        "display": "inline-flex",
-                        "alignItems": "center",
-                        "justifyContent": "center",
-                        "gap": "0",
-                        "backgroundColor": "#FFFFFF",
-                        "border": "1px solid #E4E7E4",
-                        "color": "#101F26",
-                        "fontSize": "17px",
-                        "lineHeight": "1",
-                        "fontWeight": "600",
-                        "cursor": "pointer",
-                        "boxSizing": "border-box",
-                        "overflow": "hidden",
-                        "boxShadow": "none"
-                      },
-                      "data": {
-                        "label": "",
-                        "icon": "↗"
-                      },
-                      "actions": {
-                        "onTap": {
-                          "type": "OPEN_BOTTOM_SHEET",
-                          "data": {
-                            "title": "Share this product",
-                            "options": [
-                              {
-                                "label": "WhatsApp",
-                                "icon": "💬",
-                                "action": {
-                                  "type": "API_CALL",
-                                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                                  "actionName": "ON_TAP_SHARE_WHATSAPP"
-                                }
-                              },
-                              {
-                                "label": "Instagram",
-                                "icon": "📸",
-                                "action": {
-                                  "type": "API_CALL",
-                                  "endpoint": "https://jsonplaceholder.typicode.com/todos/1",
-                                  "actionName": "ON_TAP_SHARE_INSTAGRAM"
-                                }
-                              },
-                              {
-                                "label": "Copy link",
-                                "icon": "🔗",
-                                "action": {
-                                  "type": "COPY_TO_CLIPBOARD",
-                                  "value": "https://example.com/p/aurora-buds-002"
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      },
-                      "id": "sharebutton_rkl01ygzr"
-                    }
-                  ],
-                  "id": "productcard_rkl0ovfm4"
                 },
                 {
                   "type": "ProductCard",
@@ -2346,13 +1981,13 @@
                         "display": "flex",
                         "alignItems": "baseline",
                         "gap": "8px",
-                        "overflow": "hidden",
                         "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
                         "fontSize": "18px",
                         "fontWeight": "600",
                         "letterSpacing": "-0.01em",
                         "color": "#101F26",
-                        "boxSizing": "border-box"
+                        "boxSizing": "border-box",
+                        "width": "100%"
                       },
                       "data": {
                         "sellingPrice": "₹1,299",
@@ -2711,13 +2346,13 @@
                         "display": "flex",
                         "alignItems": "baseline",
                         "gap": "8px",
-                        "overflow": "hidden",
                         "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
                         "fontSize": "18px",
                         "fontWeight": "600",
                         "letterSpacing": "-0.01em",
                         "color": "#101F26",
-                        "boxSizing": "border-box"
+                        "boxSizing": "border-box",
+                        "width": "100%"
                       },
                       "data": {
                         "sellingPrice": "₹5,499",
@@ -3076,13 +2711,13 @@
                         "display": "flex",
                         "alignItems": "baseline",
                         "gap": "8px",
-                        "overflow": "hidden",
                         "fontFamily": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
                         "fontSize": "18px",
                         "fontWeight": "600",
                         "letterSpacing": "-0.01em",
                         "color": "#101F26",
-                        "boxSizing": "border-box"
+                        "boxSizing": "border-box",
+                        "width": "100%"
                       },
                       "data": {
                         "sellingPrice": "₹1,899",
@@ -4148,175 +3783,6 @@
                       }
                     }
                   }
-                }
-              ]
-            },
-            {
-              "id": "productcard_9ixygco2y",
-              "type": "ProductCard",
-              "data": {
-                "id": "prod_classic_001"
-              },
-              "placement": {
-                "mobile": {
-                  "colStart": 1,
-                  "colEnd": 100,
-                  "rowStart": 7,
-                  "rowEnd": 65
-                },
-                "tablet": {
-                  "colStart": 20,
-                  "colEnd": 80,
-                  "rowStart": 7,
-                  "rowEnd": 65
-                },
-                "desktop": {
-                  "colStart": 25,
-                  "colEnd": 75,
-                  "rowStart": 7,
-                  "rowEnd": 65
-                }
-              },
-              "containerStyle": {
-                "width": "100%",
-                "borderRadius": "16px",
-                "backgroundColor": "#ffffff",
-                "padding": "16px",
-                "boxShadow": "0 2px 8px rgba(0,0,0,0.06)",
-                "border": "1px solid #e5e7eb"
-              },
-              "actions": {},
-              "children": [
-                {
-                  "id": "image_9ixy4ek83",
-                  "type": "Image",
-                  "data": {
-                    "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80",
-                    "altText": "Wireless Headphones"
-                  },
-                  "placement": {},
-                  "containerStyle": {},
-                  "actions": {}
-                },
-                {
-                  "id": "badge_9ixy0iugx",
-                  "type": "Badge",
-                  "data": {
-                    "text": "CAMPUS CHOICE"
-                  },
-                  "placement": {},
-                  "containerStyle": {
-                    "backgroundColor": "#cc0c39",
-                    "color": "#ffffff"
-                  },
-                  "actions": {}
-                },
-                {
-                  "id": "title_9ixy6nwp4",
-                  "type": "Title",
-                  "data": {
-                    "text": "AudioPro Wireless Noise-Cancelling Headphones"
-                  },
-                  "placement": {},
-                  "containerStyle": {
-                    "fontSize": "18px",
-                    "fontWeight": "700",
-                    "color": "#111827"
-                  },
-                  "actions": {}
-                },
-                {
-                  "id": "description_9ixybwdl9",
-                  "type": "Description",
-                  "data": {
-                    "text": "40 hours battery life with ultra-low latency mode, active noise cancellation, and ergonomic memory-foam ear cushions.",
-                    "maxLines": 4
-                  },
-                  "placement": {},
-                  "containerStyle": {
-                    "fontSize": "13px",
-                    "color": "#4b5563"
-                  },
-                  "actions": {}
-                },
-                {
-                  "id": "rating_9ixyv6qc0",
-                  "type": "Rating",
-                  "data": {},
-                  "placement": {},
-                  "containerStyle": {},
-                  "actions": {},
-                  "children": [
-                    {
-                      "id": "score_9ixysixb8",
-                      "type": "Score",
-                      "data": {
-                        "text": "4.9",
-                        "out of": "5"
-                      },
-                      "placement": {},
-                      "containerStyle": {},
-                      "actions": {}
-                    },
-                    {
-                      "id": "reviewcount_9ixygzzzk",
-                      "type": "ReviewCount",
-                      "data": {
-                        "text": "2,480"
-                      },
-                      "placement": {},
-                      "containerStyle": {},
-                      "actions": {}
-                    }
-                  ]
-                },
-                {
-                  "id": "priceblock_9ixyahp19",
-                  "type": "PriceBlock",
-                  "data": {
-                    "sellingPrice": "₹2,499",
-                    "mrp": "₹4,999",
-                    "discount": "50%"
-                  },
-                  "placement": {},
-                  "containerStyle": {},
-                  "actions": {}
-                },
-                {
-                  "id": "deliveryinfo_9ixyxm2aa",
-                  "type": "DeliveryInfo",
-                  "data": {
-                    "prefix": "FREE express delivery",
-                    "daysOffset": 2
-                  },
-                  "placement": {},
-                  "containerStyle": {},
-                  "actions": {}
-                },
-                {
-                  "id": "button_9ixyvju0q",
-                  "type": "Button",
-                  "data": {
-                    "label": "Buy Now with 1-Click"
-                  },
-                  "placement": {},
-                  "containerStyle": {
-                    "backgroundColor": "#4f46e5",
-                    "color": "#ffffff",
-                    "borderRadius": "8px",
-                    "padding": "10px 16px",
-                    "fontWeight": "600",
-                    "border": "none",
-                    "cursor": "pointer",
-                    "width": "100%"
-                  },
-                  "actions": {
-                    "onTap": {
-                      "type": "API_CALL",
-                      "endpoint": "https://jsonplaceholder.typicode.com/todos/1"
-                    }
-                  },
-                  "children": []
                 }
               ]
             }

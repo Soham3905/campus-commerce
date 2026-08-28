@@ -311,7 +311,7 @@ export const PredefinedThemes = {
       {
         type: "Image",
         containerStyle: {
-          height: "175px",
+          height: "170px",
           width: "100%",
           objectFit: "contain",
           backgroundColor: "#f5f3ff",
@@ -319,35 +319,49 @@ export const PredefinedThemes = {
           display: "block",
         },
         data: {
-          imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80",
-          altText: "AudioPro Wireless Studio Headphones",
+          imageUrl: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500&auto=format&fit=crop&q=80",
+          altText: "AudioPro Master Studio Wireless Headphones",
         },
+      },
+      {
+        type: "Label",
+        containerStyle: {
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+        },
+        children: [
+          {
+            type: "Sponsored",
+            data: { text: "Featured" },
+          },
+        ],
       },
       {
         type: "Badge",
         containerStyle: {
-          backgroundColor: "#4f46e5",
-          color: "#ffffff",
+          backgroundColor: "#e0e7ff",
+          color: "#4338ca",
           padding: "3px 10px",
           borderRadius: "999px",
-          fontSize: "10px",
+          fontSize: "11px",
           fontWeight: "700",
-          letterSpacing: "0.05em",
           alignSelf: "flex-start",
+          letterSpacing: "0.02em",
         },
-        data: { text: "CAMPUS ESSENTIAL" },
+        data: { text: "⚡ Editor's Choice" },
       },
       {
         type: "Title",
         containerStyle: {
           fontSize: "14px",
-          fontWeight: "800",
-          color: "#0f172a",
+          fontWeight: "700",
+          color: "#1e1b4b",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
         },
-        data: { text: "AudioPro Wireless Studio Headphones" },
+        data: { text: "AudioPro Master Studio ANC Headphones" },
       },
       {
         type: "Description",
@@ -358,9 +372,28 @@ export const PredefinedThemes = {
           lineHeight: "16px",
         },
         data: {
-          text: "Active noise cancellation, 40hr battery life, and ultra-comfortable memory-foam ear cushions.",
+          text: "Flagship 50mm dynamic drivers, spatial audio, and 45-hour ultra endurance with rapid charge.",
           maxLines: 2,
         },
+      },
+      {
+        type: "Rating",
+        containerStyle: {
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          fontSize: "12px",
+        },
+        children: [
+          {
+            type: "Score",
+            data: { text: "4.9", "out of": "5" },
+          },
+          {
+            type: "ReviewCount",
+            data: { text: "1,420" },
+          },
+        ],
       },
       {
         type: "PriceBlock",
@@ -370,27 +403,45 @@ export const PredefinedThemes = {
           gap: "8px",
         },
         data: {
-          sellingPrice: "₹1,899",
-          mrp: "₹3,999",
-          discount: "52% OFF",
+          sellingPrice: "₹2,499",
+          mrp: "₹5,999",
+          discount: "58% OFF",
         },
+      },
+      {
+        type: "OfferText",
+        containerStyle: {
+          fontSize: "11px",
+          fontWeight: "600",
+          color: "#4f46e5",
+        },
+        data: { text: "Exclusive Launch Offer • Extra ₹250 instant cashback" },
+      },
+      {
+        type: "DeliveryInfo",
+        containerStyle: {
+          fontSize: "11px",
+          color: "#64748b",
+        },
+        data: { prefix: "⚡ Express delivery", daysOffset: 1 },
       },
       {
         type: "Button",
         containerStyle: {
-          background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+          background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+          backgroundColor: "#4f46e5",
           color: "#ffffff",
-          padding: "10px 16px",
-          borderRadius: "10px",
-          fontWeight: "700",
+          padding: "9px 16px",
+          borderRadius: "8px",
+          fontWeight: "600",
           fontSize: "13px",
           width: "100%",
           cursor: "pointer",
           border: "none",
           marginTop: "4px",
-          boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)",
+          boxShadow: "0 2px 8px rgba(79, 70, 229, 0.3)",
         },
-        data: { label: "Add to Cart • ₹1,899" },
+        data: { label: "Claim Deal" },
       },
     ],
   },

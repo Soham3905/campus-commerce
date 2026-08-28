@@ -48,8 +48,10 @@ function applyFoundationThemeInner(node, foundation, seenTypes) {
       });
       return {
         ...replacement,
-        children: Array.isArray(replacement.children)
+        children: Array.isArray(replacement.children) && replacement.children.length > 0
           ? replacement.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes))
+          : Array.isArray(node.children) && node.children.length > 0
+          ? node.children.map((child) => applyFoundationThemeInner(child, foundation, seenTypes))
           : replacement.children,
       };
     }

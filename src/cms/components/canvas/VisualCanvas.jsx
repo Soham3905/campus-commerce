@@ -494,6 +494,213 @@ export const VisualCanvas = ({
           </div>
         )}
       </div>
+
+      {/* ── Fixed Floating Movement Control Dock (100% immune to clipping, overflow & scrolling) ── */}
+      {mode === "visual" && selectedId && selectedNode && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            backgroundColor: "#0f172a",
+            color: "#ffffff",
+            padding: "6px 12px",
+            borderRadius: "12px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.15)",
+            backdropFilter: "blur(12px)",
+            fontSize: "12px",
+            fontWeight: "600",
+            userSelect: "none",
+            maxWidth: "calc(100% - 32px)",
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingRight: "8px", borderRight: "1px solid rgba(255,255,255,0.2)" }}>
+            <span style={{ fontSize: "14px" }}>{ComponentRegistry[selectedNode.type]?.icon || "📦"}</span>
+            <span style={{ fontWeight: "700", color: "#38bdf8", maxWidth: "110px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {selectedNode.data?.label || selectedNode.data?.text || ComponentRegistry[selectedNode.type]?.label || selectedNode.type}
+            </span>
+          </div>
+
+          {/* 4-Way Movement Buttons */}
+          <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+            <button
+              onClick={() => onMoveComponent?.(selectedId, "left")}
+              title="Move Left (← / Arrow Left)"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: "6px",
+                color: "#ffffff",
+                padding: "3px 8px",
+                fontSize: "11px",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+            >
+              <span>←</span>
+              <span>Left</span>
+            </button>
+
+            <button
+              onClick={() => onMoveComponent?.(selectedId, "up")}
+              title="Move Up (↑ / Arrow Up)"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: "6px",
+                color: "#ffffff",
+                padding: "3px 8px",
+                fontSize: "11px",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+            >
+              <span>↑</span>
+              <span>Up</span>
+            </button>
+
+            <button
+              onClick={() => onMoveComponent?.(selectedId, "down")}
+              title="Move Down (↓ / Arrow Down)"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: "6px",
+                color: "#ffffff",
+                padding: "3px 8px",
+                fontSize: "11px",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+            >
+              <span>↓</span>
+              <span>Down</span>
+            </button>
+
+            <button
+              onClick={() => onMoveComponent?.(selectedId, "right")}
+              title="Move Right (→ / Arrow Right)"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: "6px",
+                color: "#ffffff",
+                padding: "3px 8px",
+                fontSize: "11px",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+            >
+              <span>Right</span>
+              <span>→</span>
+            </button>
+          </div>
+
+          {/* Width Presets */}
+          <div style={{ display: "flex", alignItems: "center", gap: "3px", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: "6px" }}>
+            <button
+              onClick={() => onApplyWidthPreset?.(selectedId, "half-left")}
+              title="50% Width"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "5px",
+                color: "#cbd5e1",
+                padding: "3px 7px",
+                fontSize: "11px",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+            >
+              50%
+            </button>
+            <button
+              onClick={() => onApplyWidthPreset?.(selectedId, "full")}
+              title="100% Full Width"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "5px",
+                color: "#cbd5e1",
+                padding: "3px 7px",
+                fontSize: "11px",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+            >
+              100%
+            </button>
+          </div>
+
+          {/* Duplicate & Delete */}
+          <div style={{ display: "flex", alignItems: "center", gap: "3px", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: "6px" }}>
+            <button
+              onClick={() => onDuplicateComponent?.(selectedId)}
+              title="Duplicate"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "5px",
+                color: "#ffffff",
+                padding: "3px 7px",
+                fontSize: "11px",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#4f46e5")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
+            >
+              ⧉
+            </button>
+            <button
+              onClick={() => onDeleteComponent?.(selectedId)}
+              title="Delete"
+              style={{
+                background: "rgba(239, 68, 68, 0.25)",
+                border: "1px solid rgba(239, 68, 68, 0.4)",
+                borderRadius: "5px",
+                color: "#fca5a5",
+                padding: "3px 7px",
+                fontSize: "11px",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#ef4444")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.25)")}
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
