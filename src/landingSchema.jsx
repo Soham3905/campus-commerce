@@ -1221,7 +1221,6 @@ export const fullPageJSON = {
           "type": "ProductList",
           "containerStyle": {
             "gap": "14px",
-            "padding": "20px max(16px, calc((100% - 1180px) / 2)) 28px",
             "overflowX": "auto",
             "WebkitOverflowScrolling": "touch",
             "boxSizing": "border-box",

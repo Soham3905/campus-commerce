@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
 import HeaderRenderer from "./sdui/renderers/HeaderRenderer";
 import HeaderButtonRenderer from "./sdui/renderers/HeaderButtonRenderer";
@@ -17,6 +17,25 @@ import ButtonRenderer from "./sdui/renderers/ButtonRenderer";
 import ShareButtonRenderer from "./sdui/renderers/ShareButtonRenderer";
 import SearchBarRenderer from "./sdui/renderers/SearchBarRenderer";
 import CategoryItemRenderer from "./sdui/renderers/CategoryItemRenderer";
+import LabelRenderer from "./sdui/renderers/LabelRenderer";
+import SponsoredRenderer from "./sdui/renderers/SponsoredRenderer";
+import IconRenderer from "./sdui/renderers/IconRenderer";
+import TextRenderer from "./sdui/renderers/TextRenderer";
+import BoxRenderer from "./sdui/renderers/BoxRenderer";
+import CategoryGridRenderer from "./sdui/renderers/CategoryGridRenderer";
+import HeroBannerRenderer from "./sdui/renderers/HeroBannerRenderer";
+import CarouselRenderer from "./sdui/renderers/CarouselRenderer";
+import ProductListRenderer from "./sdui/renderers/ProductListRenderer";
+import CountDownTimerRenderer from "./sdui/renderers/CountDownTimerRenderer";
+import CouponCodeRenderer from "./sdui/renderers/CouponCodeRenderer";
+import StoryRowRenderer from "./sdui/renderers/StoryRowRenderer";
+import StoryCircleRenderer from "./sdui/renderers/StoryCircleRenderer";
+import NavBarRenderer from "./sdui/renderers/NavBarRenderer";
+import FooterRenderer from "./sdui/renderers/FooterRenderer";
+import IFrameRenderer from "./sdui/renderers/IFrameRenderer";
+import HomeRenderer from "./sdui/renderers/HomeRenderer";
+import PageRenderer from "./sdui/renderers/PageRenderer";
+import useSwipe from "./sdui/hooks/useSwipe";
 
 const createDummyPage = (titleText, routeName) => {
   // Deep clone the NavBar so we can modify it without breaking the original
@@ -294,65 +313,7 @@ const DeviceButton = ({ label, active, onClick }) => (
   </button>
 );
 
-const useSwipe = ({ onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown, minSwipeDistance = 50 }) => {
-  const touchStart = useRef({ x: null, y: null });
-  const mouseStart = useRef({ x: null, y: null });
 
-  const handleTouchStart = (e) => {
-    touchStart.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
-  };
-
-  const handleTouchEnd = (e) => {
-    if (touchStart.current.x === null) return;
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
-
-    const distanceX = touchStart.current.x - endX;
-    const distanceY = touchStart.current.y - endY;
-
-    if (Math.abs(distanceX) > Math.abs(distanceY)) {
-      if (distanceX > minSwipeDistance && onSwipeLeft) onSwipeLeft();
-      if (distanceX < -minSwipeDistance && onSwipeRight) onSwipeRight();
-    } else {
-      if (distanceY > minSwipeDistance && onSwipeUp) onSwipeUp();
-      if (distanceY < -minSwipeDistance && onSwipeDown) onSwipeDown();
-    }
-
-    touchStart.current = { x: null, y: null };
-  };
-
-  const handleMouseDown = (e) => {
-    mouseStart.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseUp = (e) => {
-    if (mouseStart.current.x === null) return;
-    const endX = e.clientX;
-    const endY = e.clientY;
-
-    const distanceX = mouseStart.current.x - endX;
-    const distanceY = mouseStart.current.y - endY;
-
-    if (Math.abs(distanceX) > Math.abs(distanceY)) {
-      if (distanceX > minSwipeDistance && onSwipeLeft) onSwipeLeft();
-      if (distanceX < -minSwipeDistance && onSwipeRight) onSwipeRight();
-    } else {
-      if (distanceY > minSwipeDistance && onSwipeUp) onSwipeUp();
-      if (distanceY < -minSwipeDistance && onSwipeDown) onSwipeDown();
-    }
-
-    mouseStart.current = { x: null, y: null };
-  };
-
-  return {
-    onTouchStart: handleTouchStart,
-    onTouchEnd: handleTouchEnd,
-    onMouseDown: handleMouseDown,
-    onMouseUp: handleMouseUp,
-    onMouseLeave: handleMouseUp,
-    onDragStart: (e) => e.preventDefault()
-  };
-};
 
 const useLongPress = (onLongPress, onClick, ms = 600) => {
   const timerRef = useRef();
@@ -492,280 +453,7 @@ const ActionWrapper = ({ actions, children, style }) => {
   return <div style={style}>{children}</div>;
 };
 
-const Home = ({ children, style }) => {
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      ...style
-    }}>
-      {children}
-    </div>
-  );
-};
 
-const Page = ({ children, style }) => (
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(100, 1fr)", gridTemplateRows: "repeat(200, 10px)", gap: "0px", padding: "5px", height: "100%", ...style }}>
-    {children}
-  </div>
-);
-
-const ProductList = ({ children }) => {
-  return (
-    <div style={{ display: "flex", gap: "8px", padding: "8px", width: "max-content" }}>
-      {React.Children.map(children, (child) => (
-        <div style={{ display: "flex" }}>
-          {child}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const Carousel = ({ data, children, style, actions }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => {
-      const count = React.Children.count(children);
-      if (prevIndex === count - 1) return data.infiniteLoop ? 0 : prevIndex;
-      return prevIndex + 1;
-    });
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => {
-      const count = React.Children.count(children);
-      if (prevIndex === 0) return data.infiniteLoop ? count - 1 : prevIndex;
-      return prevIndex - 1;
-    });
-  };
-
-  useEffect(() => {
-    if (!data.autoPlay || !children) return;
-    const interval = setInterval(() => {
-      nextSlide();
-    }, data.autoPlayInterval || 3000);
-    return () => clearInterval(interval);
-  }, [data.autoPlay, data.autoPlayInterval, data.infiniteLoop, children]);
-
-  const minSwipeDistance = actions?.onSwipeLeft?.minSwipeDistance || actions?.onSwipeRight?.minSwipeDistance || data?.minSwipeDistance || 50;
-  const swipeHandlers = useSwipe({
-    onSwipeLeft: nextSlide,
-    onSwipeRight: prevSlide,
-    minSwipeDistance
-  });
-
-  if (!children) return null;
-
-  return (
-    <div style={{ position: "relative", overflow: "hidden", borderRadius: "10px", userSelect: "none", ...style }}
-      {...swipeHandlers}
-    >
-      <div style={{ display: "flex", transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)", transform: `translateX(-${currentIndex * 100}%)` }}>
-        {React.Children.map(children, (child) => (
-          <div style={{ minWidth: "100%" }}>{child}</div>
-        ))}
-      </div>
-      {data.showDots && (
-        <div style={{ position: "absolute", bottom: "10px", width: "100%", display: "flex", justifyContent: "center" }}>
-          {React.Children.map(children, (_, idx) => (
-            <div key={idx} onClick={() => setCurrentIndex(idx)} style={{
-              width: currentIndex === idx ? "20px" : "8px", height: "8px", borderRadius: "4px",
-              backgroundColor: currentIndex === idx ? "#1b1919ff" : "rgba(100, 96, 96, 0.5)", cursor: "pointer", transition: "width 0.3s ease"
-            }} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const CategoryGrid = ({ children, style }) => (
-  <div style={{ display: "grid", gridAutoFlow: "column", gap: "12px", padding: "10px", backgroundColor: "#fff", borderRadius: "12px", overflowX: "auto", scrollbarWidth: "none", ...style }}>
-    {children}
-  </div>
-);
-
-const Label = ({ children, style }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "3px", ...style }}>{children}</div>
-);
-
-const Sponsored = ({ data, style }) => (
-  <span style={{ color: "#888", fontSize: "11px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase", ...style }}>{data.text}</span>
-);
-
-const Icon = ({ data, style }) => (
-  <img src={data.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Information_icon.svg/24px-Information_icon.svg.png"} alt={data.altText} style={{ width: "14px", height: "14px", opacity: 0.4, cursor: "pointer", ...style }} />
-);
-
-const HeroBanner = ({ data, style, children, onError }) => {
-  return (
-    <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden", ...style }}>
-      <img
-        src={data.imageUrl} alt={data.altText}
-        onError={onError}
-        style={{ width: "100%", height: "400px", objectFit: "cover" }}
-      />
-      {/* Overlay Text */}
-      <div style={{
-        position: "absolute", bottom: "0", left: "0", right: "0", padding: "20px", background: "linear-gradient(transparent, rgba(0,0,0,0.8))", color: "#fff"
-      }}>
-        <h2 style={{ margin: 0, fontSize: "20px" }}>{data.title}</h2>
-        <p style={{ margin: "4px 0 0", fontSize: "14px", opacity: 0.9 }}>{data.subtitle}</p>
-
-        {children && (
-          <div style={{ marginTop: "10px" }}>
-            {children}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-const CountDownTimer = ({ data, style, onExpire }) => {
-  const [timeLeft, setTimeLeft] = useState(null);
-
-  useEffect(() => {
-    const target = new Date(data.targetDate).getTime();
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = target - now;
-      if (diff < 0) {
-        clearInterval(interval);
-        setTimeLeft(data.expiredText || "Expired...");
-        if (onExpire) {
-          onExpire();
-        }
-        return;
-      }
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((diff % (1000 * 60)) / 1000);
-      if (data.showDays === "true") {
-        setTimeLeft(`${days}d ${hours}h ${mins}m ${secs}s`);
-      } else {
-        setTimeLeft(`${hours}h ${mins}m ${secs}s`);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [data]);
-
-  return (
-    <div style={{ padding: "10px", backgroundColor: "#fff3cd", borderRadius: "12px", border: "1px solid #ffeeba", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", ...style }}>
-      <h3 style={{ color: style?.color || "#856404", fontSize: "16px", margin: "0 0 5px 0" }}>{data.label}</h3>
-      <div style={{ fontSize: "20px", fontWeight: "600", color: style?.color || "#856404", fontFamily: "monospace" }}>
-        {timeLeft || "Loading..."}
-      </div>
-    </div>
-  )
-};
-
-const CouponCode = ({ data, style, onCopy }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    if (onCopy) {
-      onCopy();
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  return (
-    <div style={{ padding: "12px", backgroundColor: "#e8f5e9", borderRadius: "8px", border: "2px dashed #4caf50", display: "flex", justifyContent: "space-between", alignItems: "center", ...style }}>
-      <div>
-        <h4 style={{ color: "#2e7d32", fontSize: "16px" }}>{data.title}</h4>
-        <p style={{ fontSize: "12px", color: "#555" }}>{data.description}</p>
-      </div>
-      <button
-        onClick={handleCopy}
-        style={{ padding: "4px 10px", backgroundColor: copied ? "#81c784" : "#4caf50", color: "#fff", borderRadius: "10px", cursor: "pointer", fontWeight: "600" }}
-      >
-        {copied ? "Copied!" : data.copyLabel}
-      </button>
-    </div>
-  );
-};
-
-const StoryRow = ({ children, style }) => {
-  return (
-    <div
-      style={{ display: "flex", gap: "15px", padding: "10px 4px", overflowX: "auto", backgroundColor: "#fff", scrollbarWidth: "none", borderBottom: "1px solid #efefef", borderRadius: "24px", ...style }}>
-      {children}
-    </div>
-  );
-}
-
-const StoryCircle = ({ data, style }) => {
-  return (
-    <div
-      style={{
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", cursor: "pointer", flexShrink: 0, transition: "transform 0.15s ease",
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.06)"}
-      onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-    >
-      <div style={{ width: "60px", height: "60px", borderRadius: "50%", padding: "2px", border: "2px solid #e1306c", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...style }}>
-        <img src={data.imageUrl} alt={data.label} style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
-      </div>
-      <span style={{ fontSize: "11px", fontWeight: "500", color: "#262626" }}>{data.label}</span>
-    </div>
-  );
-}
-
-
-
-const NavBar = ({ data, style, onNavigate }) => {
-  return (
-    <div
-      style={{ display: "flex", justifyContent: "space-around", alignItems: "center", backgroundColor: "#ffffff", borderTop: "1px solid #e5e7eb", ...style }}>
-      {data?.items.map((item, idx) => (
-        <div
-          key={idx}
-          onClick={() => {
-            if (item.actions?.onTap?.type === "NAVIGATE" && onNavigate) {
-              onNavigate(item.actions.onTap.route);
-            }
-          }}
-          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer", color: (item.isActive === "true") ? "#4f46e5" : "#6b7280" }}>
-          <span style={{ fontSize: "20px" }}>{item.icon}</span>
-          <span style={{ fontSize: "10px", fontWeight: "600" }}>{item.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const Footer = ({ data, style }) => {
-  return (
-    <div style={{ padding: "10px", backgroundColor: "#0f172a", color: "#f8fafc", ...style }}>
-      <div style={{ display: "grid", gridAutoFlow: "column", gap: "10px" }}>
-        {data.sections?.map((section, i) => (
-          <div key={i}>
-            <h4 style={{ fontSize: "13px", fontWeight: "bold", marginBottom: "5px", color: "#818cf8" }}>
-              {section.title}
-            </h4>
-            <ul>
-              {section.links?.map((link, j) => (
-                <li key={j} style={{ fontSize: "11px", marginBottom: "5px", cursor: "pointer", color: "#94a3b8" }} onMouseEnter={(e) => e.target.style.color = "#ffffff"} onMouseLeave={(e) => e.target.style.color = "#94a3b8"}>
-                  <a href={link.url} target="_blank" rel="noopener noreferrer">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <div style={{ borderTop: "1px solid #64748b", paddingTop: "8px", textAlign: "center", fontSize: "11px", opacity: 0.6 }}>
-        {data.copyrightText}
-      </div>
-    </div>
-  );
-};
 
 const ContextMenu = ({ data, onClose, onSelect }) => {
   if (!data) return null;
@@ -896,45 +584,12 @@ const ImagePreviewModal = ({ data, onClose }) => {
   );
 };
 
-const Box = ({ children, style }) => (
-  <div style={style}>{children}</div>
-);
 
-const Text = ({ data, style }) => (
-  <span style={style}>{data?.text}</span>
-);
 
-const IFrame = ({ data, style }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  if (!data?.src) return null;
-  return (
-    <div
-      style={{ width: "100%", height: style?.height || data?.height || "220px", borderRadius: "16px", overflow: "hidden", backgroundColor: "#000000", boxSizing: "border-box", ...style, }}
-    >
-      {/* Loading Shimmer while iframe loads */}
-      {isLoading && (
-        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", backgroundColor: "#18181b", color: "#ffffff", zIndex: 1, }}>
-          <div style={{ width: "28px", height: "28px", border: "3px solid rgba(255, 255, 255, 0.15)", borderTopColor: "#DB2777", borderRadius: "50%", animation: "spin 0.8s linear infinite", }} />
-          <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.7)", fontWeight: "500" }}>Loading...</span>
-        </div>
-      )}
 
-      <iframe
-        src={data.src}
-        title={data.title || "Embedded Video"}
-        width="100%"
-        height="100%"
-        loading="lazy"
-        allowFullScreen={data.allowFullScreen !== false}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        onLoad={() => setIsLoading(false)}
-      />
-    </div>
-  );
-};
 
 const ComponentMap = {
-  "Home": Home,
+  "Home": HomeRenderer,
   "Image": ImageRenderer,
   "Title": TitleRenderer,
   "Description": DescriptionRenderer,
@@ -951,24 +606,24 @@ const ComponentMap = {
   "OfferText": OfferTextRenderer,
   "DeliveryInfo": DeliveryInfoRenderer,
   "Button": ButtonRenderer,
+  "Label": LabelRenderer,
+  "Sponsored": SponsoredRenderer,
+  "Icon": IconRenderer,
+  "Box": BoxRenderer,
+  "Text": TextRenderer,
+  "ProductList": ProductListRenderer,
+  "Carousel": CarouselRenderer,
+  "CategoryGrid": CategoryGridRenderer,
+  "HeroBanner": HeroBannerRenderer,
+  "CountDownTimer": CountDownTimerRenderer,
+  "CouponCode": CouponCodeRenderer,
   "ProductCard": ProductCardRenderer,
-  "Page": Page,
-  "ProductList": ProductList,
-  "Carousel": Carousel,
-  "CategoryGrid": CategoryGrid,
-  "HeroBanner": HeroBanner,
-  "CountDownTimer": CountDownTimer,
-  "Box": Box,
-  "Text": Text,
-  "IFrame": IFrame,
-  "CouponCode": CouponCode,
-  "StoryRow": StoryRow,
-  "StoryCircle": StoryCircle,
-  "NavBar": NavBar,
-  "Footer": Footer,
-  "Label": Label,
-  "Sponsored": Sponsored,
-  "Icon": Icon,
+  "Page": PageRenderer,
+  "IFrame": IFrameRenderer,
+  "StoryRow": StoryRowRenderer,
+  "StoryCircle": StoryCircleRenderer,
+  "NavBar": NavBarRenderer,
+  "Footer": FooterRenderer,
 };
 
 const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onNavigate }) => {

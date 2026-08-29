@@ -13,6 +13,9 @@ import OfferTextRenderer from './renderers/OfferTextRenderer';
 import DeliveryInfoRenderer from './renderers/DeliveryInfoRenderer';
 import ButtonRenderer from './renderers/ButtonRenderer';
 import ShareButtonRenderer from './renderers/ShareButtonRenderer';
+import LabelRenderer from './renderers/LabelRenderer';
+import SponsoredRenderer from './renderers/SponsoredRenderer';
+import IconRenderer from './renderers/IconRenderer';
 
 export default function ProductCardPlayground({ onBack }) {
   const [selectedThemeId, setSelectedThemeId] = useState('landing_schema');
@@ -125,16 +128,14 @@ export default function ProductCardPlayground({ onBack }) {
         return <ShareButtonRenderer key={idx} data={child.data} style={style} />;
       case 'Label':
         return (
-          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '4px', ...style }}>
+          <LabelRenderer key={idx} style={style}>
             {child.children?.map((subChild, sIdx) => renderChild(subChild, sIdx))}
-          </div>
+          </LabelRenderer>
         );
       case 'Sponsored':
-        return (
-          <span key={idx} style={{ ...style }}>
-            {child.data?.text || 'Sponsored'}
-          </span>
-        );
+        return <SponsoredRenderer key={idx} data={child.data} style={style} />;
+      case 'Icon':
+        return <IconRenderer key={idx} data={child.data} style={style} />;
       default:
         return null;
     }
