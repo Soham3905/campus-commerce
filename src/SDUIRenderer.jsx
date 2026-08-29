@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { fullPageJSON } from "./landingSchema";
+import HeaderRenderer from "./sdui/renderers/HeaderRenderer";
+import HeaderButtonRenderer from "./sdui/renderers/HeaderButtonRenderer";
+import ProductCardRenderer from "./sdui/renderers/ProductCardRenderer";
 
 const createDummyPage = (titleText, routeName) => {
   // Deep clone the NavBar so we can modify it without breaking the original
@@ -109,7 +112,7 @@ export default function SDUIRenderer() {
       const parsed = JSON.parse(jsonText);
       setSchema(parsed);
       setError("");
-    } catch (err) {
+    } catch {
       setError("Sorry, We cannot handle it..");
     }
   };
@@ -493,22 +496,6 @@ const Page = ({ children, style }) => (
   </div>
 );
 
-const Header = ({ children, style }) => (
-  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, ...style }}>
-    {children}
-  </div>
-);
-
-const HeaderButton = ({ data, style }) => (
-  <div
-    style={{
-      padding: "8px 12px", borderRadius: 12, background: "#f8fafc", border: "1px solid #e5e7eb", display: "flex", alignItems: "center", gap: 6, ...style
-    }}
-  >
-    <span style={{ fontWeight: 600, fontSize: 12 }}> {data?.icon} {data?.label}</span>
-  </div>
-);
-
 const ProductList = ({ children }) => {
   return (
     <div style={{ display: "flex", gap: "8px", padding: "8px", width: "max-content" }}>
@@ -524,6 +511,22 @@ const ProductList = ({ children }) => {
 const Carousel = ({ data, children, style, actions }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => {
+      const count = React.Children.count(children);
+      if (prevIndex === count - 1) return data.infiniteLoop ? 0 : prevIndex;
+      return prevIndex + 1;
+    });
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => {
+      const count = React.Children.count(children);
+      if (prevIndex === 0) return data.infiniteLoop ? count - 1 : prevIndex;
+      return prevIndex - 1;
+    });
+  };
+
   useEffect(() => {
     if (!data.autoPlay || !children) return;
     const interval = setInterval(() => {
@@ -531,22 +534,6 @@ const Carousel = ({ data, children, style, actions }) => {
     }, data.autoPlayInterval || 3000);
     return () => clearInterval(interval);
   }, [data.autoPlay, data.autoPlayInterval, data.infiniteLoop, children]);
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => {
-      const count = React.Children.count(children);
-      if (prevIndex === count - 1) return data.infiniteLoop ? 0 : prevIndex;
-      return prevIndex + 1;
-    })
-  }
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => {
-      const count = React.Children.count(children);
-      if (prevIndex === 0) return data.infiniteLoop ? count - 1 : prevIndex;
-      return prevIndex - 1;
-    })
-  }
 
   const minSwipeDistance = actions?.onSwipeLeft?.minSwipeDistance || actions?.onSwipeRight?.minSwipeDistance || data?.minSwipeDistance || 50;
   const swipeHandlers = useSwipe({
@@ -608,64 +595,7 @@ const SearchBar = ({ data, style }) => {
   );
 }
 
-const ProductCard = ({ children, style, isHovered }) => {
-  return (
-    <div
-      style={{ padding: "10px", width: "280px", borderRadius: "10px", backgroundColor: "#fff", position: "relative", overflow: "hidden", ...style }}>
-      {children}
 
-      {/* Modern Floating Quick Add Pill over Image */}
-      <div
-        style={{
-          position: "absolute",
-          top: "145px",
-          left: "14px",
-          right: "14px",
-          zIndex: 10,
-          opacity: isHovered ? 1 : 0,
-          transform: isHovered ? "translateY(0) scale(1)" : "translateY(8px) scale(0.96)",
-          transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}
-      >
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          style={{
-            width: "100%",
-            padding: "9px 14px",
-            backgroundColor: "rgba(17, 24, 39, 0.92)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            color: "#ffffff",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            borderRadius: "12px",
-            fontWeight: "600",
-            fontSize: "13px",
-            letterSpacing: "0.02em",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "7px",
-            boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.1)",
-            transition: "all 0.2s ease",
-            fontFamily: "'Inter Tight', Inter, sans-serif",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#000000";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(17, 24, 39, 0.92)";
-          }}
-        >
-          <span style={{ fontSize: "13px" }}>⚡</span>
-          <span>Quick Add</span>
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const ProductImage = ({ data, style }) => (
   <div style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
@@ -1087,8 +1017,8 @@ const IFrame = ({ data, style }) => {
 const ComponentMap = {
   "Home": Home,
   "Page": Page,
-  "Header": Header,
-  "HeaderButton": HeaderButton,
+  "Header": HeaderRenderer,
+  "HeaderButton": HeaderButtonRenderer,
   "ProductList": ProductList,
   "Carousel": Carousel,
   "CategoryGrid": CategoryGrid,
@@ -1105,7 +1035,7 @@ const ComponentMap = {
   "ShareButton": ShareButton,
   "NavBar": NavBar,
   "Footer": Footer,
-  "ProductCard": ProductCard,
+  "ProductCard": ProductCardRenderer,
   "Image": ProductImage,
   "Label": Label,
   "Sponsored": Sponsored,
@@ -1155,14 +1085,9 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onN
     }
   };
 
-  if (!schema) return null;
-
-  const TargetComponent = ComponentMap[schema.type];
-  if (!TargetComponent) return <div style={{ color: "red" }}>Unknown Component: {schema.type}</div>;
-
   // Handle Long Press
   const longPressHandlers = useLongPress(() => {
-    const lp = schema.actions?.onLongPress;
+    const lp = schema?.actions?.onLongPress;
     if (lp?.type === "SHOW_CONTEXT_MENU") {
       openMenu({
         title: lp.data?.title || "Actions",
@@ -1173,9 +1098,8 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onN
   });
 
   // Handle Tap
-
   const handleTap = (e) => {
-    const tapAction = schema.actions?.onTap;
+    const tapAction = schema?.actions?.onTap;
     if (tapAction) {
       e.stopPropagation();
       if (tapAction.type === "OPEN_BOTTOM_SHEET") {
@@ -1198,68 +1122,68 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onN
         executeOptionAction({ action: tapAction });
       }
     }
-  }
+  };
 
-  const handleMouseEnter = (e) => {
+  const handleMouseEnter = () => {
     setIsHovered(true);
-    const hoverAction = schema.actions?.onHover;
+    const hoverAction = schema?.actions?.onHover;
     if (hoverAction) {
       executeOptionAction({ action: hoverAction });
     }
-  }
+  };
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = () => {
     setIsHovered(false);
-    const hoverOutAction = schema.actions?.onHoverOut;
+    const hoverOutAction = schema?.actions?.onHoverOut;
     if (hoverOutAction) {
       executeOptionAction({ action: hoverOutAction });
     }
-  }
+  };
 
   const handleDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
-    if (schema.actions?.onDrag) {
+    if (schema?.actions?.onDrag) {
       executeOptionAction({ action: schema.actions.onDrag });
     }
   };
 
   const handleDragOver = (e) => {
-    if (schema.actions?.onDrop) {
+    if (schema?.actions?.onDrop) {
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
     }
   };
 
   const handleDrop = (e) => {
-    if (schema.actions?.onDrop) {
+    if (schema?.actions?.onDrop) {
       e.preventDefault();
       executeOptionAction({ action: schema.actions.onDrop });
     }
   };
 
-  const handleFocus = (e) => {
-    if (schema.actions?.onFocus) {
+  const handleFocus = () => {
+    if (schema?.actions?.onFocus) {
       console.log("Focus");
       executeOptionAction({ action: schema.actions.onFocus });
     }
   };
 
-  const handleBlur = (e) => {
-    if (schema.actions?.onBlur) {
+  const handleBlur = () => {
+    if (schema?.actions?.onBlur) {
       console.log("Blur");
       executeOptionAction({ action: schema.actions.onBlur });
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && schema.actions?.onSubmit) {
+    if (e.key === "Enter" && schema?.actions?.onSubmit) {
       console.log("Submit");
       executeOptionAction({ action: schema.actions.onSubmit });
     }
   };
 
   const handleChange = (e) => {
-    if (schema.actions?.onChange) {
+    if (schema?.actions?.onChange) {
       clearTimeout(debounceTimer.current);
       const debounceDuration = schema.actions.onChange.debounceDuration || 500;
       const value = e.target.value;
@@ -1271,14 +1195,19 @@ const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onN
     }
   };
 
-  const minSwipeDistance = schema.actions?.onSwipeLeft?.minSwipeDistance || schema.actions?.onSwipeRight?.minSwipeDistance || schema.actions?.onSwipeUp?.minSwipeDistance || schema.actions?.onSwipeDown?.minSwipeDistance || 50;
+  const minSwipeDistance = schema?.actions?.onSwipeLeft?.minSwipeDistance || schema?.actions?.onSwipeRight?.minSwipeDistance || schema?.actions?.onSwipeUp?.minSwipeDistance || schema?.actions?.onSwipeDown?.minSwipeDistance || 50;
   const swipeHandlers = useSwipe({
-    onSwipeLeft: schema.actions?.onSwipeLeft ? () => executeOptionAction({ action: schema.actions.onSwipeLeft }) : null,
-    onSwipeRight: schema.actions?.onSwipeRight ? () => executeOptionAction({ action: schema.actions.onSwipeRight }) : null,
-    onSwipeUp: schema.actions?.onSwipeUp ? () => executeOptionAction({ action: schema.actions.onSwipeUp }) : null,
-    onSwipeDown: schema.actions?.onSwipeDown ? () => executeOptionAction({ action: schema.actions.onSwipeDown }) : null,
+    onSwipeLeft: schema?.actions?.onSwipeLeft ? () => executeOptionAction({ action: schema.actions.onSwipeLeft }) : null,
+    onSwipeRight: schema?.actions?.onSwipeRight ? () => executeOptionAction({ action: schema.actions.onSwipeRight }) : null,
+    onSwipeUp: schema?.actions?.onSwipeUp ? () => executeOptionAction({ action: schema.actions.onSwipeUp }) : null,
+    onSwipeDown: schema?.actions?.onSwipeDown ? () => executeOptionAction({ action: schema.actions.onSwipeDown }) : null,
     minSwipeDistance
   });
+
+  if (!schema) return null;
+
+  const TargetComponent = ComponentMap[schema.type];
+  if (!TargetComponent) return <div style={{ color: "red" }}>Unknown Component: {schema.type}</div>;
 
   const hasSwipe = schema.actions?.onSwipeLeft || schema.actions?.onSwipeRight || schema.actions?.onSwipeUp || schema.actions?.onSwipeDown;
   const interactionProps = {

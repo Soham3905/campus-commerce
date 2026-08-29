@@ -1,97 +1,116 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
 import { Mail, Lock, LogIn, Apple, Globe } from 'lucide-react';
 
-// --- Animated Shader Background Component ---
-const ShaderBackground = () => {
-  const canvasRef = useRef(null);
+// --- 3D Background Component (matching WelcomePage) ---
+const ThreeBackground = () => {
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!containerRef.current) return;
 
-    const gl = canvas.getContext('webgl');
-    if (!gl) return;
+    const container = containerRef.current;
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
 
-    const vsSource = `
-      attribute vec2 a_position;
-      varying vec2 v_texCoord;
-      void main() {
-        v_texCoord = a_position * 0.5 + 0.5;
-        gl_Position = vec4(a_position, 0.0, 1.0);
-      }
-    `;
+    // Scene Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    container.appendChild(renderer.domElement);
 
-    const fsSource = `
-      precision highp float;
-      varying vec2 v_texCoord;
-      uniform float u_time;
-      uniform vec2 u_resolution;
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0x4f46e5, 1);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
 
-      void main() {
-        vec2 uv = v_texCoord;
-        float strength = 0.5 + 0.5 * sin(uv.x * 3.0 + u_time * 0.5 + sin(uv.y * 2.0 + u_time * 0.3));
-        
-        vec3 color1 = vec3(0.058, 0.09, 0.165); // Deep slate
-        vec3 color2 = vec3(0.2, 0.3, 0.5);      // Mid blue
-        vec3 accent = vec3(0.4, 0.5, 1.0);      // Glow
-        
-        vec3 finalColor = mix(color1, color2, strength * 0.5);
-        finalColor += accent * (0.1 * sin(u_time * 0.8 + uv.y * 5.0));
-        
-        gl_FragColor = vec4(finalColor, 1.0);
-      }
-    `;
+    // Particles Group
+    const group = new THREE.Group();
+    const geometries = [
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.SphereGeometry(0.6, 32, 32),
+      new THREE.CylinderGeometry(0.5, 0.5, 1, 32)
+    ];
+    const materials = [
+      new THREE.MeshPhongMaterial({ color: 0x4f46e5, shininess: 100 }), // Primary Indigo
+      new THREE.MeshPhongMaterial({ color: 0x818cf8, shininess: 100 }), // Secondary Light Indigo
+      new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 100 })  // White
+    ];
 
-    const createShader = (gl, type, source) => {
-      const shader = gl.createShader(type);
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      return shader;
-    };
+    for (let i = 0; i < 30; i++) {
+      const geom = geometries[Math.floor(Math.random() * geometries.length)];
+      const mat = materials[Math.floor(Math.random() * materials.length)];
+      const mesh = new THREE.Mesh(geom, mat);
+      
+      mesh.position.set(
+        (Math.random() - 0.5) * 15,
+        (Math.random() - 0.5) * 15,
+        (Math.random() - 0.5) * 10 - 5
+      );
+      
+      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+      mesh.scale.setScalar(Math.random() * 0.5 + 0.2);
+      
+      mesh.userData.velocity = new THREE.Vector3(
+        (Math.random() - 0.5) * 0.03,
+        (Math.random() - 0.5) * 0.03,
+        (Math.random() - 0.5) * 0.02
+      );
+      mesh.userData.rotSpeed = new THREE.Vector3(
+        (Math.random() * 0.02 + 0.01),
+        (Math.random() * 0.02 + 0.01),
+        (Math.random() * 0.02 + 0.01)
+      );
+      group.add(mesh);
+    }
+    scene.add(group);
+    camera.position.z = 8;
 
-    const program = gl.createProgram();
-    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
-    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
-    gl.linkProgram(program);
-    gl.useProgram(program);
-
-    const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-    const positionLoc = gl.getAttribLocation(program, 'a_position');
-    gl.enableVertexAttribArray(positionLoc);
-    gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
-
-    const timeLoc = gl.getUniformLocation(program, 'u_time');
-    const resLoc = gl.getUniformLocation(program, 'u_resolution');
-
+    // Animation Loop
     let animationFrameId;
-    const render = (time) => {
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.uniform1f(timeLoc, time * 0.001);
-      gl.uniform2f(resLoc, canvas.width, canvas.height);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      animationFrameId = requestAnimationFrame(render);
+    const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+      group.children.forEach(child => {
+        child.position.add(child.userData.velocity);
+        child.rotation.x += child.userData.rotSpeed ? child.userData.rotSpeed.x : 0.02;
+        child.rotation.y += child.userData.rotSpeed ? child.userData.rotSpeed.y : 0.02;
+        child.rotation.z += child.userData.rotSpeed ? child.userData.rotSpeed.z : 0.01;
+        
+        if (Math.abs(child.position.x) > 10) child.userData.velocity.x *= -1;
+        if (Math.abs(child.position.y) > 10) child.userData.velocity.y *= -1;
+        if (child.position.z > 2 || child.position.z < -15) child.userData.velocity.z *= -1;
+      });
+      renderer.render(scene, camera);
     };
 
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize();
-    render(0);
+    animate();
 
+    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
+      if (container && renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+      geometries.forEach(g => g.dispose());
+      materials.forEach(m => m.dispose());
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full" />;
+  return <div ref={containerRef} className="fixed inset-0 w-full h-full bg-[#f8f9ff]" />;
 };
 
 // --- Main Login Page Component (Fully Mobile-Responsive) ---
@@ -102,12 +121,12 @@ const LoginPage = ({ onLogin }) => {
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
       `}</style>
       
-      {/* Background Canvas */}
-      <ShaderBackground />
+      {/* Background 3D Canvas */}
+      <ThreeBackground />
 
       {/* Main Login Card Container */}
       <div className="relative z-10 w-full max-w-md md:max-w-lg my-auto py-4 sm:py-6">
-        <div className="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-12 shadow-2xl shadow-slate-900/20 border border-slate-100/80 flex flex-col items-center">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-12 shadow-2xl shadow-indigo-100/80 border border-white/80 flex flex-col items-center">
           
           {/* Brand Heading */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#0f172a] mb-1.5 sm:mb-2 text-center font-['Plus_Jakarta_Sans',sans-serif]">
@@ -247,3 +266,4 @@ const LoginPage = ({ onLogin }) => {
 };
 
 export default LoginPage;
+

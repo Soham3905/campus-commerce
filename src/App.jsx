@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import LoginPage from "./LoginPage";
 import WelcomePage from "./WelcomePage";
 import Dashboard from "./Dashboard";
@@ -10,7 +10,7 @@ import Dashboard from "./Dashboard";
  */
 export default function App() {
   // 'login' | 'welcome' | 'dashboard'
-  const [page, setPage] = useState("login");
+  const [page, setPage] = useState("dashboard");
 
   return (
     <div>
