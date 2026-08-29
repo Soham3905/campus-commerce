@@ -3,6 +3,20 @@ import { fullPageJSON } from "./landingSchema";
 import HeaderRenderer from "./sdui/renderers/HeaderRenderer";
 import HeaderButtonRenderer from "./sdui/renderers/HeaderButtonRenderer";
 import ProductCardRenderer from "./sdui/renderers/ProductCardRenderer";
+import ImageRenderer from "./sdui/renderers/ImageRenderer";
+import TitleRenderer from "./sdui/renderers/TitleRenderer";
+import DescriptionRenderer from "./sdui/renderers/DescriptionRenderer";
+import BadgeRenderer from "./sdui/renderers/BadgeRenderer";
+import ScoreRenderer from "./sdui/renderers/ScoreRenderer";
+import ReviewCountRenderer from "./sdui/renderers/ReviewCountRenderer";
+import RatingRenderer from "./sdui/renderers/RatingRenderer";
+import PriceBlockRenderer from "./sdui/renderers/PriceBlockRenderer";
+import OfferTextRenderer from "./sdui/renderers/OfferTextRenderer";
+import DeliveryInfoRenderer from "./sdui/renderers/DeliveryInfoRenderer";
+import ButtonRenderer from "./sdui/renderers/ButtonRenderer";
+import ShareButtonRenderer from "./sdui/renderers/ShareButtonRenderer";
+import SearchBarRenderer from "./sdui/renderers/SearchBarRenderer";
+import CategoryItemRenderer from "./sdui/renderers/CategoryItemRenderer";
 
 const createDummyPage = (titleText, routeName) => {
   // Deep clone the NavBar so we can modify it without breaking the original
@@ -573,36 +587,6 @@ const CategoryGrid = ({ children, style }) => (
   </div>
 );
 
-const CategoryItem = ({ data, style }) => (
-  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "5px", ...style }}>
-    <div style={{ width: "35px", height: "35px", backgroundColor: "#f0f2f5", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", cursor: "pointer" }}>
-      {data.icon}
-    </div>
-    <span style={{ fontSize: "10px", fontWeight: "600", color: "#444", cursor: "pointer" }}>{data.label}</span>
-  </div>
-);
-
-const SearchBar = ({ data, style }) => {
-  const [query, setQuery] = useState("");
-
-  return (
-    <div style={{ padding: "5px", ...style }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <span style={{ marginRight: "8px" }}>{data?.icon || "🔍"}</span>
-        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={data?.placeholder || "Search..."} style={{ fontSize: "14px", width: "100%", border: "none", outline: "none" }} />
-      </div>
-    </div>
-  );
-}
-
-
-
-const ProductImage = ({ data, style }) => (
-  <div style={{ backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
-    <img src={data.imageUrl} alt={data.altText} style={{ width: "100%", height: "180px", objectFit: "contain", ...style }} />
-  </div>
-);
-
 const Label = ({ children, style }) => (
   <div style={{ display: "flex", alignItems: "center", gap: "3px", ...style }}>{children}</div>
 );
@@ -613,67 +597,6 @@ const Sponsored = ({ data, style }) => (
 
 const Icon = ({ data, style }) => (
   <img src={data.imageUrl || "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Information_icon.svg/24px-Information_icon.svg.png"} alt={data.altText} style={{ width: "14px", height: "14px", opacity: 0.4, cursor: "pointer", ...style }} />
-);
-
-const Title = ({ data, style }) => (
-  <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#111", ...style }}>{data.text}</h3>
-);
-
-const Description = ({ data, style }) => (
-  <p style={{ fontSize: "13px", color: "#555", display: "-webkit-box", WebkitLineClamp: data.maxLines ?? 2, WebkitBoxOrient: "vertical", overflow: "hidden", ...style }}>
-    {data.text}
-  </p>
-);
-
-const Rating = ({ children, style }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "8px", ...style }}>{children}</div>
-);
-
-const Score = ({ data, style }) => (
-  <span style={{ fontSize: "10px", color: "#e77600", fontWeight: "bold", background: "rgba(231,118,0,0.1)", borderRadius: "8px", ...style }}>
-    ★ {data.text}
-    {data["out of"] && <span style={{ color: "#888", fontWeight: "bold", fontSize: "10px" }}> / {data["out of"]}</span>}
-  </span>
-);
-
-const ReviewCount = ({ data, style }) => (
-  <span style={{ fontSize: "11px", color: "#007185", fontWeight: "500", ...style }}>({data.text} reviews)</span>
-);
-
-const Badge = ({ data, style }) => (
-  <span style={{ backgroundColor: "#cc0c39", color: "white", padding: "4px 10px", fontSize: "11px", fontWeight: "bold", borderRadius: "16px", ...style }}>
-    {data.text}
-  </span>
-);
-
-const PriceBlock = ({ data, style }) => (
-  <div style={{ display: "flex", alignItems: "baseline", gap: "8px", ...style }}>
-    <span style={{ fontSize: "20px", fontWeight: "800", color: "#111" }}>{data.sellingPrice}</span>
-    <span style={{ fontSize: "10px", color: "#888", textDecoration: "line-through" }}>M.R.P: {data.mrp}</span>
-    <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700", background: "rgba(22,163,74,0.12)", padding: "2px 6px", borderRadius: "4px" }}>{data.discount} OFF</span>
-  </div>
-);
-
-const OfferText = ({ data, style }) => (
-  <p style={{ fontSize: "12px", color: "#007185", fontWeight: "500", display: "flex", alignItems: "center", ...style }}>🏷️ {data.text}</p>
-);
-
-const DeliveryInfo = ({ data, style }) => {
-  const deliveryDate = new Date();
-  deliveryDate.setDate(deliveryDate.getDate() + (data.daysOffset ?? 7));
-  const formatted = deliveryDate.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
-  return (
-    <p style={{ fontSize: "12px", color: "#333", ...style }}>
-      🚚 <span style={{ fontWeight: "700" }}>{data.prefix ?? "FREE delivery"}</span> {formatted}
-    </p>
-  );
-};
-
-const Button = ({ data, style }) => (
-  <button
-    style={{ width: "100%", padding: "8px", background: "linear-gradient(135deg, #ffa41c, #ff8f00)", color: "#111", borderRadius: "24px", fontSize: "14px", fontWeight: "800", cursor: "pointer", ...style }}>
-    {data.label}
-  </button>
 );
 
 const HeroBanner = ({ data, style, children, onError }) => {
@@ -793,11 +716,7 @@ const StoryCircle = ({ data, style }) => {
   );
 }
 
-const ShareButton = ({ data, style }) => {
-  return <button style={{ border: "1px solid #ddd", padding: "5px 10px", borderRadius: "15px", fontSize: "12px", cursor: "pointer", ...style }}>
-    {data?.icon} {data.label}
-  </button>
-}
+
 
 const NavBar = ({ data, style, onNavigate }) => {
   return (
@@ -990,12 +909,12 @@ const IFrame = ({ data, style }) => {
   if (!data?.src) return null;
   return (
     <div
-      style={{ width: "100%", height: style?.height || data?.height || "220px",borderRadius: "16px", overflow: "hidden", backgroundColor: "#000000", boxSizing: "border-box", ...style, }}
+      style={{ width: "100%", height: style?.height || data?.height || "220px", borderRadius: "16px", overflow: "hidden", backgroundColor: "#000000", boxSizing: "border-box", ...style, }}
     >
       {/* Loading Shimmer while iframe loads */}
       {isLoading && (
-        <div style={{position: "absolute",inset: 0,display: "flex",flexDirection: "column",alignItems: "center",justifyContent: "center",gap: "8px", backgroundColor: "#18181b", color: "#ffffff",zIndex: 1,}}>
-          <div style={{width: "28px",height: "28px",border: "3px solid rgba(255, 255, 255, 0.15)",borderTopColor: "#DB2777",borderRadius: "50%",animation: "spin 0.8s linear infinite",}}/>
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", backgroundColor: "#18181b", color: "#ffffff", zIndex: 1, }}>
+          <div style={{ width: "28px", height: "28px", border: "3px solid rgba(255, 255, 255, 0.15)", borderTopColor: "#DB2777", borderRadius: "50%", animation: "spin 0.8s linear infinite", }} />
           <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.7)", fontWeight: "500" }}>Loading...</span>
         </div>
       )}
@@ -1016,14 +935,27 @@ const IFrame = ({ data, style }) => {
 
 const ComponentMap = {
   "Home": Home,
-  "Page": Page,
+  "Image": ImageRenderer,
+  "Title": TitleRenderer,
+  "Description": DescriptionRenderer,
   "Header": HeaderRenderer,
   "HeaderButton": HeaderButtonRenderer,
+  "CategoryItem": CategoryItemRenderer,
+  "SearchBar": SearchBarRenderer,
+  "ShareButton": ShareButtonRenderer,
+  "Rating": RatingRenderer,
+  "Score": ScoreRenderer,
+  "ReviewCount": ReviewCountRenderer,
+  "Badge": BadgeRenderer,
+  "PriceBlock": PriceBlockRenderer,
+  "OfferText": OfferTextRenderer,
+  "DeliveryInfo": DeliveryInfoRenderer,
+  "Button": ButtonRenderer,
+  "ProductCard": ProductCardRenderer,
+  "Page": Page,
   "ProductList": ProductList,
   "Carousel": Carousel,
   "CategoryGrid": CategoryGrid,
-  "CategoryItem": CategoryItem,
-  "SearchBar": SearchBar,
   "HeroBanner": HeroBanner,
   "CountDownTimer": CountDownTimer,
   "Box": Box,
@@ -1032,24 +964,11 @@ const ComponentMap = {
   "CouponCode": CouponCode,
   "StoryRow": StoryRow,
   "StoryCircle": StoryCircle,
-  "ShareButton": ShareButton,
   "NavBar": NavBar,
   "Footer": Footer,
-  "ProductCard": ProductCardRenderer,
-  "Image": ProductImage,
   "Label": Label,
   "Sponsored": Sponsored,
   "Icon": Icon,
-  "Title": Title,
-  "Description": Description,
-  "Rating": Rating,
-  "Score": Score,
-  "ReviewCount": ReviewCount,
-  "Badge": Badge,
-  "PriceBlock": PriceBlock,
-  "OfferText": OfferText,
-  "DeliveryInfo": DeliveryInfo,
-  "Button": Button,
 };
 
 const Renderer = ({ schema, deviceType, openMenu, openSheet, openImageModal, onNavigate }) => {

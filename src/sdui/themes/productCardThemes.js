@@ -242,29 +242,29 @@ export const productCardThemes = {
         {
           type: 'Button',
           containerStyle: {
-            "height": "44px",
-            "minHeight": "44px",
-            "flex": "0 0 44px",
-            "flexShrink": "0",
-            "background": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-            "backgroundImage": "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
-            "backgroundColor": "#C4185F",
-            "marginTop": "auto",
-            "width": "calc(100% - 52px)",
-            "alignSelf": "flex-end",
-            "display": "flex",
-            "alignItems": "center",
-            "justifyContent": "center",
-            "padding": "0 16px",
-            "borderRadius": "12px",
-            "border": "none",
-            "color": "#FFFFFF",
-            "fontSize": "14px",
-            "fontWeight": "600",
-            "letterSpacing": "0.01em",
-            "cursor": "pointer",
-            "boxSizing": "border-box",
-            "boxShadow": "0 2px 10px rgba(196,24,95,0.24)"
+            height: "44px",
+            minHeight: "44px",
+            flex: "0 0 44px",
+            flexShrink: "0",
+            background: "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
+            backgroundImage: "linear-gradient(180deg, #D42A6E 0%, #C4185F 100%)",
+            backgroundColor: "#C4185F",
+            marginTop: "auto",
+            width: "calc(100% - 52px)",
+            alignSelf: "flex-start",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 16px",
+            borderRadius: "12px",
+            border: "none",
+            color: "#FFFFFF",
+            fontSize: "14px",
+            fontWeight: "600",
+            letterSpacing: "0.01em",
+            cursor: "pointer",
+            boxSizing: "border-box",
+            boxShadow: "0 2px 10px rgba(196,24,95,0.24)"
           },
           data: { label: 'Add to cart' }
         },
@@ -273,7 +273,7 @@ export const productCardThemes = {
           containerStyle: {
             position: "absolute",
             right: "14px",
-            bottom: "8px",
+            bottom: "14px",
             zIndex: "3",
             width: "44px",
             height: "44px",
@@ -322,7 +322,8 @@ export const productCardThemes = {
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        position: 'relative'
       },
       data: {
         id: 'product-002'
@@ -417,17 +418,40 @@ export const productCardThemes = {
         {
           type: 'Button',
           containerStyle: {
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#0F172A',
+            width: 'calc(100% - 52px)',
+            alignSelf: 'flex-start',
+            padding: '12px',
+            background: 'linear-gradient(135deg, #FF9900 0%, #FF7700 100%)',
             color: '#FFFFFF',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '10px',
             fontSize: '13px',
             fontWeight: '700',
             cursor: 'pointer'
           },
           data: { label: 'Buy Now' }
+        },
+        {
+          type: 'ShareButton',
+          containerStyle: {
+            position: 'absolute',
+            right: '16px',
+            bottom: '16px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '10px',
+            border: '1px solid #E2E8F0',
+            backgroundColor: '#F8FAFC',
+            color: '#0F172A',
+            fontSize: '17px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          },
+          data: {
+            icon: '↗'
+          }
         }
       ]
     }
@@ -451,7 +475,8 @@ export const productCardThemes = {
         flexDirection: 'column',
         gap: '10px',
         color: '#FFFFFF',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        position: 'relative'
       },
       data: {
         id: 'product-003'
@@ -523,7 +548,8 @@ export const productCardThemes = {
           containerStyle: {
             display: 'flex',
             alignItems: 'baseline',
-            gap: '8px'
+            gap: '8px',
+            color: '#FFFFFF'
           },
           data: {
             sellingPrice: '₹4,999',
@@ -534,17 +560,40 @@ export const productCardThemes = {
         {
           type: 'Button',
           containerStyle: {
-            width: '100%',
-            padding: '10px',
-            background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
+            width: 'calc(100% - 52px)',
+            alignSelf: 'flex-start',
+            padding: '12px',
+            background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
             color: '#FFFFFF',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '10px',
             fontSize: '13px',
             fontWeight: '700',
             cursor: 'pointer'
           },
           data: { label: 'Add to Cart' }
+        },
+        {
+          type: 'ShareButton',
+          containerStyle: {
+            position: 'absolute',
+            right: '16px',
+            bottom: '16px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '10px',
+            border: '1px solid #334155',
+            backgroundColor: '#1E293B',
+            color: '#FFFFFF',
+            fontSize: '17px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          },
+          data: {
+            icon: '↗'
+          }
         }
       ]
     }

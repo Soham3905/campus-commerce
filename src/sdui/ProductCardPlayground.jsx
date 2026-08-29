@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import { productCardThemes } from './themes/productCardThemes';
 import ProductCardRenderer from './renderers/ProductCardRenderer';
+import ImageRenderer from './renderers/ImageRenderer';
+import TitleRenderer from './renderers/TitleRenderer';
+import DescriptionRenderer from './renderers/DescriptionRenderer';
+import BadgeRenderer from './renderers/BadgeRenderer';
+import ScoreRenderer from './renderers/ScoreRenderer';
+import ReviewCountRenderer from './renderers/ReviewCountRenderer';
+import RatingRenderer from './renderers/RatingRenderer';
+import PriceBlockRenderer from './renderers/PriceBlockRenderer';
+import OfferTextRenderer from './renderers/OfferTextRenderer';
+import DeliveryInfoRenderer from './renderers/DeliveryInfoRenderer';
+import ButtonRenderer from './renderers/ButtonRenderer';
+import ShareButtonRenderer from './renderers/ShareButtonRenderer';
 
 export default function ProductCardPlayground({ onBack }) {
   const [selectedThemeId, setSelectedThemeId] = useState('landing_schema');
@@ -61,80 +73,56 @@ export default function ProductCardPlayground({ onBack }) {
     switch (child.type) {
       case 'Image':
         return (
-          <img
+          <ImageRenderer
             key={idx}
-            src={child.data?.imageUrl}
-            alt={child.data?.altText}
-            style={{ width: '100%', height: '176px', objectFit: 'contain', ...style }}
+            data={child.data}
+            style={style}
           />
         );
       case 'Badge':
         return (
-          <span key={idx} style={{ display: 'inline-block', ...style }}>
-            {child.data?.text}
-          </span>
+          <BadgeRenderer
+            key={idx}
+            data={child.data}
+            style={style}
+          />
         );
       case 'Title':
         return (
-          <h4 key={idx} style={{ margin: 0, ...style }}>
-            {child.data?.text}
-          </h4>
+          <TitleRenderer
+            key={idx}
+            data={child.data}
+            style={style}
+          />
         );
       case 'Description':
         return (
-          <p key={idx} style={{ margin: 0, ...style }}>
-            {child.data?.text}
-          </p>
+          <DescriptionRenderer
+            key={idx}
+            data={child.data}
+            style={style}
+          />
         );
+      case 'Score':
+        return <ScoreRenderer key={idx} data={child.data} style={style} />;
+      case 'ReviewCount':
+        return <ReviewCountRenderer key={idx} data={child.data} style={style} />;
       case 'Rating':
         return (
-          <div key={idx} style={{ ...style }}>
-            <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: 'bold' }}>
-              ★ {child.children?.[0]?.data?.text || '4.5'}
-            </span>
-            <span style={{ color: '#64748b', fontSize: '12px', marginLeft: '6px' }}>
-              ({child.children?.[1]?.data?.text || '100'} reviews)
-            </span>
-          </div>
+          <RatingRenderer key={idx} style={style}>
+            {child.children?.map((subChild, sIdx) => renderChild(subChild, sIdx))}
+          </RatingRenderer>
         );
       case 'PriceBlock':
-        return (
-          <div key={idx} style={{ ...style }}>
-            <span style={{ fontSize: '18px', fontWeight: '800' }}>
-              {child.data?.sellingPrice}
-            </span>
-            <span style={{ fontSize: '12px', color: '#94a3b8', textDecoration: 'line-through', marginLeft: '6px' }}>
-              {child.data?.mrp}
-            </span>
-            <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: '700', marginLeft: '6px' }}>
-              {child.data?.discount} OFF
-            </span>
-          </div>
-        );
+        return <PriceBlockRenderer key={idx} data={child.data} style={style} />;
       case 'OfferText':
-        return (
-          <p key={idx} style={{ margin: 0, ...style }}>
-            🏷️ {child.data?.text}
-          </p>
-        );
+        return <OfferTextRenderer key={idx} data={child.data} style={style} />;
       case 'DeliveryInfo':
-        return (
-          <p key={idx} style={{ margin: 0, ...style }}>
-            🚚 {child.data?.prefix}
-          </p>
-        );
+        return <DeliveryInfoRenderer key={idx} data={child.data} style={style} />;
       case 'Button':
-        return (
-          <button key={idx} style={{ ...style }}>
-            {child.data?.label}
-          </button>
-        );
+        return <ButtonRenderer key={idx} data={child.data} style={style} />;
       case 'ShareButton':
-        return (
-          <button key={idx} style={{ ...style }}>
-            {child.data?.icon || '↗'} {child.data?.label}
-          </button>
-        );
+        return <ShareButtonRenderer key={idx} data={child.data} style={style} />;
       case 'Label':
         return (
           <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '4px', ...style }}>
